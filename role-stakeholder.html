@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ผู้มีส่วนเกี่ยวข้อง — Riverpark Document System</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-100 min-h-screen flex" style="font-family:'Inter','IBM Plex Sans Thai',sans-serif;">
+
+  <!-- ════════════════════════════════════════════
+       SIDEBAR
+  ════════════════════════════════════════════ -->
+  <aside id="sidebar" class="fixed top-0 left-0 h-full w-[260px] bg-white border-r border-slate-100 shadow-sm flex flex-col z-[500] overflow-hidden">
+
+    <div class="sidebar-expanded-header flex items-center gap-3 px-5 border-b border-slate-100" style="height:64px;">
+      <div class="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100">
+        <img src="image/logo.png" alt="Logo" class="w-full h-full object-cover" />
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-[13px] font-bold text-slate-800 truncate leading-tight">Riverpark</p>
+        <p class="text-[11px] text-slate-400 truncate">Document System</p>
+      </div>
+      <button id="collapse-btn" class="w-7 h-7 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 flex-shrink-0 transition-colors">
+        <img src="icon/menu-01.svg" width="20" height="20" alt="" />
+      </button>
+    </div>
+
+    <div class="sidebar-collapsed-header hidden items-center justify-center border-b border-slate-100" style="height:64px;">
+      <button id="expand-btn" class="w-9 h-9 rounded-xl overflow-hidden hover:opacity-80 transition-opacity" title="ขยายแถบเมนู">
+        <img src="image/logo.png" alt="Logo" class="w-full h-full object-cover" />
+      </button>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-0.5">
+      <p class="nav-section-title text-[10px] font-semibold text-slate-300 uppercase tracking-widest px-3 pt-3 pb-1.5">เมนูหลัก</p>
+      <a href="index.html" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span class="nav-text">หน้าหลัก</span>
+      </a>
+      <a href="index.html" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+        <span class="nav-text">เอกสารขอขึ้นทะเบียน</span>
+      </a>
+      <a href="#" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span class="nav-text">ติดตามสถานะ</span>
+      </a>
+
+      <p class="nav-section-title text-[10px] font-semibold text-slate-300 uppercase tracking-widest px-3 pt-5 pb-1.5">มุมมองตามบทบาท</p>
+      <a href="role-requester.html" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        <span class="nav-text">ผู้จัดทำ</span>
+      </a>
+      <a href="role-approver.html" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        <span class="nav-text">ผู้อนุมัติ</span>
+      </a>
+      <a href="role-stakeholder.html" class="nav-link active">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        <span class="nav-text">ผู้เกี่ยวข้อง</span>
+      </a>
+
+      <div class="flex-1"></div>
+
+      <p class="nav-section-title text-[10px] font-semibold text-slate-300 uppercase tracking-widest px-3 pt-5 pb-1.5">ระบบ</p>
+      <a href="#" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="3"></circle><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"></path></svg>
+        <span class="nav-text">ตั้งค่า</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-expanded-header flex items-center gap-3 px-4 py-4 border-t border-slate-100">
+      <div class="w-8 h-8 rounded-lg bg-[#0b4f8c] text-white flex items-center justify-center text-[11px] font-bold flex-shrink-0">กข</div>
+      <div class="flex-1 min-w-0">
+        <p class="text-[13px] font-semibold text-slate-800 truncate leading-tight">ผู้เกี่ยวข้อง</p>
+        <p class="text-[11px] text-slate-400 truncate">ผู้มีส่วนเกี่ยวข้อง (Stakeholders)</p>
+      </div>
+    </div>
+
+    <div class="sidebar-collapsed-header hidden items-center justify-center py-4 border-t border-slate-100">
+      <div class="w-8 h-8 rounded-lg bg-[#0b4f8c] text-white flex items-center justify-center text-[11px] font-bold">กข</div>
+    </div>
+
+  </aside>
+
+  <!-- ════════════════════════════════════════════
+       MAIN WRAPPER
+  ════════════════════════════════════════════ -->
+  <div id="main-wrapper" class="flex-1 flex flex-col h-screen overflow-hidden" style="margin-left:260px;">
+
+    <!-- ── Topbar (คงที่ ไม่เลื่อน) ── -->
+    <div class="flex-shrink-0 z-[100] bg-white border-b border-slate-100 flex items-center justify-between px-8" style="height:64px;">
+      <div class="flex items-center gap-2 text-[13px] font-medium">
+        <a href="index.html" class="text-slate-400 no-underline hover:text-blue-600 transition-colors">Dashboard</a>
+        <span class="text-slate-300">/</span>
+        <span class="text-slate-900 font-semibold">มุมมองผู้เกี่ยวข้อง</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="hidden lg:inline-flex items-center gap-2 rounded-xl bg-blue-50 px-3 py-2 text-[12.5px] font-semibold text-blue-600">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> บทบาท: ผู้เกี่ยวข้อง
+        </span>
+        <button class="relative w-10 h-10 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-400 shadow-sm hover:bg-slate-50 hover:text-blue-600 transition-colors" aria-label="Notifications">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg>
+          <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+        </button>
+        <button class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 hover:bg-slate-100 transition-colors cursor-pointer">
+          <div class="w-8 h-8 rounded-lg bg-[#0b4f8c] text-white flex items-center justify-center text-[13px] font-bold">กข</div>
+          <span class="text-sm font-semibold text-slate-900">ผู้เกี่ยวข้อง</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Scroll area (พื้นที่เดียวที่เลื่อนได้) ── -->
+    <div class="dashboard-bg flex-1 min-h-0 overflow-y-auto flex flex-col">
+    <!-- ── Header ── -->
+    <div class="flex-shrink-0 px-6 pt-6">
+      <div class="rounded-3xl bg-white border border-slate-100 shadow-[0_2px_16px_rgba(15,23,42,0.05)] px-7 py-6">
+        <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p class="text-[11px] font-bold tracking-[0.25em] uppercase text-blue-500 mb-1.5">DAR WORKFLOW · 7–14 DAYS</p>
+            <h1 class="text-[22px] font-bold text-slate-900">มุมมองผู้มีส่วนเกี่ยวข้อง (Stakeholders)</h1>
+            <p class="mt-1 text-[13.5px] text-slate-400">เอกสารที่ผู้อนุมัติส่งมาให้เซ็น ต้องเซ็นให้ครบทุกคนก่อนส่งต่อแผนก QC</p>
+          </div>
+          
+        </div>
+
+        <!-- ขั้นตอนตาม flow chart -->
+        <div class="mt-6 flex items-center gap-3 overflow-x-auto pb-1">
+          <div class="flex items-center gap-3 flex-shrink-0">
+            <span class="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[12px] font-bold flex-shrink-0">1</span>
+            <span class="text-[13px] text-slate-700 whitespace-nowrap">ผู้อนุมัติส่งเอกสารมาให้</span>
+          </div>
+          <span class="h-px w-8 bg-slate-200 flex-shrink-0"></span>
+          <div class="flex items-center gap-3 flex-shrink-0">
+            <span class="w-7 h-7 rounded-full bg-blue-600 text-white ring-4 ring-blue-100 flex items-center justify-center text-[12px] font-bold flex-shrink-0">2</span>
+            <span class="text-[13px] text-blue-700 font-semibold whitespace-nowrap">เซ็นเอกสารของฉัน</span>
+          </div>
+          <span class="h-px w-8 bg-slate-200 flex-shrink-0"></span>
+          <div class="flex items-center gap-3 flex-shrink-0">
+            <span class="w-7 h-7 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-[12px] font-bold flex-shrink-0">3</span>
+            <span class="text-[13px] text-slate-400 whitespace-nowrap">รอผู้เกี่ยวข้องคนอื่นเซ็นให้ครบ</span>
+          </div>
+          <span class="h-px w-8 bg-slate-200 flex-shrink-0"></span>
+          <div class="flex items-center gap-3 flex-shrink-0">
+            <span class="w-7 h-7 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-[12px] font-bold flex-shrink-0">4</span>
+            <span class="text-[13px] text-slate-400 whitespace-nowrap">เซ็นครบ → ส่งแผนก QC</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex-1 px-6 py-6 flex flex-col gap-5">
+
+      <div class="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 flex items-start gap-3">
+        <span class="text-amber-500 mt-0.5"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class=""><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span>
+        <div>
+          <p class="text-[13.5px] font-semibold text-amber-800">เซ็นไม่ครบภายในกำหนด = ระบบส่งกลับอัตโนมัติ</p>
+          <p class="mt-0.5 text-[12.5px] text-amber-700">ถ้าผู้เกี่ยวข้องเซ็นไม่ครบจนถึงวันหมดอายุ (7–14 วัน) ระบบจะทำการส่งกลับ (Returned) ไปยังผู้ขอขึ้นทะเบียนทันที</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="rounded-2xl bg-white p-5 border border-slate-100 shadow-[0_2px_14px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
+          <div class="flex items-start justify-between gap-3">
+            <p class="text-[15px] font-semibold text-slate-500">รอฉันเซ็น</p>
+            <span class="w-9 h-9 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></span>
+          </div>
+          <p class="mt-3 text-[32px] font-bold text-slate-900 leading-none">3</p>
+          <p class="mt-3 text-[12.5px] text-slate-400">ต้องดำเนินการ</p>
+        </div>
+
+        <div class="rounded-2xl bg-white p-5 border border-slate-100 shadow-[0_2px_14px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
+          <div class="flex items-start justify-between gap-3">
+            <p class="text-[15px] font-semibold text-slate-500">เซ็นแล้ว</p>
+            <span class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 11 15 16 9"></polyline></svg></span>
+          </div>
+          <p class="mt-3 text-[32px] font-bold text-slate-900 leading-none">18</p>
+          <p class="mt-3 text-[12.5px] text-slate-400">รอคนอื่นเซ็นให้ครบ</p>
+        </div>
+
+        <div class="rounded-2xl bg-white p-5 border border-slate-100 shadow-[0_2px_14px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
+          <div class="flex items-start justify-between gap-3">
+            <p class="text-[15px] font-semibold text-slate-500">ใกล้หมดอายุ</p>
+            <span class="w-9 h-9 rounded-xl bg-red-50 text-red-500 flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span>
+          </div>
+          <p class="mt-3 text-[32px] font-bold text-slate-900 leading-none">1</p>
+          <p class="mt-3 text-[12.5px] text-slate-400">เหลือไม่ถึง 2 วัน</p>
+        </div>
+
+        <div class="rounded-2xl bg-white p-5 border border-slate-100 shadow-[0_2px_14px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
+          <div class="flex items-start justify-between gap-3">
+            <p class="text-[15px] font-semibold text-slate-500">ถูกส่งกลับ</p>
+            <span class="w-9 h-9 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg></span>
+          </div>
+          <p class="mt-3 text-[32px] font-bold text-slate-900 leading-none">2</p>
+          <p class="mt-3 text-[12.5px] text-slate-400">หมดอายุก่อนเซ็นครบ</p>
+        </div>
+      </div>
+
+      <!-- ── Table Card ── -->
+      <div class="rounded-3xl bg-white border border-slate-100 shadow-[0_2px_16px_rgba(15,23,42,0.05)] overflow-hidden">
+
+        <div class="flex flex-col flex-wrap gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
+          <div class="inline-flex flex-wrap items-center gap-1 rounded-2xl border border-slate-200 p-1">
+            <button class="filter-tab active rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200">รอฉันเซ็น</button>
+            <button class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200">เซ็นแล้ว</button>
+            <button class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200">ใกล้หมดอายุ</button>
+            <button class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200">ถูกส่งกลับ</button>
+          </div>
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              </span>
+              <input type="text" placeholder="ค้นหาเอกสาร..." class="w-[240px] rounded-xl border border-slate-200 pl-9 pr-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
+            </div>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm">
+            <thead>
+              <tr class="border-y border-slate-100">
+                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 w-16">No.</th>
+                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700">Document No</th>
+                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700">ชื่อเอกสาร</th>
+                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700">ผู้ร้องขอ</th>
+                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700">ความคืบหน้าการเซ็น</th>
+                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60">สถานะ</th>
+                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60">วันหมดอายุ</th>
+                <th class="px-5 py-4 text-right text-[13.5px] font-semibold text-slate-700 bg-slate-50/60"></th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">
+                <td class="px-5 py-4 text-slate-500">1</td>
+                <td class="px-5 py-4 font-semibold text-slate-800">DAR004</td>
+                <td class="px-5 py-4 text-slate-700">เอกสารความปลอดภัยรถไฟฟ้า</td>
+                <td class="px-5 py-4 text-slate-600">นาย สุขสยาม รงค์วงสุข</td>
+                <td class="px-5 py-4 "><div class="flex items-center gap-2">
+                    <div class="h-1.5 w-24 rounded-full bg-slate-100 overflow-hidden"><div class="h-full rounded-full bg-blue-500" style="width:60%"></div></div>
+                    <span class="text-[12.5px] font-semibold text-slate-600">3/5</span>
+                  </div></td>
+                <td class="px-5 py-4  bg-slate-50/60"><span class="status-pill bg-violet-50 text-violet-600"><span class="dot bg-violet-500"></span>รอฉันเซ็น</span></td>
+                <td class="px-5 py-4  bg-slate-50/60"><span class="text-amber-600 font-semibold">เหลือ 4 วัน</span></td>
+                <td class="px-5 py-4  bg-slate-50/60"><div class="flex items-center justify-end gap-2"><button class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-blue-600 px-4 py-2 text-[13px] font-semibold text-white no-underline shadow-[0_4px_10px_rgba(37,99,235,0.25)] hover:bg-blue-700 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class=""><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> เซ็นเอกสาร</button><button class="row-action" aria-label="ตัวเลือก"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class=""><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button></div></td>
+              </tr>
+
+              <tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">
+                <td class="px-5 py-4 text-slate-500">2</td>
+                <td class="px-5 py-4 font-semibold text-slate-800">DAR010</td>
+                <td class="px-5 py-4 text-slate-700">เอกสารการซ่อมบำรุงรางรถไฟ</td>
+                <td class="px-5 py-4 text-slate-600">นางสาว ปรียานุช แสงซิม</td>
+                <td class="px-5 py-4 "><div class="flex items-center gap-2">
+                    <div class="h-1.5 w-24 rounded-full bg-slate-100 overflow-hidden"><div class="h-full rounded-full bg-blue-500" style="width:25%"></div></div>
+                    <span class="text-[12.5px] font-semibold text-slate-600">1/4</span>
+                  </div></td>
+                <td class="px-5 py-4  bg-slate-50/60"><span class="status-pill bg-violet-50 text-violet-600"><span class="dot bg-violet-500"></span>รอฉันเซ็น</span></td>
+                <td class="px-5 py-4  bg-slate-50/60"><span class="text-slate-500">เหลือ 9 วัน</span></td>
+                <td class="px-5 py-4  bg-slate-50/60"><div class="flex items-center justify-end gap-2"><button class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-blue-600 px-4 py-2 text-[13px] font-semibold text-white no-underline shadow-[0_4px_10px_rgba(37,99,235,0.25)] hover:bg-blue-700 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class=""><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> เซ็นเอกสาร</button><button class="row-action" aria-label="ตัวเลือก"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class=""><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button></div></td>
+              </tr>
+
+              <tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">
+                <td class="px-5 py-4 text-slate-500">3</td>
+                <td class="px-5 py-4 font-semibold text-slate-800">DAR011</td>
+                <td class="px-5 py-4 text-slate-700">แบบฟอร์มขอเปลี่ยนแปลงเอกสาร</td>
+                <td class="px-5 py-4 text-slate-600">นางสาว ปรียานุช แสงซิม</td>
+                <td class="px-5 py-4 "><div class="flex items-center gap-2">
+                    <div class="h-1.5 w-24 rounded-full bg-slate-100 overflow-hidden"><div class="h-full rounded-full bg-blue-500" style="width:80%"></div></div>
+                    <span class="text-[12.5px] font-semibold text-slate-600">4/5</span>
+                  </div></td>
+                <td class="px-5 py-4  bg-slate-50/60"><span class="status-pill bg-violet-50 text-violet-600"><span class="dot bg-violet-500"></span>รอฉันเซ็น</span></td>
+                <td class="px-5 py-4  bg-slate-50/60"><span class="text-red-500 font-semibold">เหลือ 1 วัน</span></td>
+                <td class="px-5 py-4  bg-slate-50/60"><div class="flex items-center justify-end gap-2"><button class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-blue-600 px-4 py-2 text-[13px] font-semibold text-white no-underline shadow-[0_4px_10px_rgba(37,99,235,0.25)] hover:bg-blue-700 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class=""><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg> เซ็นเอกสาร</button><button class="row-action" aria-label="ตัวเลือก"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class=""><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button></div></td>
+              </tr>
+
+              <tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">
+                <td class="px-5 py-4 text-slate-500">4</td>
+                <td class="px-5 py-4 font-semibold text-slate-800">DAR005</td>
+                <td class="px-5 py-4 text-slate-700">เอกสารการซ่อมบำรุงรางรถไฟ</td>
+                <td class="px-5 py-4 text-slate-600">นาย สุขสยาม รงค์วงสุข</td>
+                <td class="px-5 py-4 "><div class="flex items-center gap-2">
+                    <div class="h-1.5 w-24 rounded-full bg-slate-100 overflow-hidden"><div class="h-full rounded-full bg-emerald-500" style="width:100%"></div></div>
+                    <span class="text-[12.5px] font-semibold text-slate-600">5/5</span>
+                  </div></td>
+                <td class="px-5 py-4  bg-slate-50/60"><span class="status-pill bg-emerald-50 text-emerald-600"><span class="dot bg-emerald-500"></span>เซ็นครบ · ส่ง QC</span></td>
+                <td class="px-5 py-4  bg-slate-50/60"><span class="text-slate-500">เสร็จใน 9 วัน</span></td>
+                <td class="px-5 py-4  bg-slate-50/60"><div class="flex items-center justify-end gap-2"><button disabled class="w-9 h-9 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-300 cursor-not-allowed transition-colors" aria-label="เซ็นแล้ว"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class=""><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 11 15 16 9"></polyline></svg></button><button class="row-action" aria-label="ตัวเลือก"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class=""><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button></div></td>
+              </tr>
+
+              <tr class=" hover:bg-slate-50/70 transition-colors duration-150">
+                <td class="px-5 py-4 text-slate-500">5</td>
+                <td class="px-5 py-4 font-semibold text-slate-800">DAR006</td>
+                <td class="px-5 py-4 text-slate-700">เอกสารสนับสนุนภายนอก(ED)</td>
+                <td class="px-5 py-4 text-slate-600">นาย สุขสยาม รงค์วงสุข</td>
+                <td class="px-5 py-4 "><div class="flex items-center gap-2">
+                    <div class="h-1.5 w-24 rounded-full bg-slate-100 overflow-hidden"><div class="h-full rounded-full bg-blue-500" style="width:40%"></div></div>
+                    <span class="text-[12.5px] font-semibold text-slate-600">2/5</span>
+                  </div></td>
+                <td class="px-5 py-4  bg-slate-50/60"><span class="status-pill bg-amber-50 text-amber-600"><span class="dot bg-amber-500"></span>หมดอายุ · ส่งกลับแล้ว</span></td>
+                <td class="px-5 py-4  bg-slate-50/60"><span class="text-red-500 font-semibold">ครบ 14 วัน</span></td>
+                <td class="px-5 py-4  bg-slate-50/60"><div class="flex items-center justify-end gap-2"><button class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-4 py-2 text-[13px] font-semibold text-slate-600 hover:bg-slate-50 transition-colors">ดูประวัติ</button><button class="row-action" aria-label="ตัวเลือก"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class=""><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button></div></td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+        <div class="border-t border-slate-100 px-5 py-3.5 text-[12.5px] text-slate-400 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 text-amber-400"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> ความคืบหน้าการเซ็นนับจากผู้มีส่วนเกี่ยวข้องทุกคนในเอกสารฉบับนั้น
+        </div>
+
+      </div>
+    </div>
+
+    </div><!-- /scroll area -->
+
+  </div><!-- /main-wrapper -->
+
+  <script>
+    document.getElementById('collapse-btn').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.add('collapsed');
+      document.getElementById('main-wrapper').style.marginLeft = '72px';
+    });
+    document.getElementById('expand-btn').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('collapsed');
+      document.getElementById('main-wrapper').style.marginLeft = '260px';
+    });
+
+    document.querySelectorAll('.filter-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const wasActive = btn.classList.contains('active');
+        document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+        if (!wasActive) btn.classList.add('active');
+      });
+    });
+
+  </script>
+
+</body>
+</html>

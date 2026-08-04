@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>สร้างเอกสาร — Riverpark</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-100 min-h-screen flex" style="font-family:'Inter','IBM Plex Sans Thai',sans-serif;">
+
+  <!-- ════════════════════════════════════════════
+       SIDEBAR
+  ════════════════════════════════════════════ -->
+  <aside id="sidebar" class="fixed top-0 left-0 h-full w-[260px] bg-white border-r border-slate-100 shadow-sm flex flex-col z-[500] overflow-hidden">
+
+    <!-- Expanded header -->
+    <div class="sidebar-expanded-header flex items-center gap-3 px-5 border-b border-slate-100" style="height:64px;">
+      <div class="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100">
+        <img src="image/logo.png" alt="Logo" class="w-full h-full object-cover" />
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-[13px] font-bold text-slate-800 truncate leading-tight">Riverpark</p>
+        <p class="text-[11px] text-slate-400 truncate">Document System</p>
+      </div>
+      <button id="collapse-btn" class="w-7 h-7 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 flex-shrink-0 transition-colors">
+        <img src="icon/menu-01.svg" width="20" height="20" alt="" />
+      </button>
+    </div>
+
+    <!-- Collapsed header -->
+    <div class="sidebar-collapsed-header hidden items-center justify-center border-b border-slate-100" style="height:64px;">
+      <button id="expand-btn" class="w-9 h-9 rounded-xl overflow-hidden hover:opacity-80 transition-opacity">
+        <img src="image/logo.png" alt="Logo" class="w-full h-full object-cover" />
+      </button>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-0.5">
+      <p class="nav-section-title text-[10px] font-semibold text-slate-300 uppercase tracking-widest px-3 pt-3 pb-1.5">เมนูหลัก</p>
+
+      <a href="index.html" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span class="nav-text">หน้าหลัก</span>
+      </a>
+
+      <a href="index.html" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+        <span class="nav-text">เอกสารขอขึ้นทะเบียน</span>
+      </a>
+
+      <a href="#" class="nav-link active">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+        <span class="nav-text">สร้างเอกสาร</span>
+      </a>
+
+      <a href="#" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span class="nav-text">ติดตามสถานะ</span>
+      </a>
+
+      <p class="nav-section-title text-[10px] font-semibold text-slate-300 uppercase tracking-widest px-3 pt-5 pb-1.5">จัดการ</p>
+
+      <a href="#" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <span class="nav-text">รายงาน</span>
+      </a>
+
+      <a href="#" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        <span class="nav-text">ผู้ใช้งาน</span>
+      </a>
+
+      <div class="flex-1"></div>
+
+      <p class="nav-section-title text-[10px] font-semibold text-slate-300 uppercase tracking-widest px-3 pt-5 pb-1.5">ระบบ</p>
+
+      <a href="#" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="3"></circle><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"></path></svg>
+        <span class="nav-text">ตั้งค่า</span>
+      </a>
+    </nav>
+
+    <!-- Bottom profile — expanded -->
+    <div class="sidebar-expanded-header flex items-center gap-3 px-4 py-4 border-t border-slate-100">
+      <div class="w-8 h-8 rounded-lg bg-[#0b4f8c] text-white flex items-center justify-center text-[11px] font-bold flex-shrink-0">สุข</div>
+      <div class="flex-1 min-w-0">
+        <p class="text-[13px] font-semibold text-slate-800 truncate leading-tight">สุขสยาม</p>
+        <p class="text-[11px] text-slate-400 truncate">รงค์วงสุข</p>
+      </div>
+      <button class="w-7 h-7 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors flex-shrink-0">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+      </button>
+    </div>
+
+    <!-- Bottom profile — collapsed -->
+    <div class="sidebar-collapsed-header hidden items-center justify-center py-4 border-t border-slate-100">
+      <div class="w-8 h-8 rounded-lg bg-[#0b4f8c] text-white flex items-center justify-center text-[11px] font-bold">สุข</div>
+    </div>
+
+  </aside>
+
+  <!-- ════════════════════════════════════════════
+       MAIN WRAPPER
+  ════════════════════════════════════════════ -->
+  <div id="main-wrapper" class="flex-1 flex flex-col h-screen overflow-hidden" style="margin-left:260px;">
+
+    <!-- ── Topbar (คงที่ ไม่เลื่อน) ── -->
+    <div class="flex-shrink-0 z-[100] bg-white border-b border-slate-100 flex items-center justify-between px-8" style="height:64px;">
+      <div class="flex items-center gap-2 text-[13px] font-medium">
+        <a href="index.html" class="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50 hover:text-blue-600 transition-colors mr-1">
+          <img src="icon/chevron-left.svg" width="14" height="14" alt="" />
+          
+        </a>
+        <a href="index.html" class="text-slate-400 no-underline hover:text-blue-600 transition-colors">Dashboard</a>
+        <span class="text-slate-300">/</span>
+        <span class="text-slate-900 font-semibold">สร้างเอกสาร</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="relative w-10 h-10 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-400 shadow-sm hover:bg-slate-50 hover:text-blue-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+        </button>
+        <button class="w-10 h-10 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-400 shadow-sm hover:bg-slate-50 hover:text-blue-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        </button>
+        <button class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 hover:bg-slate-100 transition-colors">
+          <div class="w-8 h-8 rounded-lg bg-[#0b4f8c] text-white flex items-center justify-center text-[13px] font-bold">สุข</div>
+          <span class="text-sm font-semibold text-slate-900">สุขสยาม</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Content (พื้นที่เดียวที่เลื่อนได้) ── -->
+    <div id="doc-content-area" class="flex-1 min-h-0 flex flex-col p-3 gap-3">
+
+      <!-- Form Card -->
+      <div id="doc-card" class="flex-1 bg-white rounded-3xl border border-slate-200 shadow-sm flex flex-col overflow-hidden">
+
+        <!-- Page title -->
+        <div class="px-8 pt-3 pb-2.5 border-b border-slate-100 flex-shrink-0">
+          <h1 class="text-[18px] font-bold text-slate-900">ข้อมูลเอกสาร</h1>
+          <p class="mt-0.5 text-[12px] text-slate-400">กรุณากรอกข้อมูลให้ครบถ้วนตามที่กำหนด</p>
+        </div>
+
+        <!-- ── Inner zone: slate-50 bg, two white-bordered groups ── -->
+        <div id="doc-zone" class="flex-1 min-h-0 flex flex-col gap-3 p-3 overflow-y-auto" style="background:#fefefe;">
+
+        <!-- ① Tab group — white box (ความสูงคงที่ ไม่ถูกบีบ) -->
+        <div id="doc-tabs" class="bg-white rounded-2xl overflow-x-auto flex-shrink-0" style="border:1px solid #ffffff; box-shadow:0 16px 16px rgba(0,0,0,0.10);">
+          <div class="flex gap-2 min-w-max p-3">
+            <button class="step-tab active flex-shrink-0 rounded-xl px-4 py-2 text-[12.5px] font-semibold transition-all duration-200 bg-blue-600 text-white shadow-sm" data-step="1">ส่วนที่ 1 ข้อมูลผู้ร้องขอ</button>
+            <button class="step-tab flex-shrink-0 rounded-xl px-4 py-2 text-[12.5px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="2">ส่วนที่ 2 วัตถุประสงค์</button>
+            <button class="step-tab flex-shrink-0 rounded-xl px-4 py-2 text-[12.5px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="3">ส่วนที่ 3 ประเภทเอกสาร</button>
+            <button class="step-tab flex-shrink-0 rounded-xl px-4 py-2 text-[12.5px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="4">ส่วนที่ 4 รายละเอียดการร้อง</button>
+            <button class="step-tab flex-shrink-0 rounded-xl px-4 py-2 text-[12.5px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="5">แนบเอกสารต่าง</button>
+            <button class="step-tab flex-shrink-0 rounded-xl px-4 py-2 text-[12.5px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="6">ส่วนที่ 5 การอนุมัติการดำเนินการ</button>
+            <button class="step-tab flex-shrink-0 rounded-xl px-4 py-2 text-[12.5px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="7">ส่วนที่ 5.2 ผู้มีส่วนเกี่ยวข้อง</button>
+            <button class="step-tab flex-shrink-0 rounded-xl px-4 py-2 text-[12.5px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="8">ส่วนที่ 5.3 ผู้อนุมัติ</button>
+            <button class="step-tab flex-shrink-0 rounded-xl px-4 py-2 text-[12.5px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="9">ส่วนที่ 6 สำหรับแผนกควบคุมคุณภาพ</button>
+          </div>
+        </div>
+
+        <!-- ② Content group — white box -->
+        <div id="doc-box" class="bg-white rounded-2xl flex-1 min-h-0 overflow-y-auto" style="border:1px solid #FFFFFF; box-shadow:0 4px 16px rgba(0,0,0,0.10); display:flex; padding:18px; flex-direction:column; align-items:flex-start; gap:16px; align-self:stretch;">
+
+          <!-- Step 1 -->
+          <div id="step-1" class="step-content flex flex-col gap-4 w-full">
+            <!-- Employee ID -->
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[13px] font-normal text-slate-700">รหัสพนักงาน(ID)</label>
+              <input type="text" placeholder="กรอกข้อมูล" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
+            </div>
+
+            <!-- Name row -->
+            <div class="grid grid-cols-[160px_1fr_1fr] gap-4">
+              <div class="flex flex-col gap-1.5">
+                <label class="text-[13px] font-normal text-slate-700">คำนำหน้า</label>
+                <div class="relative">
+                  <select class="w-full appearance-none rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-500 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all bg-white cursor-pointer">
+                    <option value="" disabled selected>เลือก</option>
+                    <option>นาย</option>
+                    <option>นาง</option>
+                    <option>นางสาว</option>
+                  </select>
+                  <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                  </span>
+                </div>
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <label class="text-[13px] font-normal text-slate-700">ชื่อ</label>
+                <input type="text" placeholder="กรอกข้อมูล" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <label class="text-[13px] font-normal text-slate-700">นามสกุล</label>
+                <input type="text" placeholder="กรอกข้อมูล" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
+              </div>
+            </div>
+
+            <!-- Dept / Date row -->
+            <div class="grid grid-cols-2 gap-4">
+              <div class="flex flex-col gap-1.5">
+                <label class="text-[13px] font-normal text-slate-700">แผนก / ส่วน / ฝ่าย (Sect/Div/Dept)</label>
+                <div class="relative">
+                  <select class="w-full appearance-none rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-500 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all bg-white cursor-pointer">
+                    <option value="" disabled selected>กรอกข้อมูล</option>
+                    <option>ฝ่ายผลิต</option>
+                    <option>ฝ่ายบุคคล</option>
+                    <option>ฝ่ายการเงิน</option>
+                    <option>ฝ่าย IT</option>
+                  </select>
+                  <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                  </span>
+                </div>
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <label class="text-[13px] font-normal text-slate-700">วันที่(Date)</label>
+                <div class="relative">
+                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  </span>
+                  <input type="text" placeholder="DD/MM/YYYY" class="w-full rounded-xl border border-slate-200 pl-11 pr-4 py-3 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2 — วัตถุประสงค์ -->
+          <div id="step-2" class="step-content hidden flex flex-col gap-4">
+
+            <!-- Radio options row 1 -->
+            <div class="flex flex-wrap gap-x-8 gap-y-3">
+              <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                <input type="radio" name="purpose" value="new" class="w-4 h-4 accent-blue-600 cursor-pointer" />
+                <span class="text-[13px] text-slate-700">จัดทำเอกสารใหม่ และ ขึ้นทะเบียน</span>
+              </label>
+              <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                <input type="radio" name="purpose" value="edit" class="w-4 h-4 accent-blue-600 cursor-pointer" />
+                <span class="text-[13px] text-slate-700">เปลี่ยนแปลงแก้ไขเอกสาร</span>
+              </label>
+              <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                <input type="radio" name="purpose" value="cancel" class="w-4 h-4 accent-blue-600 cursor-pointer" />
+                <span class="text-[13px] text-slate-700">ยกเลิกการใช้งานเอกสาร</span>
+              </label>
+              <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                <input type="radio" name="purpose" value="copy" class="w-4 h-4 accent-blue-600 cursor-pointer" />
+                <span class="text-[13px] text-slate-700">ขอสำเนาเอกสารควบคุมจำนวน</span>
+              </label>
+            </div>
+
+            <!-- Radio options row 2 -->
+            <div class="flex">
+              <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                <input type="radio" name="purpose" value="other" id="purpose-other" class="w-4 h-4 accent-blue-600 cursor-pointer" />
+                <span class="text-[13.5px] text-slate-700">อื่นๆ</span>
+              </label>
+            </div>
+
+            <!-- Detail textarea -->
+            <div class="flex flex-col gap-1.5">
+              <label class="text-[13px] font-semibold text-slate-700">ระบุรายละเอียด</label>
+              <textarea id="purpose-detail" rows="3" placeholder="ระบุละเอียด" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300 resize-none"></textarea>
+            </div>
+
+          </div>
+
+          <!-- Step 3 — ประเภทเอกสาร -->
+          <div id="step-3" class="step-content hidden flex flex-col gap-4">
+
+            <div class="grid grid-cols-2 gap-x-16 gap-y-4">
+              <!-- Left column -->
+              <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                <input type="radio" name="doctype" value="qm" class="doc-type-radio w-4 h-4 accent-blue-600 cursor-pointer" />
+                <span class="text-[13.5px] text-slate-700">คู่มือคุณภาพ(Quality Manual)</span>
+              </label>
+
+              <!-- Right column -->
+              <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                <input type="radio" name="doctype" value="qp" class="doc-type-radio w-4 h-4 accent-blue-600 cursor-pointer" />
+                <span class="text-[13.5px] text-slate-700">ขั้นตอนการดำเนินการ(Quality Procedure)</span>
+              </label>
+
+              <!-- Left -->
+              <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                <input type="radio" name="doctype" value="wi" class="doc-type-radio w-4 h-4 accent-blue-600 cursor-pointer" />
+                <span class="text-[13.5px] text-slate-700">วิธีปฏิบัติงาน(Work Instruction)</span>
+              </label>
+
+              <!-- Right -->
+              <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                <input type="radio" name="doctype" value="sd" class="doc-type-radio w-4 h-4 accent-blue-600 cursor-pointer" />
+                <span class="text-[13.5px] text-slate-700">เอกสารสนับสนุน(Supporting Document)</span>
+              </label>
+
+              <!-- Left -->
+              <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                <input type="radio" name="doctype" value="form" class="doc-type-radio w-4 h-4 accent-blue-600 cursor-pointer" />
+                <span class="text-[13.5px] text-slate-700">แบบฟอร์ม(Form)</span>
+              </label>
+
+              <!-- Right -->
+              <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                <input type="radio" name="doctype" value="esd" class="doc-type-radio w-4 h-4 accent-blue-600 cursor-pointer" />
+                <span class="text-[13.5px] text-slate-700">เอกสารสนับสนุนภายนอก(External Supporting Document)</span>
+              </label>
+            </div>
+
+          </div>
+
+          <!-- Step 4 — รายละเอียดการร้อง -->
+          <div id="step-4" class="step-content hidden flex flex-col gap-4 w-full h-full">
+
+            <!-- Row 1: ชื่อเอกสาร / หมายเลขเอกสาร -->
+            <div class="grid grid-cols-2 gap-4 w-full">
+              <div class="flex flex-col gap-1.5">
+                <label class="text-[13px] font-normal text-slate-700">ชื่อเอกสาร(Document Name)</label>
+                <input type="text" placeholder="กรอกข้อมูล" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <label class="text-[13px] font-normal text-slate-700">หมายเลขเอกสาร(Document No.)</label>
+                <input type="text" placeholder="กรอกข้อมูล" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
+              </div>
+            </div>
+
+            <!-- Row 2: ครั้งที่แก้ไข / แผนกที่เกี่ยวข้อง -->
+            <div class="flex items-end gap-4 w-full">
+              <div class="flex flex-col gap-1.5 w-[160px] flex-shrink-0">
+                <label class="text-[13px] font-normal text-slate-700">ครั้งที่แก้ไข(Revision)</label>
+                <input type="number" placeholder="0" min="0" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
+              </div>
+              <div class="flex flex-col gap-1.5 flex-1">
+                <label class="text-[13px] font-normal text-slate-700">แผนกที่เกี่ยวข้องเพื่อทบทวน</label>
+                <div class="relative">
+                  <select class="w-full appearance-none rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-500 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all bg-white cursor-pointer">
+                    <option value="" disabled selected>กรอกข้อมูล</option>
+                    <option>ฝ่ายผลิต</option>
+                    <option>ฝ่ายบุคคล</option>
+                    <option>ฝ่ายการเงิน</option>
+                    <option>ฝ่าย IT</option>
+                  </select>
+                  <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Row 3: รายละเอียด + char counter (ยืดหยุ่นตามพื้นที่ที่เหลือ) -->
+            <div id="desc-field-4" class="flex flex-col gap-1.5 w-full flex-1 min-h-0">
+              <label class="text-[13px] font-normal text-slate-700 flex-shrink-0">รายละเอียด(Description)</label>
+              <textarea id="desc-step4" maxlength="1000" rows="3" placeholder="รายละเอียด(Description)" class="w-full flex-1 min-h-[56px] rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300 resize-none"></textarea>
+              <p id="desc-counter" class="text-[12px] text-slate-400">1,000 characters left</p>
+            </div>
+
+            <!-- Row 4: วันที่มีผลบังคับใช้ -->
+            <div class="flex flex-col gap-2 w-full">
+              <label class="text-[13px] font-normal text-slate-700">หากขออกเอกสารใหม่ , แก้ไขเอกสาร หรือ เลิกใช้เอกสาร วันที่มีผลบังคับใช้คือ :</label>
+              <div class="flex items-stretch rounded-xl border border-slate-200 overflow-hidden w-[280px] flex-shrink-0">
+                <div class="flex items-center justify-center bg-white px-4 border-r border-slate-200 text-slate-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                </div>
+                <input type="text" placeholder="DD/MM/YYYY" class="flex-1 px-4 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-300 bg-white" />
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Step 5 — แนบเอกสารต่างๆ -->
+          <div id="step-5" class="step-content hidden flex flex-col gap-4 w-full">
+
+            <!-- Outer wrapper -->
+            <div class="w-full rounded-2xl border border-slate-200 p-4">
+
+              <!-- Drop zone -->
+              <label for="file-upload" class="flex flex-col items-center justify-center gap-3 w-full rounded-xl border border-slate-200 py-12 cursor-pointer hover:bg-slate-50 transition-colors">
+
+                <!-- Upload icon (red) -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="16 16 12 12 8 16"></polyline>
+                  <line x1="12" y1="12" x2="12" y2="21"></line>
+                  <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path>
+                </svg>
+
+                <p class="text-[14px] text-slate-700">
+                  <span class="font-semibold text-red-600">Click to upload</span>
+                  <span class="font-normal"> or drag and drop</span>
+                </p>
+                <p class="text-[13px] text-slate-500">PDF,DOCX,XLSX,PNG,JPG (Maximum 5 mb)</p>
+
+                <input id="file-upload" type="file" class="hidden" accept=".pdf,.docx,.xlsx,.png,.jpg,.jpeg" multiple />
+              </label>
+
+            </div>
+
+            <!-- File list (populated by JS) -->
+            <ul id="file-list" class="flex flex-col gap-2 w-full"></ul>
+
+          </div>
+          <!-- Step 6 — ส่วนที่ 5 การอนุมัติการดำเนินการ -->
+          <div id="step-6" class="step-content hidden flex flex-col gap-4 w-full">
+
+            <div class="grid grid-cols-2 gap-6 w-full">
+
+              <!-- ผู้ร้องขอ -->
+              <div class="flex flex-col gap-3">
+                <label class="text-[13px] font-normal text-slate-700">ผู้ร้องขอ <span class="text-red-500">*</span></label>
+                <div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center" style="min-height:120px;">
+                  <button type="button" data-sign-btn class="rounded-xl px-6 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;">
+                    เซ็นเอกสาร
+                  </button>
+                </div>
+                <div class="flex flex-col gap-2 text-[13px] text-slate-700 items-center text-center">
+                  <p>ชื่อ<span class="border-b border-slate-400 inline-block" style="width:200px;">&nbsp;</span></p>
+                  <p>วันที่&nbsp;<span class="border-b border-slate-400 inline-block" style="width:160px;">&nbsp;</span></p>
+                </div>
+              </div>
+
+              <!-- หน่วยงานเจ้าของเอกสาร -->
+              <div class="flex flex-col gap-3">
+                <label class="text-[13px] font-normal text-slate-700">หน่วยงานเจ้าของเอกสาร <span class="text-red-500">*</span></label>
+                <div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center" style="min-height:120px;">
+                  <button type="button" data-sign-btn class="rounded-xl px-6 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;">
+                    เซ็นเอกสาร
+                  </button>
+                </div>
+                <div class="flex flex-col gap-2 text-[13px] text-slate-700 items-center text-center">
+                  <p>ชื่อ<span class="border-b border-slate-400 inline-block" style="width:200px;">&nbsp;</span></p>
+                  <p>วันที่&nbsp;<span class="border-b border-slate-400 inline-block" style="width:160px;">&nbsp;</span></p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <!-- Step 7 — ส่วนที่ 5.2 ผู้มีส่วนเกี่ยวข้อง -->
+          <div id="step-7" class="step-content hidden flex flex-col gap-4 w-full">
+
+            <!-- Select section -->
+            <div class="flex flex-col gap-2 w-full">
+              <label class="text-[13px] font-semibold text-slate-800">เลือกผู้มีส่วนเกี่ยวข้องกับเอกสาร</label>
+              <!-- Chips -->
+              <div id="related-chips" class="flex flex-wrap gap-2"></div>
+              <!-- Dropdown -->
+              <div class="relative w-full">
+                <select id="related-select" class="w-full appearance-none rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-400 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all bg-white cursor-pointer">
+                  <option value="" disabled selected>เลือกข้อมูล</option>
+                  <option value="SQD">SQD</option>
+                  <option value="QC">QC</option>
+                  <option value="ฝ่ายผลิต">ฝ่ายผลิต</option>
+                  <option value="ฝ่ายบุคคล">ฝ่ายบุคคล</option>
+                  <option value="ฝ่ายการเงิน">ฝ่ายการเงิน</option>
+                  <option value="ฝ่าย IT">ฝ่าย IT</option>
+                </select>
+                <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </span>
+              </div>
+            </div>
+
+            <!-- Signature section (appears when items selected) -->
+            <div id="related-sign-section" class="hidden flex flex-col gap-4 w-full">
+              <div id="related-chips-mirror" class="flex flex-wrap gap-2"></div>
+              <div id="related-sign-boxes" class="grid grid-cols-2 gap-6 w-full"></div>
+            </div>
+
+          </div>
+          <!-- Step 8 — ส่วนที่ 5.3 ผู้อนุมัติ -->
+          <div id="step-8" class="step-content hidden flex flex-col gap-3 w-full">
+            <label class="text-[13px] font-Medium text-slate-700">ผู้อนุมัติ <span class="text-red-500">*</span></label>
+            <div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center w-full" style="min-height:120px;">
+              <button type="button" data-sign-btn class="rounded-xl px-6 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;">
+                เซ็นเอกสาร
+              </button>
+            </div>
+            <div class="flex flex-col gap-2 text-[13px] text-slate-700 items-center text-center">
+              <p>ชื่อ<span class="border-b border-slate-400 inline-block" style="width:200px;">&nbsp;</span></p>
+              <p>วันที่&nbsp;<span class="border-b border-slate-400 inline-block" style="width:160px;">&nbsp;</span></p>
+            </div>
+          </div>
+          <!-- Step 9 — ส่วนที่ 6 สำหรับแผนกควบคุมคุณภาพ -->
+          <div id="step-9" class="step-content hidden flex flex-col gap-4 w-full">
+
+            <h2 class="text-[15px] font-semibold text-slate-800">ส่วนที่ 6 สำหรับแผนกควบคุมคุณภาพ</h2>
+
+            <div class="grid grid-cols-2 gap-6 w-full">
+
+              <!-- เจ้าหน้าที่แผนกควบคุมคุณภาพ -->
+              <div class="flex flex-col gap-3">
+                <label class="text-[13px] font-normal text-slate-700">เจ้าหน้าที่แผนกควบคุมคุณภาพ <span class="text-red-500">*</span></label>
+                <div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center" style="min-height:120px;">
+                  <button type="button" data-sign-btn class="rounded-xl px-6 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;">
+                    เซ็นเอกสาร
+                  </button>
+                </div>
+                <div class="flex flex-col gap-2 text-[13px] text-slate-700 items-center text-center">
+                  <p>ชื่อ<span class="border-b border-slate-400 inline-block" style="width:200px;">&nbsp;</span></p>
+                  <p>วันที่&nbsp;<span class="border-b border-slate-400 inline-block" style="width:160px;">&nbsp;</span></p>
+                </div>
+              </div>
+
+              <!-- ผู้จัดการแผนกควบคุมคุณภาพ -->
+              <div class="flex flex-col gap-3">
+                <label class="text-[13px] font-normal text-slate-700">ผู้จัดการแผนกควบคุมคุณภาพ <span class="text-red-500">*</span></label>
+                <div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center" style="min-height:120px;">
+                  <button type="button" data-sign-btn class="rounded-xl px-6 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;">
+                    เซ็นเอกสาร
+                  </button>
+                </div>
+                <div class="flex flex-col gap-2 text-[13px] text-slate-700 items-center text-center">
+                  <p>ชื่อ<span class="border-b border-slate-400 inline-block" style="width:200px;">&nbsp;</span></p>
+                  <p>วันที่&nbsp;<span class="border-b border-slate-400 inline-block" style="width:160px;">&nbsp;</span></p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div><!-- /② content group -->
+
+        </div><!-- /inner zone -->
+
+        <!-- Step nav buttons -->
+        <div class="flex items-center justify-between px-8 py-2.5 border-t border-slate-100 flex-shrink-0">
+          <button id="view-all-btn" class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+            ดูทั้งหมด
+          </button>
+          <div class="flex items-center gap-3">
+            <button id="prev-btn" onclick="changeStep(-1)" class="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-500 hover:bg-slate-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+              <img src="icon/chevron-left.svg" width="14" height="14" alt="" />
+              ก่อนหน้า
+            </button>
+            <button id="next-btn" onclick="changeStep(1)" class="flex items-center gap-1.5 rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-colors" style="background:linear-gradient(90deg,#2563eb 0%,#1d4ed8 100%); box-shadow:0 4px 10px rgba(37,99,235,.25);">
+              ถัดไป
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </div>
+        </div>
+
+      </div><!-- /form card -->
+
+    </div><!-- /content -->
+
+    <!-- ── Footer bar (คงที่ ไม่เลื่อน) ── -->
+    <div class="flex-shrink-0 bg-white border-t border-slate-100 flex items-center justify-between px-8 py-3 z-[90]">
+      <button class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        Preview
+      </button>
+      <div class="flex items-center gap-3">
+        <button id="draft-btn" class="flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-colors" style="background:linear-gradient(90deg,#60a5fa 0%,#3b82f6 100%); box-shadow:0 4px 10px rgba(59,130,246,.25);">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+          Draft
+        </button>
+        <button id="sent-btn" class="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+          Sent
+        </button>
+      </div>
+    </div>
+
+  </div><!-- /main-wrapper -->
+
+  <!-- ════════════════════════════════════════════
+       SENT CONFIRM MODAL
+  ════════════════════════════════════════════ -->
+  <div id="sent-confirm-backdrop" class="fixed inset-0 z-[3000] flex items-center justify-center hidden" style="background:rgba(0,0,0,0.35);">
+    <div class="bg-white rounded-2xl shadow-2xl flex flex-col items-center p-8 gap-4" style="width:320px;">
+      <!-- Green check icon -->
+      <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background:#f0fdf4;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <div class="text-center">
+        <h3 class="text-[16px] font-bold text-slate-900">Confirm to Complete</h3>
+        <p class="text-[12px] text-slate-400 mt-1">Your updates will be applied immediately</p>
+      </div>
+      <div class="flex flex-col gap-1.5 w-full">
+        <label class="text-[13px] font-semibold text-slate-700">Remark</label>
+        <textarea rows="4" placeholder="หมายเหตุ" class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300 resize-none"></textarea>
+      </div>
+      <div class="grid grid-cols-2 gap-3 w-full">
+        <button id="sent-cancel-btn" class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">cancel</button>
+        <button id="sent-confirm-btn" class="rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       SENT SUCCESS MODAL
+  ════════════════════════════════════════════ -->
+  <div id="sent-success-backdrop" class="fixed inset-0 z-[3000] flex items-center justify-center hidden" style="background:rgba(0,0,0,0.35);">
+    <div class="bg-white rounded-2xl shadow-2xl flex flex-col items-center p-8 gap-4" style="width:320px;">
+      <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background:#f0fdf4;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <div class="text-center">
+        <h3 class="text-[16px] font-bold text-slate-900">Success</h3>
+        <p class="text-[12px] text-slate-400 mt-1">The system has confirm this document</p>
+      </div>
+      <button id="sent-close-btn" class="w-full rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;">Close</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       DRAFT CONFIRM MODAL
+  ════════════════════════════════════════════ -->
+  <div id="draft-confirm-backdrop" class="fixed inset-0 z-[3000] flex items-center justify-center hidden" style="background:rgba(0,0,0,0.35);">
+    <div class="bg-white rounded-2xl shadow-2xl flex flex-col items-center p-8 gap-4" style="width:320px;">
+      <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background:#eff6ff;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+      </div>
+      <div class="text-center">
+        <h3 class="text-[16px] font-bold text-slate-900">Confirm to Draft</h3>
+        <p class="text-[12px] text-slate-400 mt-1">The document will be saved as a draft once confirmed</p>
+      </div>
+      <div class="flex flex-col gap-1.5 w-full">
+        <label class="text-[13px] font-semibold text-slate-700">Remark</label>
+        <textarea rows="4" placeholder="หมายเหตุ" class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300 resize-none"></textarea>
+      </div>
+      <div class="grid grid-cols-2 gap-3 w-full">
+        <button id="draft-cancel-btn" class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">cancel</button>
+        <button id="draft-confirm-btn" class="rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       DRAFT SUCCESS MODAL
+  ════════════════════════════════════════════ -->
+  <div id="draft-success-backdrop" class="fixed inset-0 z-[3000] flex items-center justify-center hidden" style="background:rgba(0,0,0,0.35);">
+    <div class="bg-white rounded-2xl shadow-2xl flex flex-col items-center p-8 gap-4" style="width:320px;">
+      <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background:#eff6ff;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+      </div>
+      <div class="text-center">
+        <h3 class="text-[16px] font-bold text-slate-900">Draft Saved</h3>
+        <p class="text-[12px] text-slate-400 mt-1">This document has been saved as a draft.</p>
+      </div>
+      <button id="draft-close-btn" class="w-full rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;">Close</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════
+       เซ็นเอกสาร MODAL
+  ════════════════════════════════════════════ -->
+  <div id="sign-modal-backdrop" class="fixed inset-0 z-[2000] flex items-center justify-center hidden" style="background:rgba(0,0,0,0.35);">
+    <div class="bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden" style="width:500px; max-height:90vh;">
+
+      <!-- Header -->
+      <div class="px-6 pt-6 pb-4">
+        <h2 class="text-[16px] font-bold text-slate-900">เซ็นเอกสาร</h2>
+        <p class="text-[12px] text-slate-400 mt-0.5">ทำการเซ็น หรือ อัปโหลดไฟล์ลายเซ็นเพื่อการยืนยัน</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="px-6 flex gap-5 border-b border-slate-100">
+        <button data-sign-tab="draw"      class="sign-modal-tab pb-3 text-[13px] font-semibold text-blue-600 border-b-2 border-blue-600 flex items-center gap-1.5 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+          Draw
+        </button>
+        <button data-sign-tab="upload"    class="sign-modal-tab pb-3 text-[13px] font-semibold text-slate-400 border-b-2 border-transparent flex items-center gap-1.5 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+          Upload
+        </button>
+        <button data-sign-tab="sigfile"   class="sign-modal-tab pb-3 text-[13px] font-semibold text-slate-400 border-b-2 border-transparent flex items-center gap-1.5 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+          Signature file
+        </button>
+      </div>
+
+      <!-- Tab bodies -->
+      <div class="px-6 py-4 flex-1 overflow-auto">
+
+        <!-- Draw -->
+        <div id="sign-tab-draw" class="flex flex-col gap-3">
+          <div class="relative rounded-xl border border-slate-200 overflow-hidden" style="height:190px;">
+            <canvas id="sign-canvas" class="w-full h-full" style="touch-action:none; cursor:crosshair;"></canvas>
+            <button id="sign-clear-btn" class="absolute bottom-3 right-3 flex items-center gap-1.5 text-[12px] text-slate-400 hover:text-red-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path></svg>
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <!-- Upload -->
+        <div id="sign-tab-upload" class="hidden flex flex-col gap-3">
+          <label for="sign-file-input" class="flex flex-col items-center justify-center gap-2 rounded-xl border border-slate-200 py-8 cursor-pointer hover:bg-slate-50 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"></polyline><line x1="12" y1="12" x2="12" y2="21"></line><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path></svg>
+            <p class="text-[13px] text-slate-700"><span class="font-semibold text-red-600">Click to upload</span> or drag and drop</p>
+            <p class="text-[12px] text-slate-400">PNG,JPEG (Maximum 2 mb)</p>
+            <input id="sign-file-input" type="file" class="hidden" accept=".png,.jpg,.jpeg" />
+          </label>
+          <ul id="sign-upload-list" class="flex flex-col gap-2"></ul>
+        </div>
+
+        <!-- Signature file -->
+        <div id="sign-tab-sigfile" class="hidden flex flex-col gap-2">
+          <!-- Saved signature items -->
+          <div class="flex items-center gap-3 rounded-xl border border-slate-100 px-4 py-3">
+            <input type="radio" name="sig-select" class="w-4 h-4 accent-blue-600 cursor-pointer flex-shrink-0" />
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            <span class="flex-1 text-[13px] text-slate-700">Signature1.png</span>
+            <button class="text-blue-400 hover:text-blue-600 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            </button>
+            <button class="text-slate-300 hover:text-red-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path></svg>
+            </button>
+          </div>
+          <div class="flex items-center gap-3 rounded-xl border border-slate-100 px-4 py-3">
+            <input type="radio" name="sig-select" class="w-4 h-4 accent-blue-600 cursor-pointer flex-shrink-0" />
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            <span class="flex-1 text-[13px] text-slate-700">Signature2.png</span>
+            <button class="text-blue-400 hover:text-blue-600 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            </button>
+            <button class="text-slate-300 hover:text-red-500 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path></svg>
+            </button>
+          </div>
+        </div>
+
+      </div><!-- /tab bodies -->
+
+      <!-- Footer inputs + buttons -->
+      <div class="px-6 pb-6 flex flex-col gap-4 border-t border-slate-100 pt-4">
+        <div class="grid grid-cols-2 gap-3">
+          <input type="text" placeholder="ลงชื่อ" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 placeholder:text-slate-300 transition-all" />
+          <div class="relative">
+            <select class="w-full appearance-none rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-400 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 bg-white cursor-pointer transition-all">
+              <option value="" disabled selected>ตำแหน่ง</option>
+              <option>ผู้จัดการ</option>
+              <option>หัวหน้าฝ่าย</option>
+              <option>พนักงาน</option>
+            </select>
+            <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </span>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <button id="sign-modal-cancel" class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">ยกเลิก</button>
+          <button id="sign-modal-confirm" class="rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;">ตกลง</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let currentStep = 1;
+    const totalSteps = 9;
+
+    // Sidebar collapse/expand
+    document.getElementById('collapse-btn').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.add('collapsed');
+      document.getElementById('main-wrapper').style.marginLeft = '72px';
+    });
+    document.getElementById('expand-btn').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('collapsed');
+      document.getElementById('main-wrapper').style.marginLeft = '260px';
+    });
+
+    // Step navigation
+    function goToStep(step) {
+      if (step < 1 || step > totalSteps) return;
+
+      // Hide all steps
+      document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.step-tab').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white', 'shadow-sm');
+        btn.classList.add('text-slate-500');
+        btn.style.color = '';
+      });
+
+      // Show current
+      document.getElementById('step-' + step).classList.remove('hidden');
+      const activeTab = document.querySelector('[data-step="' + step + '"]');
+      activeTab.classList.remove('text-slate-500');
+      activeTab.classList.add('bg-blue-600', 'shadow-sm');
+      activeTab.style.color = '#FFFFFF';
+      // เลื่อนแถบเมนูให้เห็นแท็บที่กำลังใช้งานเสมอ
+      activeTab.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+
+      currentStep = step;
+
+      // Prev button state
+      document.getElementById('prev-btn').disabled = step === 1;
+
+      // Next button: hide on last step
+      const nextBtn = document.getElementById('next-btn');
+      nextBtn.style.display = step === totalSteps ? 'none' : '';
+      nextBtn.innerHTML = 'ถัดไป <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>';
+    }
+
+    function changeStep(dir) {
+      goToStep(currentStep + dir);
+    }
+
+    // Tab clicks
+    document.querySelectorAll('.step-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const step = Number(btn.dataset.step);
+        if (isViewAll) {
+          // update active tab highlight
+          document.querySelectorAll('.step-tab').forEach(t => {
+            t.classList.remove('bg-blue-600', 'text-white', 'shadow-sm');
+            t.classList.add('text-slate-500');
+            t.style.color = '';
+          });
+          btn.classList.remove('text-slate-500');
+          btn.classList.add('bg-blue-600', 'shadow-sm');
+          btn.style.color = '#FFFFFF';
+          // scroll to section
+          document.getElementById('step-' + step).scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          goToStep(step);
+        }
+      });
+    });
+
+    // ── ดูทั้งหมด toggle ──
+    let isViewAll = false;
+    const STEP_TITLES = {
+      1:'ส่วนที่ 1 ข้อมูลผู้ร้องขอ', 2:'ส่วนที่ 2 วัตถุประสงค์',
+      3:'ส่วนที่ 3 ประเภทเอกสาร',   4:'ส่วนที่ 4 รายละเอียดการร้อง',
+      5:'แนบเอกสารต่างๆ',           6:'ส่วนที่ 5 การอนุมัติการดำเนินการ',
+      7:'ส่วนที่ 5.2 ผู้มีส่วนเกี่ยวข้อง', 8:'ส่วนที่ 5.3 ผู้อนุมัติ',
+      9:'ส่วนที่ 6 สำหรับแผนกควบคุมคุณภาพ'
+    };
+
+    document.getElementById('view-all-btn').addEventListener('click', () => {
+      isViewAll = !isViewAll;
+      const viewAllBtn = document.getElementById('view-all-btn');
+
+      document.body.classList.toggle('view-all', isViewAll);
+
+      if (isViewAll) {
+        // Show all steps + inject section titles
+        for (let i = 1; i <= totalSteps; i++) {
+          const el = document.getElementById('step-' + i);
+          el.classList.remove('hidden');
+          if (i < 9) { // step-9 already has its own h2
+            const h = document.createElement('h2');
+            h.className = 'view-all-title text-[14px] font-bold text-slate-800 pb-3 border-b border-slate-100 w-full';
+            h.textContent = STEP_TITLES[i];
+            el.insertBefore(h, el.firstChild);
+          }
+        }
+        // Hide nav buttons
+        document.getElementById('prev-btn').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+        // Change button
+        viewAllBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> ย้อนกลับ`;
+      } else {
+        // Remove injected titles
+        document.querySelectorAll('.view-all-title').forEach(el => el.remove());
+        // Restore nav
+        document.getElementById('prev-btn').style.display = '';
+        // Restore single-step view
+        goToStep(currentStep);
+        viewAllBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg> ดูทั้งหมด`;
+      }
+    });
+
+    // ── เซ็นเอกสาร Modal ──
+    (function initSignModal() {
+      const backdrop = document.getElementById('sign-modal-backdrop');
+      const canvas   = document.getElementById('sign-canvas');
+      const ctx      = canvas.getContext('2d');
+      let drawing    = false;
+      let currentBox = null; // which .sign-box triggered the modal
+      // expose resizeCanvas so step-7 can call it when opening modal
+      window._openSignModal = function(box) {
+        currentBox = box;
+        window._currentSignBox = null;
+      };
+      const uploadDataURLs = new Map(); // li element → dataURL
+
+      function bindSignBtn(btn) {
+        btn.addEventListener('click', () => {
+          currentBox = btn.closest('.sign-box');
+          backdrop.classList.remove('hidden');
+          // reset to Draw tab
+          document.querySelectorAll('.sign-modal-tab').forEach(t => {
+            t.classList.remove('text-blue-600','border-blue-600');
+            t.classList.add('text-slate-400','border-transparent');
+          });
+          const drawTab = document.querySelector('[data-sign-tab="draw"]');
+          drawTab.classList.add('text-blue-600','border-blue-600');
+          drawTab.classList.remove('text-slate-400','border-transparent');
+          ['upload','sigfile'].forEach(id => document.getElementById('sign-tab-'+id).classList.add('hidden'));
+          document.getElementById('sign-tab-draw').classList.remove('hidden');
+          resizeCanvas();
+        });
+      }
+
+      // Open from any เซ็นเอกสาร button
+      document.querySelectorAll('[data-sign-btn]').forEach(bindSignBtn);
+
+      // Close
+      function closeModal() { backdrop.classList.add('hidden'); }
+      document.getElementById('sign-modal-cancel').addEventListener('click', closeModal);
+      backdrop.addEventListener('click', e => { if (e.target === backdrop) closeModal(); });
+
+      // Tab switching
+      document.querySelectorAll('.sign-modal-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.sign-modal-tab').forEach(t => {
+            t.classList.remove('text-blue-600', 'border-blue-600');
+            t.classList.add('text-slate-400', 'border-transparent');
+          });
+          tab.classList.add('text-blue-600', 'border-blue-600');
+          tab.classList.remove('text-slate-400', 'border-transparent');
+          ['draw','upload','sigfile'].forEach(id => {
+            document.getElementById('sign-tab-' + id).classList.add('hidden');
+          });
+          document.getElementById('sign-tab-' + tab.dataset.signTab).classList.remove('hidden');
+          if (tab.dataset.signTab === 'draw') resizeCanvas();
+        });
+      });
+
+      // Canvas resize
+      function resizeCanvas() {
+        const rect = canvas.parentElement.getBoundingClientRect();
+        canvas.width  = rect.width;
+        canvas.height = rect.height;
+        ctx.strokeStyle = '#1e293b';
+        ctx.lineWidth   = 2;
+        ctx.lineCap     = 'round';
+        ctx.lineJoin    = 'round';
+      }
+
+      // Drawing
+      function getPos(e) {
+        const r = canvas.getBoundingClientRect();
+        const src = e.touches ? e.touches[0] : e;
+        return { x: src.clientX - r.left, y: src.clientY - r.top };
+      }
+      canvas.addEventListener('pointerdown', e => {
+        drawing = true;
+        const p = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+      });
+      canvas.addEventListener('pointermove', e => {
+        if (!drawing) return;
+        const p = getPos(e);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+      });
+      canvas.addEventListener('pointerup',    () => drawing = false);
+      canvas.addEventListener('pointerleave', () => drawing = false);
+
+      // Clear
+      document.getElementById('sign-clear-btn').addEventListener('click', () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      });
+
+      // ── ตกลง: show signature in box ──
+      document.getElementById('sign-modal-confirm').addEventListener('click', () => {
+        // support dynamically created boxes (step 7)
+        if (window._currentSignBox) { currentBox = window._currentSignBox; window._currentSignBox = null; }
+        if (!currentBox) { closeModal(); return; }
+
+        const activeTab = document.querySelector('.sign-modal-tab.text-blue-600')?.dataset.signTab;
+
+        if (activeTab === 'draw') {
+          // Check canvas not blank
+          const blank = document.createElement('canvas');
+          blank.width = canvas.width; blank.height = canvas.height;
+          if (canvas.toDataURL() === blank.toDataURL()) { closeModal(); return; }
+          showSigImage(currentBox, canvas.toDataURL('image/png'));
+
+        } else if (activeTab === 'upload') {
+          const firstLi = document.getElementById('sign-upload-list').firstElementChild;
+          if (!firstLi) { closeModal(); return; }
+          const url = uploadDataURLs.get(firstLi);
+          if (url) showSigImage(currentBox, url);
+
+        } else if (activeTab === 'sigfile') {
+          const checked = document.querySelector('input[name="sig-select"]:checked');
+          if (!checked) { closeModal(); return; }
+          const label = checked.closest('.flex.items-center').querySelector('span').textContent;
+          showSigLabel(currentBox, label);
+        }
+
+        closeModal();
+      });
+
+      const BIN_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path></svg>`;
+
+      function resetBox(box) {
+        box.innerHTML = `<button type="button" data-sign-btn class="rounded-xl px-6 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;">เซ็นเอกสาร</button>`;
+        bindSignBtn(box.querySelector('[data-sign-btn]'));
+      }
+
+      function showSigImage(box, dataUrl) {
+        box.innerHTML = `
+          <div class="relative w-full h-full flex items-center justify-center p-4" style="min-height:160px;">
+            <img src="${dataUrl}" class="max-w-full object-contain" style="max-height:130px;" />
+            <div class="absolute top-3 right-3 flex items-center gap-2">
+              <button class="change-sig-btn text-[11px] text-blue-500 hover:text-blue-700 underline transition-colors">เปลี่ยน</button>
+              <button class="del-sig-btn w-7 h-7 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-slate-400 hover:text-red-500 hover:border-red-200 transition-colors">${BIN_ICON}</button>
+            </div>
+          </div>`;
+        box.querySelector('.change-sig-btn').addEventListener('click', () => {
+          currentBox = box; backdrop.classList.remove('hidden'); resizeCanvas();
+        });
+        box.querySelector('.del-sig-btn').addEventListener('click', () => resetBox(box));
+      }
+
+      function showSigLabel(box, name) {
+        box.innerHTML = `
+          <div class="relative flex flex-col items-center justify-center gap-2 p-4" style="min-height:160px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4338ca" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            <span class="text-[13px] text-slate-600 font-medium">${name}</span>
+            <button class="change-sig-btn text-[11px] text-blue-500 hover:text-blue-700 underline transition-colors">เปลี่ยน</button>
+            <button class="del-sig-btn absolute top-3 right-3 w-7 h-7 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-slate-400 hover:text-red-500 hover:border-red-200 transition-colors">${BIN_ICON}</button>
+          </div>`;
+        box.querySelector('.change-sig-btn').addEventListener('click', () => {
+          currentBox = box; backdrop.classList.remove('hidden'); resizeCanvas();
+        });
+        box.querySelector('.del-sig-btn').addEventListener('click', () => resetBox(box));
+      }
+
+      // Upload tab file list
+      const signFileInput  = document.getElementById('sign-file-input');
+      const signUploadList = document.getElementById('sign-upload-list');
+      signFileInput.addEventListener('change', () => {
+        Array.from(signFileInput.files).forEach(file => {
+          const reader = new FileReader();
+          reader.onload = e => {
+            const li = document.createElement('li');
+            li.className = 'flex items-center gap-3 rounded-xl border border-slate-100 px-4 py-3';
+            li.innerHTML = `
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              <span class="flex-1 text-[13px] text-slate-700">${file.name}</span>
+              <button class="text-blue-400 hover:text-blue-600 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></button>
+              <button class="del-sig text-slate-300 hover:text-red-500 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path></svg></button>`;
+            uploadDataURLs.set(li, e.target.result);
+            li.querySelector('.del-sig').addEventListener('click', () => { uploadDataURLs.delete(li); li.remove(); });
+            signUploadList.appendChild(li);
+          };
+          reader.readAsDataURL(file);
+        });
+      });
+    })();
+
+    // ── Radio toggle helper (click active → deselect) ──
+    function makeToggleable(selector) {
+      document.querySelectorAll(selector).forEach(radio => {
+        radio.addEventListener('mousedown', function () {
+          this._wasChecked = this.checked;
+        });
+        radio.addEventListener('click', function () {
+          if (this._wasChecked) {
+            this.checked = false;
+            this._wasChecked = false;
+          }
+        });
+      });
+    }
+
+    makeToggleable('input[name="purpose"]');   // Step 2
+    makeToggleable('input[name="doctype"]');   // Step 3
+
+    // ── Description character counter (Step 4) ──
+    const descArea    = document.getElementById('desc-step4');
+    const descCounter = document.getElementById('desc-counter');
+    if (descArea && descCounter) {
+      descArea.addEventListener('input', () => {
+        const left = 1000 - descArea.value.length;
+        descCounter.textContent = left.toLocaleString() + ' characters left';
+      });
+    }
+
+    // ── File upload list (Step 5) ──
+    const fileInput = document.getElementById('file-upload');
+    const fileList  = document.getElementById('file-list');
+    if (fileInput && fileList) {
+      fileInput.addEventListener('change', () => {
+        fileList.innerHTML = '';
+        Array.from(fileInput.files).forEach(file => {
+          const kb = (file.size / 1024).toFixed(1);
+          const li = document.createElement('li');
+          li.className = 'flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 text-[13px]';
+          li.innerHTML = `
+            <div class="flex items-center gap-3 min-w-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+              <span class="truncate text-slate-700 font-medium">${file.name}</span>
+            </div>
+            <div class="flex items-center gap-3 flex-shrink-0 ml-4">
+              <span class="text-slate-400">${kb} KB</span>
+              <button type="button" class="text-slate-300 hover:text-red-500 transition-colors remove-file">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+              </button>
+            </div>`;
+          li.querySelector('.remove-file').addEventListener('click', () => li.remove());
+          fileList.appendChild(li);
+        });
+      });
+
+      // Drag-and-drop
+      const dropZone = fileInput.closest('label');
+      dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('bg-blue-50'); });
+      dropZone.addEventListener('dragleave', () => dropZone.classList.remove('bg-blue-50'));
+      dropZone.addEventListener('drop', e => {
+        e.preventDefault();
+        dropZone.classList.remove('bg-blue-50');
+        fileInput.files = e.dataTransfer.files;
+        fileInput.dispatchEvent(new Event('change'));
+      });
+    }
+
+    // ── Step 7: เลือกผู้มีส่วนเกี่ยวข้อง ──
+    (function initRelatedPeople() {
+      const sel        = document.getElementById('related-select');
+      const chipsEl    = document.getElementById('related-chips');
+      const mirror     = document.getElementById('related-chips-mirror');
+      const signSection= document.getElementById('related-sign-section');
+      const signBoxes  = document.getElementById('related-sign-boxes');
+      const selected   = []; // ordered list of selected values
+
+      const BIN_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6M14 11v6"></path></svg>`;
+
+      function renderAll() {
+        chipsEl.innerHTML = '';
+        mirror.innerHTML  = '';
+        signBoxes.innerHTML = '';
+
+        if (selected.length === 0) {
+          signSection.classList.add('hidden');
+          return;
+        }
+        signSection.classList.remove('hidden');
+
+        selected.forEach(val => {
+          // Top chip (with remove ×)
+          const chip = document.createElement('span');
+          chip.className = 'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[12px] font-semibold cursor-pointer select-none';
+          chip.style.cssText = 'background:#EFF6FF; color:#2563EB;';
+          chip.innerHTML = `${val}<button type="button" class="leading-none text-blue-400 hover:text-blue-700 transition-colors" style="font-size:13px;">&times;</button>`;
+          chip.querySelector('button').addEventListener('click', () => remove(val));
+          chipsEl.appendChild(chip);
+
+          // Mirror chip (no remove)
+          const mchip = document.createElement('span');
+          mchip.className = 'inline-flex items-center rounded-full px-3 py-1 text-[12px] font-semibold';
+          mchip.style.cssText = 'background:#EFF6FF; color:#2563EB;';
+          mchip.textContent = val;
+          mirror.appendChild(mchip);
+
+          // Signature box column
+          const col = document.createElement('div');
+          col.className = 'flex flex-col gap-3';
+          col.dataset.relatedKey = val;
+          col.innerHTML = `
+            <p class="text-[13px] font-normal text-slate-700">${val}</p>
+            <div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center" style="min-height:160px;">
+              <button type="button" data-sign-btn class="rounded-xl px-6 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;">เซ็นเอกสาร</button>
+            </div>
+            <div class="flex flex-col gap-2 text-[13px] text-slate-700 items-center text-center">
+              <p>ชื่อ<span class="border-b border-slate-400 inline-block" style="width:200px;">&nbsp;</span></p>
+              <p>วันที่&nbsp;<span class="border-b border-slate-400 inline-block" style="width:160px;">&nbsp;</span></p>
+            </div>`;
+          // Bind sign btn to modal
+          bindRelatedSignBtn(col.querySelector('[data-sign-btn]'));
+          signBoxes.appendChild(col);
+        });
+
+        // Adjust grid cols
+        signBoxes.className = selected.length === 1
+          ? 'grid grid-cols-1 gap-6 w-full max-w-sm'
+          : 'grid grid-cols-2 gap-6 w-full';
+      }
+
+      function remove(val) {
+        const idx = selected.indexOf(val);
+        if (idx !== -1) selected.splice(idx, 1);
+        // re-enable option
+        const opt = sel.querySelector(`option[value="${val}"]`);
+        if (opt) opt.disabled = false;
+        renderAll();
+      }
+
+      sel.addEventListener('change', () => {
+        const val = sel.value;
+        if (!val || selected.includes(val)) { sel.value = ''; return; }
+        selected.push(val);
+        // disable option so it can't be picked again
+        const opt = sel.querySelector(`option[value="${val}"]`);
+        if (opt) opt.disabled = true;
+        sel.value = '';
+        renderAll();
+      });
+
+      // Forward to the main sign modal's bindSignBtn
+      function bindRelatedSignBtn(btn) {
+        btn.addEventListener('click', () => {
+          const box = btn.closest('.sign-box');
+          // trigger via stored global, reuse modal
+          const backdrop = document.getElementById('sign-modal-backdrop');
+          window._currentSignBox = box;
+          backdrop.classList.remove('hidden');
+          // reset to Draw tab
+          document.querySelectorAll('.sign-modal-tab').forEach(t => {
+            t.classList.remove('text-blue-600','border-blue-600');
+            t.classList.add('text-slate-400','border-transparent');
+          });
+          const drawTab = document.querySelector('[data-sign-tab="draw"]');
+          drawTab.classList.add('text-blue-600','border-blue-600');
+          drawTab.classList.remove('text-slate-400','border-transparent');
+          ['upload','sigfile'].forEach(id => document.getElementById('sign-tab-'+id).classList.add('hidden'));
+          document.getElementById('sign-tab-draw').classList.remove('hidden');
+        });
+      }
+    })();
+
+    // ── Sent modal flow ──
+    (function initSentModal() {
+      const confirmBackdrop = document.getElementById('sent-confirm-backdrop');
+      const successBackdrop = document.getElementById('sent-success-backdrop');
+
+      document.getElementById('sent-btn').addEventListener('click', () => confirmBackdrop.classList.remove('hidden'));
+      document.getElementById('sent-cancel-btn').addEventListener('click', () => confirmBackdrop.classList.add('hidden'));
+      confirmBackdrop.addEventListener('click', e => { if (e.target === confirmBackdrop) confirmBackdrop.classList.add('hidden'); });
+      document.getElementById('sent-confirm-btn').addEventListener('click', () => {
+        confirmBackdrop.classList.add('hidden');
+        successBackdrop.classList.remove('hidden');
+      });
+      document.getElementById('sent-close-btn').addEventListener('click', () => { window.location.href = 'index.html'; });
+      successBackdrop.addEventListener('click', e => { if (e.target === successBackdrop) successBackdrop.classList.add('hidden'); });
+    })();
+
+    // ── Draft modal flow ──
+    (function initDraftModal() {
+      const confirmBackdrop = document.getElementById('draft-confirm-backdrop');
+      const successBackdrop = document.getElementById('draft-success-backdrop');
+
+      document.getElementById('draft-btn').addEventListener('click', () => confirmBackdrop.classList.remove('hidden'));
+      document.getElementById('draft-cancel-btn').addEventListener('click', () => confirmBackdrop.classList.add('hidden'));
+      confirmBackdrop.addEventListener('click', e => { if (e.target === confirmBackdrop) confirmBackdrop.classList.add('hidden'); });
+      document.getElementById('draft-confirm-btn').addEventListener('click', () => {
+        confirmBackdrop.classList.add('hidden');
+        successBackdrop.classList.remove('hidden');
+      });
+      document.getElementById('draft-close-btn').addEventListener('click', () => { window.location.href = 'index.html'; });
+      successBackdrop.addEventListener('click', e => { if (e.target === successBackdrop) successBackdrop.classList.add('hidden'); });
+    })();
+
+    // Init
+    goToStep(1);
+  </script>
+
+</body>
+</html>

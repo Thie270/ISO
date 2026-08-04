@@ -1,0 +1,206 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+  font-family: 'Inter', 'IBM Plex Sans Thai', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Sidebar transition ── */
+#sidebar {
+  transition: width 0.25s cubic-bezier(.4,0,.2,1);
+}
+
+/* ── Collapsed state ── */
+#sidebar.collapsed { width: 72px; }
+
+#sidebar.collapsed .sidebar-collapsed-header { display: flex; }
+#sidebar.collapsed .sidebar-expanded-header  { display: none; }
+
+#sidebar.collapsed .nav-text          { display: none; }
+#sidebar.collapsed .nav-section-title { display: none; }
+
+#sidebar.collapsed .nav-link {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ── Nav links ── */
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  color: #64748b;
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.nav-link:hover {
+  color: #1e74fd;
+  background-color: #f0f5ff;
+}
+
+.nav-link.active {
+  color: #1e74fd;
+  background-color: #eef3ff;
+  font-weight: 600;
+}
+
+/* ── Main wrapper shift ── */
+#main-wrapper {
+  transition: margin-left 0.25s cubic-bezier(.4,0,.2,1);
+  /* flex item ต้อง shrink ได้ ไม่งั้นเนื้อหากว้างเกินจอ (min-width:auto) */
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* ── กันหน้าเว็บกว้างเกินขนาดจอ ── */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* grid/flex ภายในหน้า ให้ย่อได้ตามพื้นที่จริง */
+#main-wrapper .grid > * {
+  min-width: 0;
+}
+
+/* ════════════════════════════════════════════
+   โหมด "ดูทั้งหมด" (create.html)
+   → การ์ดยืดยาวตามเนื้อหา เลื่อนเป็นหน้ายาว ไม่บีบ/ย่อเนื้อหา
+   → top bar / bottom bar ยังคงอยู่กับที่เหมือนเดิม
+   ════════════════════════════════════════════ */
+body.view-all #doc-content-area { overflow-y: auto; }
+
+body.view-all #doc-card,
+body.view-all #doc-zone,
+body.view-all #doc-box {
+  flex: 0 0 auto;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+/* แถบเมนูส่วนที่ 1–6 ค้างไว้ด้านบนเพื่อใช้กระโดดไปแต่ละส่วน */
+body.view-all #doc-tabs {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  /* วงขอบทึบสีเดียวกับพื้น กันเนื้อหาเลื่อนโผล่รอบแถบเมนู (ทับ inline style เดิม) */
+  box-shadow: 0 0 0 24px #fefefe, 0 6px 16px rgba(0, 0, 0, 0.10) !important;
+}
+
+/* ส่วนที่ 4: คืนความสูงปกติของช่องรายละเอียด (ไม่ยืดเต็มจอแบบทีละส่วน) */
+body.view-all #step-4      { height: auto; }
+body.view-all #desc-field-4 { flex: 0 0 auto; min-height: 0; }
+body.view-all #desc-step4   { flex: 0 0 auto; min-height: 110px; }
+
+/* กดแท็บแล้วเลื่อนไปยังส่วนนั้น โดยไม่ให้แถบเมนูบัง */
+body.view-all .step-content { scroll-margin-top: 84px; }
+
+/* แถบปุ่ม "ย้อนกลับ" ค้างล่างไว้ ไม่ต้องเลื่อนไปสุดหน้าเพื่อกด */
+body.view-all #doc-stepnav {
+  position: sticky;
+  bottom: 0;
+  background: #ffffff;
+  z-index: 20;
+  border-radius: 0 0 24px 24px;
+  box-shadow: 0 0 0 16px #ffffff;
+}
+
+/* ── Banner: ภาพพื้นหลัง + ฟ้าคลุมบาง ๆ ── */
+.dashboard-banner {
+  background: url('image/banner-bg.png') no-repeat center center / cover;
+}
+
+.dashboard-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+      rgba(12, 62, 128, 0.80) 0%,
+      rgba(26, 108, 190, 0.62) 40%,
+      rgba(64, 158, 214, 0.46) 72%,
+      rgba(120, 202, 232, 0.36) 100%);
+  pointer-events: none;
+}
+
+/* ── Dashboard: พื้นหลังฟ้าอ่อน ── */
+.dashboard-bg {
+  background: linear-gradient(180deg, #eaf2fb 0%, #f5f9fd 45%, #f7fafc 100%);
+}
+
+/* ── Status pill ในตาราง ── */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 9999px;
+  padding: 5px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-pill .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+/* ── ปุ่ม ... ท้ายแถว ── */
+.row-action {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #94a3b8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, color 0.15s;
+}
+
+.row-action:hover {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+/* ── Compliance drawer backdrop ── */
+#compliance-backdrop {
+  transition: opacity 0.3s ease;
+}
+
+/* ── Filter tab ── */
+.filter-tab {
+  color: #64748b;
+  background-color: transparent;
+}
+
+.filter-tab:hover {
+  color: #2563eb;
+  background-color: #f5f8ff;
+}
+
+.filter-tab.active {
+  background-color: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+}
+
+.filter-tab.active:hover {
+  background-color: #1d4ed8;
+  color: #ffffff;
+}

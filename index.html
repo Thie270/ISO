@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Riverpark Document Registry Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-100 min-h-screen flex" style="font-family:'Inter','IBM Plex Sans Thai',sans-serif;">
+
+  <!-- ════════════════════════════════════════════
+       SIDEBAR
+  ════════════════════════════════════════════ -->
+  <aside id="sidebar" class="fixed top-0 left-0 h-full w-[260px] bg-white border-r border-slate-100 shadow-sm flex flex-col z-[500] overflow-hidden">
+
+    <!-- Expanded header -->
+    <div class="sidebar-expanded-header flex items-center gap-3 px-5 border-b border-slate-100" style="height:64px;">
+      <div class="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100">
+        <img src="image/logo.png" alt="Logo" class="w-full h-full object-cover" />
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-[13px] font-bold text-slate-800 truncate leading-tight">Riverpark</p>
+        <p class="text-[11px] text-slate-400 truncate">Document System</p>
+      </div>
+      <button id="collapse-btn" class="w-7 h-7 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 flex-shrink-0 transition-colors">
+        <img src="icon/menu-01.svg" width="20" height="20" alt="" />
+      </button>
+    </div>
+
+    <!-- Collapsed header -->
+    <div class="sidebar-collapsed-header hidden items-center justify-center border-b border-slate-100" style="height:64px;">
+      <button id="expand-btn" class="w-9 h-9 rounded-xl overflow-hidden hover:opacity-80 transition-opacity" title="ขยายแถบเมนู">
+        <img src="image/logo.png" alt="Logo" class="w-full h-full object-cover" />
+      </button>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-0.5">
+      <p class="nav-section-title text-[10px] font-semibold text-slate-300 uppercase tracking-widest px-3 pt-3 pb-1.5">เมนูหลัก</p>
+
+      <a href="#" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+        <span class="nav-text">หน้าหลัก</span>
+      </a>
+
+      <a href="#" class="nav-link active">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+        <span class="nav-text">เอกสารขอขึ้นทะเบียน</span>
+      </a>
+
+      <a href="#" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span class="nav-text">ติดตามสถานะ</span>
+      </a>
+
+      <p class="nav-section-title text-[10px] font-semibold text-slate-300 uppercase tracking-widest px-3 pt-5 pb-1.5">จัดการ</p>
+
+      <a href="#" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <span class="nav-text">รายงาน</span>
+      </a>
+
+      <a href="#" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        <span class="nav-text">ผู้ใช้งาน</span>
+      </a>
+
+      <p class="nav-section-title text-[10px] font-semibold text-slate-300 uppercase tracking-widest px-3 pt-5 pb-1.5">มุมมองตามบทบาท</p>
+
+      <a href="role-requester.html" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+        <span class="nav-text">ผู้จัดทำ</span>
+      </a>
+
+      <a href="role-approver.html" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 11 15 16 9"></polyline></svg>
+        <span class="nav-text">ผู้อนุมัติ</span>
+      </a>
+
+      <a href="role-stakeholder.html" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        <span class="nav-text">ผู้เกี่ยวข้อง</span>
+      </a>
+
+      <div class="flex-1"></div>
+
+      <p class="nav-section-title text-[10px] font-semibold text-slate-300 uppercase tracking-widest px-3 pt-5 pb-1.5">ระบบ</p>
+
+      <a href="#" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="3"></circle><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"></path></svg>
+        <span class="nav-text">ตั้งค่า</span>
+      </a>
+    </nav>
+
+    <!-- Bottom profile — expanded -->
+    <div class="sidebar-expanded-header flex items-center gap-3 px-4 py-4 border-t border-slate-100">
+      <div class="w-8 h-8 rounded-lg bg-[#0b4f8c] text-white flex items-center justify-center text-[11px] font-bold flex-shrink-0">สุข</div>
+      <div class="flex-1 min-w-0">
+        <p class="text-[13px] font-semibold text-slate-800 truncate leading-tight">สุขสยาม</p>
+        <p class="text-[11px] text-slate-400 truncate">รงค์วงสุข</p>
+      </div>
+      <button class="w-7 h-7 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 transition-colors flex-shrink-0" title="ออกจากระบบ">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+      </button>
+    </div>
+
+    <!-- Bottom profile — collapsed -->
+    <div class="sidebar-collapsed-header hidden items-center justify-center py-4 border-t border-slate-100">
+      <div class="w-8 h-8 rounded-lg bg-[#0b4f8c] text-white flex items-center justify-center text-[11px] font-bold">สุข</div>
+    </div>
+
+  </aside>
+
+  <!-- ════════════════════════════════════════════
+       MAIN WRAPPER
+  ════════════════════════════════════════════ -->
+  <div id="main-wrapper" class="flex-1 flex flex-col h-screen overflow-hidden" style="margin-left:260px;">
+
+    <!-- ── Topbar (คงที่ ไม่เลื่อน) ── -->
+    <div class="flex-shrink-0 z-[100] bg-white border-b border-slate-100 flex items-center justify-between px-8" style="height:64px;">
+      <div class="flex items-center gap-2 text-[13px] font-medium">
+        <a href="#" class="text-slate-400 no-underline hover:text-blue-600 transition-colors">Dashboard</a>
+        <span class="text-slate-300">/</span>
+        <span class="text-slate-900 font-semibold">เอกสารขอขึ้นทะเบียน</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="relative w-10 h-10 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-400 shadow-sm hover:bg-slate-50 hover:text-blue-600 transition-colors" aria-label="Notifications">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+          <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+        </button>
+        <button class="w-10 h-10 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-400 shadow-sm hover:bg-slate-50 hover:text-blue-600 transition-colors" aria-label="Language">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        </button>
+        <button class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 hover:bg-slate-100 transition-colors cursor-pointer">
+          <div class="w-8 h-8 rounded-lg bg-[#0b4f8c] text-white flex items-center justify-center text-[13px] font-bold">สุข</div>
+          <span class="text-sm font-semibold text-slate-900">สุขสยาม</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Scroll area (พื้นที่เดียวที่เลื่อนได้) ── -->
+    <div class="dashboard-bg flex-1 min-h-0 overflow-y-auto flex flex-col">
+
+    <!-- ── Hero Banner — flush with sidebar ── -->
+    <div class="dashboard-banner relative overflow-hidden px-10 py-9 text-white flex-shrink-0">
+      <div class="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <p class="text-[11px] font-bold tracking-[0.3em] uppercase text-white/80 mb-2">RIVERPARK</p>
+          <h1 class="text-[32px] font-bold tracking-tight mb-2">Document Management</h1>
+          <p class="text-sm text-white/85">Document Approval &amp; Registry — ติดตามสถานะเอกสารแบบ Real-time</p>
+        </div>
+        <div class="flex gap-4 pr-4">
+          <div class="rounded-2xl bg-white/[.14] backdrop-blur-md border border-white/[.22] px-7 py-4 text-center hover:bg-white/[.2] transition-colors">
+            <p class="text-[32px] font-bold leading-none mb-1">37</p>
+            <p class="text-xs text-white/90 font-medium">เอกสารทั้งหมด</p>
+          </div>
+          <div class="rounded-2xl bg-white/[.14] backdrop-blur-md border border-white/[.22] px-7 py-4 text-center hover:bg-white/[.2] transition-colors">
+            <p class="text-[32px] font-bold leading-none mb-1">25</p>
+            <p class="text-xs text-white/90 font-medium">อนุมัติแล้ว</p>
+          </div>
+        </div>
+      </div>
+      <!-- See more -->
+      <button id="open-compliance-btn" class="absolute bottom-4 right-8 text-white/85 text-[13px] underline underline-offset-4 hover:text-white transition-colors">
+        see more
+      </button>
+    </div>
+
+    <!-- ── Content Area ── -->
+    <div class="flex-1 px-6 py-6 flex flex-col gap-5">
+
+      <!-- ── Summary Cards ── -->
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+
+        <div class="group rounded-2xl bg-white p-5 border border-slate-100 shadow-[0_2px_14px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
+          <div class="flex items-start justify-between gap-3">
+            <p class="text-[15px] font-semibold text-slate-500">รอดำเนินการ</p>
+            <span class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            </span>
+          </div>
+          <p class="mt-3 text-[32px] font-bold text-slate-900 leading-none">203</p>
+          <a href="#" class="mt-3 inline-block text-[13px] text-slate-400 underline underline-offset-2 hover:text-blue-600 transition-colors">ดูเพิ่มเติม</a>
+        </div>
+
+        <div class="group rounded-2xl bg-white p-5 border border-slate-100 shadow-[0_2px_14px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
+          <div class="flex items-start justify-between gap-3">
+            <p class="text-[15px] font-semibold text-slate-500">ฉบับร่าง</p>
+            <span class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            </span>
+          </div>
+          <p class="mt-3 text-[32px] font-bold text-slate-900 leading-none">203</p>
+          <a href="#" class="mt-3 inline-block text-[13px] text-slate-400 underline underline-offset-2 hover:text-blue-600 transition-colors">ดูเพิ่มเติม</a>
+        </div>
+
+        <div class="group rounded-2xl bg-white p-5 border border-slate-100 shadow-[0_2px_14px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
+          <div class="flex items-start justify-between gap-3">
+            <p class="text-[15px] font-semibold text-slate-500">กำลังดำเนินการ</p>
+            <span class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </span>
+          </div>
+          <p class="mt-3 text-[32px] font-bold text-slate-900 leading-none">203</p>
+          <a href="#" class="mt-3 inline-block text-[13px] text-slate-400 underline underline-offset-2 hover:text-blue-600 transition-colors">ดูเพิ่มเติม</a>
+        </div>
+
+        <div class="group rounded-2xl bg-white p-5 border border-slate-100 shadow-[0_2px_14px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
+          <div class="flex items-start justify-between gap-3">
+            <p class="text-[15px] font-semibold text-slate-500">เอกสารส่งกลับ</p>
+            <span class="w-9 h-9 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+            </span>
+          </div>
+          <p class="mt-3 text-[32px] font-bold text-slate-900 leading-none">203</p>
+          <a href="#" class="mt-3 inline-block text-[13px] text-slate-400 underline underline-offset-2 hover:text-blue-600 transition-colors">ดูเพิ่มเติม</a>
+        </div>
+
+        <div class="group rounded-2xl bg-white p-5 border border-slate-100 shadow-[0_2px_14px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
+          <div class="flex items-start justify-between gap-3">
+            <p class="text-[15px] font-semibold text-slate-500">ไม่อนุมัติ</p>
+            <span class="w-9 h-9 rounded-xl bg-red-50 text-red-500 flex items-center justify-center flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </span>
+          </div>
+          <p class="mt-3 text-[32px] font-bold text-slate-900 leading-none">203</p>
+          <a href="#" class="mt-3 inline-block text-[13px] text-slate-400 underline underline-offset-2 hover:text-blue-600 transition-colors">ดูเพิ่มเติม</a>
+        </div>
+
+      </div>
+
+      <!-- ── Table Card ── -->
+      <div class="rounded-3xl bg-white border border-slate-100 shadow-[0_2px_16px_rgba(15,23,42,0.05)] overflow-hidden">
+
+        <!-- Controls -->
+        <div class="flex flex-col flex-wrap gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
+          <!-- Segmented control -->
+          <div class="inline-flex flex-wrap items-center gap-1 rounded-2xl border border-slate-200 p-1">
+            <button class="filter-tab active rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200">ทั้งหมด</button>
+            <button class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200">รอดำเนินการ</button>
+            <button class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200">ที่อนุมัติ</button>
+            <button class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200">ไม่อนุมัติ</button>
+            <button class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200">ส่งกลับ</button>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              </span>
+              <input type="text" placeholder="ค้นหาเอกสาร..." class="w-[240px] rounded-xl border border-slate-200 pl-9 pr-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
+            </div>
+            <a href="create.html" class="rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_12px_rgba(37,99,235,0.3)] transition-all hover:-translate-y-px hover:bg-blue-700 flex items-center gap-2 no-underline">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              สร้างเอกสาร
+            </a>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+          <table class="min-w-full text-sm">
+            <thead>
+              <tr class="border-y border-slate-100">
+                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 w-16">No.</th>
+                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 ">Document No</th>
+                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 ">ผู้ร้องขอ</th>
+                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 ">ชื่อเอกสาร</th>
+                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 ">ประเภท</th>
+                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 ">สถานะ</th>
+                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60">Process</th>
+                <th class="px-5 py-4 text-right text-[13.5px] font-semibold text-slate-700 bg-slate-50/60"></th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">
+                <td class="px-5 py-4 text-slate-500">1</td>
+                <td class="px-5 py-4 font-semibold text-slate-800">RVP001</td>
+                <td class="px-5 py-4 text-slate-600">นาย สุขสยาม รงค์วงสุข</td>
+                <td class="px-5 py-4 text-slate-700">เอกสารความปลอดภัย</td>
+                <td class="px-5 py-4 text-slate-600">วิธีปฏิบัติงาน(RVP)</td>
+                <td class="px-5 py-4"><span class="status-pill bg-blue-50 text-blue-600"><span class="dot bg-blue-500"></span>Draft</span></td>
+                <td class="px-5 py-4 text-slate-600 bg-slate-50/60">เอกสารความปลอดภัยรถไฟฟ้า</td>
+                <td class="px-5 py-4 bg-slate-50/60">
+                  <div class="flex items-center justify-end gap-2">
+                    <button class="rounded-xl bg-blue-600 px-4 py-2 text-[13px] font-semibold text-white shadow-[0_4px_10px_rgba(37,99,235,0.25)] hover:bg-blue-700 transition-colors">ตรวจสอบ</button>
+                    <button class="row-action" aria-label="ตัวเลือก"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">
+                <td class="px-5 py-4 text-slate-500">2</td>
+                <td class="px-5 py-4 font-semibold text-slate-800">RVP002</td>
+                <td class="px-5 py-4 text-slate-600">นาย สุขสยาม รงค์วงสุข</td>
+                <td class="px-5 py-4 text-slate-700">เอกสารความปลอดภัย</td>
+                <td class="px-5 py-4 text-slate-600">วิธีปฏิบัติงาน(RVP)</td>
+                <td class="px-5 py-4"><span class="status-pill bg-blue-50 text-blue-600"><span class="dot bg-blue-500"></span>Complete</span></td>
+                <td class="px-5 py-4 text-slate-600 bg-slate-50/60">เอกสารความปลอดภัยรถไฟฟ้า</td>
+                <td class="px-5 py-4 bg-slate-50/60">
+                  <div class="flex items-center justify-end gap-2">
+                    <button class="rounded-xl bg-blue-600 px-4 py-2 text-[13px] font-semibold text-white shadow-[0_4px_10px_rgba(37,99,235,0.25)] hover:bg-blue-700 transition-colors">ตรวจสอบ</button>
+                    <button class="row-action" aria-label="ตัวเลือก"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">
+                <td class="px-5 py-4 text-slate-500">3</td>
+                <td class="px-5 py-4 font-semibold text-slate-800">RVP003</td>
+                <td class="px-5 py-4 text-slate-600">นาย สุขสยาม รงค์วงสุข</td>
+                <td class="px-5 py-4 text-slate-700">เอกสารความปลอดภัย</td>
+                <td class="px-5 py-4 text-slate-600">วิธีปฏิบัติงาน(RVP)</td>
+                <td class="px-5 py-4"><span class="status-pill bg-emerald-50 text-emerald-600"><span class="dot bg-emerald-500"></span>Approved</span></td>
+                <td class="px-5 py-4 text-slate-600 bg-slate-50/60">เอกสารความปลอดภัยรถไฟฟ้า</td>
+                <td class="px-5 py-4 bg-slate-50/60">
+                  <div class="flex items-center justify-end gap-2">
+                    <button disabled class="w-9 h-9 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-300 cursor-not-allowed" aria-label="ดำเนินการแล้ว"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 11 15 16 9"></polyline></svg></button>
+                    <button class="row-action" aria-label="ตัวเลือก"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">
+                <td class="px-5 py-4 text-slate-500">4</td>
+                <td class="px-5 py-4 font-semibold text-slate-800">RVP004</td>
+                <td class="px-5 py-4 text-slate-600">นาย สุขสยาม รงค์วงสุข</td>
+                <td class="px-5 py-4 text-slate-700">เอกสารความปลอดภัย</td>
+                <td class="px-5 py-4 text-slate-600">วิธีปฏิบัติงาน(RVP)</td>
+                <td class="px-5 py-4"><span class="status-pill bg-emerald-50 text-emerald-600"><span class="dot bg-emerald-500"></span>Approved</span></td>
+                <td class="px-5 py-4 text-slate-600 bg-slate-50/60">เอกสารความปลอดภัยรถไฟฟ้า</td>
+                <td class="px-5 py-4 bg-slate-50/60">
+                  <div class="flex items-center justify-end gap-2">
+                    <button disabled class="w-9 h-9 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-300 cursor-not-allowed" aria-label="ดำเนินการแล้ว"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 11 15 16 9"></polyline></svg></button>
+                    <button class="row-action" aria-label="ตัวเลือก"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">
+                <td class="px-5 py-4 text-slate-500">5</td>
+                <td class="px-5 py-4 font-semibold text-slate-800">RVP005</td>
+                <td class="px-5 py-4 text-slate-600">นาย สุขสยาม รงค์วงสุข</td>
+                <td class="px-5 py-4 text-slate-700">เอกสารความปลอดภัย</td>
+                <td class="px-5 py-4 text-slate-600">วิธีปฏิบัติงาน(RVP)</td>
+                <td class="px-5 py-4"><span class="status-pill bg-emerald-50 text-emerald-600"><span class="dot bg-emerald-500"></span>Approved</span></td>
+                <td class="px-5 py-4 text-slate-600 bg-slate-50/60">เอกสารความปลอดภัยรถไฟฟ้า</td>
+                <td class="px-5 py-4 bg-slate-50/60">
+                  <div class="flex items-center justify-end gap-2">
+                    <button disabled class="w-9 h-9 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-300 cursor-not-allowed" aria-label="ดำเนินการแล้ว"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 11 15 16 9"></polyline></svg></button>
+                    <button class="row-action" aria-label="ตัวเลือก"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">
+                <td class="px-5 py-4 text-slate-500">6</td>
+                <td class="px-5 py-4 font-semibold text-slate-800">RVP006</td>
+                <td class="px-5 py-4 text-slate-600">นาย สุขสยาม รงค์วงสุข</td>
+                <td class="px-5 py-4 text-slate-700">เอกสารความปลอดภัย</td>
+                <td class="px-5 py-4 text-slate-600">วิธีปฏิบัติงาน(RVP)</td>
+                <td class="px-5 py-4"><span class="status-pill bg-violet-50 text-violet-600"><span class="dot bg-violet-500"></span>Request</span></td>
+                <td class="px-5 py-4 text-slate-600 bg-slate-50/60">เอกสารความปลอดภัยรถไฟฟ้า</td>
+                <td class="px-5 py-4 bg-slate-50/60">
+                  <div class="flex items-center justify-end gap-2">
+                    <button class="rounded-xl bg-blue-600 px-4 py-2 text-[13px] font-semibold text-white shadow-[0_4px_10px_rgba(37,99,235,0.25)] hover:bg-blue-700 transition-colors">ตรวจสอบ</button>
+                    <button class="row-action" aria-label="ตัวเลือก"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">
+                <td class="px-5 py-4 text-slate-500">7</td>
+                <td class="px-5 py-4 font-semibold text-slate-800">RVP007</td>
+                <td class="px-5 py-4 text-slate-600">นาย สุขสยาม รงค์วงสุข</td>
+                <td class="px-5 py-4 text-slate-700">เอกสารความปลอดภัย</td>
+                <td class="px-5 py-4 text-slate-600">วิธีปฏิบัติงาน(RVP)</td>
+                <td class="px-5 py-4"><span class="status-pill bg-red-50 text-red-500"><span class="dot bg-red-500"></span>Complete</span></td>
+                <td class="px-5 py-4 text-slate-600 bg-slate-50/60">เอกสารความปลอดภัยรถไฟฟ้า</td>
+                <td class="px-5 py-4 bg-slate-50/60">
+                  <div class="flex items-center justify-end gap-2">
+                    <button class="w-9 h-9 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-red-500 hover:bg-red-50 transition-colors" aria-label="ไม่อนุมัติ"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg></button>
+                    <button class="row-action" aria-label="ตัวเลือก"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">
+                <td class="px-5 py-4 text-slate-500">8</td>
+                <td class="px-5 py-4 font-semibold text-slate-800">RVP008</td>
+                <td class="px-5 py-4 text-slate-600">นาย สุขสยาม รงค์วงสุข</td>
+                <td class="px-5 py-4 text-slate-700">เอกสารความปลอดภัย</td>
+                <td class="px-5 py-4 text-slate-600">วิธีปฏิบัติงาน(RVP)</td>
+                <td class="px-5 py-4"><span class="status-pill bg-slate-100 text-slate-500"><span class="dot bg-slate-400"></span>Complete</span></td>
+                <td class="px-5 py-4 text-slate-600 bg-slate-50/60">เอกสารความปลอดภัยรถไฟฟ้า</td>
+                <td class="px-5 py-4 bg-slate-50/60">
+                  <div class="flex items-center justify-end gap-2">
+                    <button class="w-9 h-9 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-400 hover:bg-slate-100 transition-colors" aria-label="ส่งกลับ"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg></button>
+                    <button class="row-action" aria-label="ตัวเลือก"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">
+                <td class="px-5 py-4 text-slate-500">9</td>
+                <td class="px-5 py-4 font-semibold text-slate-800">RVP009</td>
+                <td class="px-5 py-4 text-slate-600">นาย สุขสยาม รงค์วงสุข</td>
+                <td class="px-5 py-4 text-slate-700">เอกสารความปลอดภัย</td>
+                <td class="px-5 py-4 text-slate-600">วิธีปฏิบัติงาน(RVP)</td>
+                <td class="px-5 py-4"><span class="status-pill bg-blue-50 text-blue-600"><span class="dot bg-blue-500"></span>Complete</span></td>
+                <td class="px-5 py-4 text-slate-600 bg-slate-50/60">เอกสารความปลอดภัยรถไฟฟ้า</td>
+                <td class="px-5 py-4 bg-slate-50/60">
+                  <div class="flex items-center justify-end gap-2">
+                    <button class="rounded-xl bg-blue-600 px-4 py-2 text-[13px] font-semibold text-white shadow-[0_4px_10px_rgba(37,99,235,0.25)] hover:bg-blue-700 transition-colors">ตรวจสอบ</button>
+                    <button class="row-action" aria-label="ตัวเลือก"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button>
+                  </div>
+                </td>
+              </tr>
+
+              <tr class="hover:bg-slate-50/70 transition-colors duration-150">
+                <td class="px-5 py-4 text-slate-500">10</td>
+                <td class="px-5 py-4 font-semibold text-slate-800">RVP010</td>
+                <td class="px-5 py-4 text-slate-600">นาย สุขสยาม รงค์วงสุข</td>
+                <td class="px-5 py-4 text-slate-700">เอกสารความปลอดภัย</td>
+                <td class="px-5 py-4 text-slate-600">วิธีปฏิบัติงาน(RVP)</td>
+                <td class="px-5 py-4"><span class="status-pill bg-violet-50 text-violet-600"><span class="dot bg-violet-500"></span>Request</span></td>
+                <td class="px-5 py-4 text-slate-600 bg-slate-50/60">เอกสารความปลอดภัยรถไฟฟ้า</td>
+                <td class="px-5 py-4 bg-slate-50/60">
+                  <div class="flex items-center justify-end gap-2">
+                    <button class="rounded-xl bg-blue-600 px-4 py-2 text-[13px] font-semibold text-white shadow-[0_4px_10px_rgba(37,99,235,0.25)] hover:bg-blue-700 transition-colors">ตรวจสอบ</button>
+                    <button class="row-action" aria-label="ตัวเลือก"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button>
+                  </div>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 px-5 py-3.5 text-[13px] text-slate-500">
+          <div class="flex items-center gap-2">
+            <span>แสดง</span>
+            <div class="relative">
+              <select class="appearance-none rounded-lg border border-slate-200 bg-white pl-3 pr-8 py-1.5 text-[13px] text-slate-700 outline-none focus:border-blue-500 cursor-pointer">
+                <option>10</option>
+                <option>25</option>
+                <option>50</option>
+              </select>
+              <span class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </span>
+            </div>
+            <span>รายการ</span>
+          </div>
+
+          <p class="text-slate-400">หน้า 1 จาก 2 · รวม 37 รายการ</p>
+
+          <div class="flex items-center gap-2">
+            <button disabled class="rounded-xl border border-slate-200 bg-white px-4 py-2 font-medium text-slate-400 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors">← ก่อนหน้า</button>
+            <button class="rounded-xl border border-slate-200 bg-white px-4 py-2 font-semibold text-slate-700 hover:bg-slate-50 transition-colors">ถัดไป →</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    </div><!-- /scroll area -->
+
+  </div><!-- /main-wrapper -->
+
+  <!-- ════════════════════════════════════════════
+       DOCUMENT COMPLIANCE OVERLAY DRAWER
+  ════════════════════════════════════════════ -->
+
+  <!-- Backdrop -->
+  <div id="compliance-backdrop" class="fixed inset-0 bg-black/30 backdrop-blur-[2px] z-[800] opacity-0 pointer-events-none" style="transition:opacity .3s ease;"></div>
+
+  <!-- Drawer panel -->
+  <div id="compliance-drawer" class="fixed top-0 right-0 h-full w-[400px] bg-white z-[900] shadow-2xl flex flex-col" style="transform:translateX(100%); transition:transform .3s cubic-bezier(.4,0,.2,1);">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between px-7 py-5 border-b border-slate-100">
+      <h2 class="text-[17px] font-bold text-slate-900">Document Compliance</h2>
+      <button id="close-compliance-btn" class="w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="flex-1 overflow-y-auto px-7 py-6 flex flex-col gap-6">
+
+      <!-- Percentages -->
+      <div class="grid grid-cols-3 gap-4 text-center">
+        <div>
+          <p class="text-[30px] font-bold text-slate-900 leading-none">16%</p>
+          <p class="mt-2 text-[12px] text-slate-400 font-medium">Incomplete</p>
+        </div>
+        <div>
+          <p class="text-[30px] font-bold text-slate-900 leading-none">82%</p>
+          <p class="mt-2 text-[12px] text-slate-400 font-medium">Complete</p>
+        </div>
+        <div>
+          <p class="text-[30px] font-bold text-slate-900 leading-none">24%</p>
+          <p class="mt-2 text-[12px] text-slate-400 font-medium">Under Review</p>
+        </div>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="flex rounded-full overflow-hidden h-2 gap-px">
+        <div class="bg-red-400 rounded-l-full" style="width:16%"></div>
+        <div class="bg-emerald-400" style="width:60%"></div>
+        <div class="bg-amber-400 rounded-r-full" style="width:24%"></div>
+      </div>
+
+      <!-- Stat cards -->
+      <div class="grid grid-cols-2 gap-4">
+
+        <div class="rounded-2xl bg-slate-50 p-5">
+          <p class="text-xs font-semibold text-emerald-500 flex items-center gap-1 mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>5
+          </p>
+          <p class="text-[30px] font-bold text-slate-900 leading-none">421</p>
+          <p class="mt-2 text-[13px] font-semibold text-slate-700">Total documents</p>
+          <p class="mt-1.5 text-[11px] text-slate-400 leading-relaxed">Last 30 days: Documents submitted. Increase from the previous period.</p>
+        </div>
+
+        <div class="rounded-2xl bg-slate-50 p-5">
+          <p class="text-xs font-semibold text-red-500 flex items-center gap-1 mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>23
+          </p>
+          <p class="text-[30px] font-bold text-slate-900 leading-none">48</p>
+          <p class="mt-2 text-[13px] font-semibold text-slate-700">Pending Review</p>
+        </div>
+
+        <div class="rounded-2xl bg-slate-50 p-5">
+          <p class="text-xs font-semibold text-emerald-500 flex items-center gap-1 mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>7
+          </p>
+          <p class="text-[30px] font-bold text-slate-900 leading-none">3</p>
+          <p class="mt-2 text-[13px] font-semibold text-slate-700">Average completion time</p>
+          <p class="mt-1.5 text-[11px] text-slate-400">Days</p>
+        </div>
+
+        <div class="rounded-2xl bg-slate-50 p-5">
+          <p class="text-xs font-semibold text-slate-400 flex items-center gap-1 mb-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>0%
+          </p>
+          <p class="text-[30px] font-bold text-slate-900 leading-none">0</p>
+          <p class="mt-2 text-[13px] font-semibold text-slate-700">Rejected</p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const sidebar     = document.getElementById('sidebar');
+    const mainWrapper = document.getElementById('main-wrapper');
+
+    // ── Sidebar collapse / expand ──
+    document.getElementById('collapse-btn').addEventListener('click', () => {
+      sidebar.classList.add('collapsed');
+      mainWrapper.style.marginLeft = '72px';
+    });
+    document.getElementById('expand-btn').addEventListener('click', () => {
+      sidebar.classList.remove('collapsed');
+      mainWrapper.style.marginLeft = '260px';
+    });
+
+    // ── Compliance drawer ──
+    const backdrop = document.getElementById('compliance-backdrop');
+    const drawer   = document.getElementById('compliance-drawer');
+
+    function openDrawer() {
+      backdrop.style.opacity = '1';
+      backdrop.style.pointerEvents = 'auto';
+      drawer.style.transform = 'translateX(0)';
+    }
+    function closeDrawer() {
+      backdrop.style.opacity = '0';
+      backdrop.style.pointerEvents = 'none';
+      drawer.style.transform = 'translateX(100%)';
+    }
+
+    document.getElementById('open-compliance-btn').addEventListener('click', openDrawer);
+    document.getElementById('close-compliance-btn').addEventListener('click', closeDrawer);
+    backdrop.addEventListener('click', closeDrawer);
+
+    // ── Filter tabs (คลิกซ้ำเพื่อยกเลิกการเลือก) ──
+    document.querySelectorAll('.filter-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const wasActive = btn.classList.contains('active');
+        document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+        if (!wasActive) btn.classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>
