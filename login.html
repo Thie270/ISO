@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>เข้าสู่ระบบ — Riverpark Document System</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen bg-slate-100" style="font-family:'Inter','IBM Plex Sans Thai',sans-serif;">
+
+  <div class="min-h-screen flex">
+
+    <!-- ════════════════════════════════════════════
+         LEFT — brand panel
+    ════════════════════════════════════════════ -->
+    <div class="hidden lg:flex lg:w-[46%] xl:w-[50%] relative overflow-hidden text-white flex-col justify-between p-12"
+         style="background:url('image/banner-bg.png') no-repeat center center / cover;">
+      <div class="absolute inset-0 pointer-events-none"
+           style="background:linear-gradient(135deg, rgba(9,50,105,.94) 0%, rgba(20,90,163,.88) 45%, rgba(64,158,214,.72) 100%);"></div>
+
+      <div class="relative z-10 flex items-center gap-3">
+        <div class="w-11 h-11 rounded-2xl overflow-hidden bg-white/15 border border-white/25 flex-shrink-0">
+          <img src="image/logo.png" alt="Logo" class="w-full h-full object-cover" />
+        </div>
+        <div>
+          <p class="text-[15px] font-bold leading-tight">Riverpark</p>
+          <p class="text-[11.5px] text-white/70">Document System</p>
+        </div>
+      </div>
+
+      <div class="relative z-10">
+        <p class="text-[11px] font-bold tracking-[0.32em] uppercase text-white/70 mb-3">RIVERPARK</p>
+        <h1 class="text-[40px] xl:text-[46px] font-bold leading-[1.1] tracking-tight" data-i18n="login.tagline"></h1>
+        <p class="mt-4 text-[14px] text-white/80 max-w-[440px] leading-relaxed" data-i18n="login.sub"></p>
+
+        <ul class="mt-9 flex flex-col gap-4">
+          <li class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </span>
+            <span class="text-[13.5px] text-white/90" data-i18n="login.point1"></span>
+          </li>
+          <li class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            </span>
+            <span class="text-[13.5px] text-white/90" data-i18n="login.point2"></span>
+          </li>
+          <li class="flex items-center gap-3">
+            <span class="w-8 h-8 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </span>
+            <span class="text-[13.5px] text-white/90" data-i18n="login.point3"></span>
+          </li>
+        </ul>
+      </div>
+
+      <p class="relative z-10 text-[11.5px] text-white/50">© 2026 Riverpark · Document Action Request (DAR) — Mockup</p>
+    </div>
+
+    <!-- ════════════════════════════════════════════
+         RIGHT — form
+    ════════════════════════════════════════════ -->
+    <div class="flex-1 flex flex-col items-center justify-center px-6 py-10 relative">
+
+      <!-- language toggle -->
+      <button id="lang-toggle"
+              class="absolute top-6 right-6 flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-500 shadow-sm hover:bg-slate-50 hover:text-blue-600 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        <span id="lang-label" class="text-[12px] font-bold tracking-wide">TH</span>
+      </button>
+
+      <div class="w-full max-w-[420px]">
+
+        <!-- mobile brand -->
+        <div class="flex lg:hidden items-center gap-3 mb-8">
+          <div class="w-10 h-10 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
+            <img src="image/logo.png" alt="Logo" class="w-full h-full object-cover" />
+          </div>
+          <div>
+            <p class="text-[14px] font-bold text-slate-800 leading-tight">Riverpark</p>
+            <p class="text-[11.5px] text-slate-400">Document System</p>
+          </div>
+        </div>
+
+        <h2 class="text-[26px] font-bold text-slate-900 tracking-tight" data-i18n="login.title"></h2>
+        <p class="mt-1.5 text-[13.5px] text-slate-400" data-i18n="login.sub"></p>
+
+        <form id="login-form" class="mt-8 flex flex-col gap-4">
+          <div class="flex flex-col gap-1.5">
+            <label for="f-user" class="text-[13px] font-semibold text-slate-700" data-i18n="login.user"></label>
+            <div class="relative">
+              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              </span>
+              <input id="f-user" name="username" type="text" autocomplete="username" data-i18n-ph="login.userPh"
+                     class="w-full rounded-xl border border-slate-200 pl-11 pr-4 py-3 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <label for="f-pass" class="text-[13px] font-semibold text-slate-700" data-i18n="login.pass"></label>
+            <div class="relative">
+              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              </span>
+              <input id="f-pass" name="password" type="password" autocomplete="current-password" data-i18n-ph="login.passPh"
+                     class="w-full rounded-xl border border-slate-200 pl-11 pr-11 py-3 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
+              <button type="button" id="toggle-pass" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <label class="flex items-center gap-2 cursor-pointer select-none">
+              <input type="checkbox" class="w-4 h-4 accent-blue-600 cursor-pointer rounded" checked />
+              <span class="text-[12.5px] text-slate-500" data-i18n="login.remember"></span>
+            </label>
+            <a href="#" class="text-[12.5px] font-semibold text-blue-600 no-underline hover:text-blue-700 transition-colors" data-i18n="login.forgot"></a>
+          </div>
+
+          <p id="login-error" class="hidden rounded-xl bg-red-50 border border-red-100 px-4 py-2.5 text-[12.5px] font-semibold text-red-600"></p>
+
+          <button type="submit"
+                  class="mt-1 w-full rounded-xl px-5 py-3.5 text-[14px] font-semibold text-white transition-all hover:-translate-y-px"
+                  style="background:linear-gradient(90deg,#2563eb 0%,#1d4ed8 100%); box-shadow:0 8px 20px rgba(37,99,235,.3);">
+            <span data-i18n="login.submit"></span>
+          </button>
+        </form>
+
+        <!-- ── demo accounts ── -->
+        <div class="mt-9">
+          <div class="flex items-center gap-3">
+            <span class="h-px flex-1 bg-slate-200"></span>
+            <span class="text-[11px] font-semibold uppercase tracking-widest text-slate-300" data-i18n="login.demo"></span>
+            <span class="h-px flex-1 bg-slate-200"></span>
+          </div>
+          <p class="mt-3 text-center text-[12px] text-slate-400" data-i18n="login.demoHint"></p>
+
+          <div id="demo-accounts" class="mt-4 flex flex-col gap-2.5"></div>
+
+          <button id="reset-data" class="mt-5 w-full text-center text-[12px] font-semibold text-slate-400 hover:text-red-500 transition-colors" data-i18n="login.reset"></button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/store.js"></script>
+  <script>
+    const ROLE_ICON = {
+      requester:  '<path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>',
+      approver:   '<circle cx="12" cy="12" r="10"></circle><polyline points="8 12 11 15 16 9"></polyline>',
+      stakeholder:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>'
+    };
+
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    function renderAccounts() {
+      const lang = I18N.getLang();
+      document.getElementById('demo-accounts').innerHTML = Store.USERS.map(u =>
+        '<button type="button" data-login="' + u.id + '" ' +
+          'class="group w-full flex items-center gap-3.5 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-left transition-all hover:border-blue-300 hover:shadow-[0_6px_18px_rgba(37,99,235,0.12)] hover:-translate-y-px">' +
+          '<span class="w-11 h-11 rounded-xl text-white flex items-center justify-center text-[15px] font-bold flex-shrink-0" style="background:' + u.color + '">' + esc(u.initials) + '</span>' +
+          '<span class="flex-1 min-w-0">' +
+            '<span class="block text-[13.5px] font-bold text-slate-800 truncate">' + esc(lang === 'en' ? u.nameEn : u.name) + '</span>' +
+            '<span class="block text-[12px] text-slate-400 truncate mt-0.5">' + esc(I18N.t('role.' + u.role + '.sub')) + '</span>' +
+          '</span>' +
+          '<span class="flex items-center gap-1.5 rounded-lg bg-slate-50 px-2.5 py-1.5 text-[11.5px] font-semibold text-slate-500 flex-shrink-0 group-hover:bg-blue-50 group-hover:text-blue-600 transition-colors">' +
+            '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">' + ROLE_ICON[u.role] + '</svg>' +
+            esc(I18N.t('role.' + u.role)) +
+          '</span>' +
+        '</button>').join('');
+
+      document.querySelectorAll('[data-login]').forEach(b => {
+        b.addEventListener('click', () => go(Store.loginAs(b.getAttribute('data-login'))));
+      });
+    }
+
+    function go(user) {
+      if (!user) return;
+      const back = sessionStorage.getItem('rvp_after_login');
+      sessionStorage.removeItem('rvp_after_login');
+      location.href = (back && back.indexOf('login') === -1) ? back : user.home;
+    }
+
+    /* ── login form ── */
+    document.getElementById('login-form').addEventListener('submit', e => {
+      e.preventDefault();
+      const err = document.getElementById('login-error');
+      const u = Store.login(document.getElementById('f-user').value, document.getElementById('f-pass').value);
+      if (!u) {
+        err.textContent = I18N.t('login.invalid');
+        err.classList.remove('hidden');
+        return;
+      }
+      err.classList.add('hidden');
+      go(u);
+    });
+
+    document.getElementById('toggle-pass').addEventListener('click', () => {
+      const f = document.getElementById('f-pass');
+      f.type = f.type === 'password' ? 'text' : 'password';
+    });
+
+    /* ── language ── */
+    function paintLang() { document.getElementById('lang-label').textContent = I18N.getLang() === 'th' ? 'TH' : 'EN'; }
+    document.getElementById('lang-toggle').addEventListener('click', () => I18N.toggle());
+    document.addEventListener('langchange', () => { paintLang(); renderAccounts(); I18N.apply(); });
+
+    /* ── reset demo data ── */
+    document.getElementById('reset-data').addEventListener('click', () => {
+      Store.reset();
+      const b = document.getElementById('reset-data');
+      b.textContent = I18N.t('login.resetDone');
+      b.classList.add('text-emerald-600');
+      setTimeout(() => { b.classList.remove('text-emerald-600'); I18N.apply(); }, 1800);
+    });
+
+    /* ── init ── */
+    Store.load();
+    Store.logout();
+    I18N.apply();
+    paintLang();
+    renderAccounts();
+    document.getElementById('f-user').value = 'userA';
+    document.getElementById('f-pass').value = '1234';
+  </script>
+
+</body>
+</html>

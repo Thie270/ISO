@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>รายละเอียดเอกสาร — Riverpark</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* ── กระดาษ A4 ในโปรแกรมดูเอกสาร ── */
+    #pdf-stage { background:#525659; }
+    #pdf-pages { transform-origin: top center; }
+    .paper {
+      width: 210mm;
+      min-height: 297mm;
+      background: #ffffff;
+      box-shadow: 0 4px 18px rgba(0,0,0,.45);
+      margin: 0 auto 22px;
+      padding: 16mm 15mm;
+      color: #0f172a;
+      font-size: 12.5px;
+      line-height: 1.55;
+      transform-origin: top center;
+    }
+    .paper h1 { font-size: 17px; font-weight: 700; }
+    .paper .ph  { border-bottom: 1px solid #94a3b8; display:inline-block; min-width:120px; }
+    .paper table { width:100%; border-collapse: collapse; }
+    .paper .bx { border:1px solid #cbd5e1; }
+    .paper .sec {
+      background:#f1f5f9; border:1px solid #cbd5e1; font-weight:700;
+      padding:5px 9px; font-size:12.5px; margin-top:14px;
+    }
+    .chk { display:inline-flex; width:13px; height:13px; border:1.4px solid #475569; margin-right:6px; align-items:center; justify-content:center; font-size:11px; line-height:1; flex-shrink:0; }
+    .chk.on::after { content:'\2713'; font-weight:700; }
+
+    @media print {
+      body * { visibility: hidden !important; }
+      #pdf-stage, #pdf-stage * { visibility: visible !important; }
+      #pdf-stage { position:absolute; inset:0; background:#fff !important; padding:0 !important; overflow:visible !important; }
+      #pdf-pages { transform:none !important; margin:0 !important; }
+      .paper { box-shadow:none !important; margin:0 !important; page-break-after: always; }
+      #demo-bar, #notif-panel { display:none !important; }
+    }
+  </style>
+</head>
+
+<body class="bg-slate-100 min-h-screen flex" style="font-family:'Inter','IBM Plex Sans Thai',sans-serif;">
+
+  <!-- ════════════════════════════════════════════ SIDEBAR ════════════════════════════════════════════ -->
+  <aside id="sidebar" class="fixed top-0 left-0 h-full w-[260px] bg-white border-r border-slate-100 shadow-sm flex flex-col z-[500] overflow-hidden">
+    <div class="sidebar-expanded-header flex items-center gap-3 px-5 border-b border-slate-100" style="height:64px;">
+      <div class="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100"><img src="image/logo.png" alt="Logo" class="w-full h-full object-cover" /></div>
+      <div class="flex-1 min-w-0">
+        <p class="text-[13px] font-bold text-slate-800 truncate leading-tight" data-i18n="app.name"></p>
+        <p class="text-[11px] text-slate-400 truncate" data-i18n="app.sub"></p>
+      </div>
+      <button id="collapse-btn" class="w-7 h-7 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 flex-shrink-0 transition-colors"><img src="icon/menu-01.svg" width="20" height="20" alt="" /></button>
+    </div>
+    <div class="sidebar-collapsed-header hidden items-center justify-center border-b border-slate-100" style="height:64px;">
+      <button id="expand-btn" class="w-9 h-9 rounded-xl overflow-hidden hover:opacity-80 transition-opacity"><img src="image/logo.png" alt="Logo" class="w-full h-full object-cover" /></button>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-0.5">
+      <p class="nav-section-title text-[10px] font-semibold text-slate-300 uppercase tracking-widest px-3 pt-3 pb-1.5" data-i18n="nav.main"></p>
+      <a href="index.html" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+        <span class="nav-text" data-i18n="nav.registry"></span>
+      </a>
+      <a href="#" data-my-work class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+        <span class="nav-text" data-i18n="nav.myWork"></span>
+      </a>
+      <a href="create.html" data-role-only="requester" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+        <span class="nav-text" data-i18n="nav.create"></span>
+      </a>
+      <div class="flex-1"></div>
+      <p class="nav-section-title text-[10px] font-semibold text-slate-300 uppercase tracking-widest px-3 pt-5 pb-1.5" data-i18n="nav.system"></p>
+      <a href="#" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="3"></circle><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"></path></svg>
+        <span class="nav-text" data-i18n="nav.settings"></span>
+      </a>
+    </nav>
+
+    <div class="sidebar-expanded-header flex items-center gap-3 px-4 py-4 border-t border-slate-100">
+      <div data-user-initials class="w-8 h-8 rounded-lg text-white flex items-center justify-center text-[11px] font-bold flex-shrink-0"></div>
+      <div class="flex-1 min-w-0">
+        <p data-user-name class="text-[13px] font-semibold text-slate-800 truncate leading-tight"></p>
+        <p data-user-rolesub class="text-[11px] text-slate-400 truncate"></p>
+      </div>
+    </div>
+    <div class="sidebar-collapsed-header hidden items-center justify-center py-4 border-t border-slate-100">
+      <div data-user-initials class="w-8 h-8 rounded-lg text-white flex items-center justify-center text-[11px] font-bold"></div>
+    </div>
+  </aside>
+
+  <!-- ════════════════════════════════════════════ MAIN ════════════════════════════════════════════ -->
+  <div id="main-wrapper" class="flex-1 flex flex-col h-screen overflow-hidden" style="margin-left:260px;">
+
+    <!-- Topbar -->
+    <div class="flex-shrink-0 z-[100] bg-white border-b border-slate-100 flex items-center justify-between px-8" style="height:64px;">
+      <div class="flex items-center gap-2 text-[13px] font-medium min-w-0">
+        <a href="#" id="back-link" class="w-8 h-8 rounded-lg border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50 hover:text-blue-600 transition-colors mr-1 flex-shrink-0">
+          <img src="icon/chevron-left.svg" width="14" height="14" alt="" />
+        </a>
+        <a href="index.html" class="text-slate-400 no-underline hover:text-blue-600 transition-colors" data-i18n="common.dashboard"></a>
+        <span class="text-slate-300">/</span>
+        <span id="bc-doc" class="text-slate-900 font-semibold truncate"></span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span data-role-badge class="hidden lg:inline-flex items-center gap-2 rounded-xl bg-blue-50 px-3 py-2 text-[12.5px] font-semibold text-blue-600"></span>
+        <button id="notif-btn" class="relative w-10 h-10 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-400 shadow-sm hover:bg-slate-50 hover:text-blue-600 transition-colors" data-i18n-aria="common.notifications">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        </button>
+        <button id="user-btn" class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 hover:bg-slate-100 transition-colors cursor-pointer">
+          <div data-user-initials class="w-8 h-8 rounded-lg text-white flex items-center justify-center text-[13px] font-bold"></div>
+          <span data-user-name class="text-sm font-semibold text-slate-900 hidden sm:inline"></span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="flex-1 min-h-0 flex">
+
+      <!-- ── PDF VIEWER ── -->
+      <div class="flex-1 min-w-0 flex flex-col">
+
+        <!-- viewer toolbar -->
+        <div class="flex-shrink-0 bg-white border-b border-slate-100 flex items-center justify-between gap-3 px-5 py-2.5 flex-wrap">
+          <div class="inline-flex items-center gap-1 rounded-xl border border-slate-200 p-1">
+            <button data-vtab="dar" class="v-tab rounded-lg px-3.5 py-1.5 text-[12.5px] font-semibold transition-colors bg-blue-600 text-white" data-i18n="dv.pdf"></button>
+            <button data-vtab="files" class="v-tab rounded-lg px-3.5 py-1.5 text-[12.5px] font-semibold text-slate-500 transition-colors hover:bg-slate-100">
+              <span data-i18n="dv.attach"></span> <span id="files-count" class="opacity-60"></span>
+            </button>
+          </div>
+
+          <div class="flex items-center gap-1.5">
+            <button id="zoom-out" class="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-colors" data-i18n-title="dv.zoomOut">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+            <span id="zoom-val" class="w-[52px] text-center text-[12.5px] font-semibold text-slate-600">100%</span>
+            <button id="zoom-in" class="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-slate-500 hover:bg-slate-50 transition-colors" data-i18n-title="dv.zoomIn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+            <button id="zoom-fit" class="rounded-lg border border-slate-200 bg-white px-3 h-8 text-[12.5px] font-semibold text-slate-600 hover:bg-slate-50 transition-colors" data-i18n="dv.fit"></button>
+            <span class="w-px h-6 bg-slate-200 mx-1"></span>
+            <button id="btn-print" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 h-8 text-[12.5px] font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              <span data-i18n="dv.print"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- pages -->
+        <div id="pdf-stage" class="flex-1 min-h-0 overflow-auto p-7"></div>
+      </div>
+
+      <!-- ── INFO PANEL ── -->
+      <aside class="w-[380px] flex-shrink-0 bg-white border-l border-slate-100 flex flex-col">
+        <div id="info-scroll" class="flex-1 min-h-0 overflow-y-auto"></div>
+        <div id="action-bar" class="flex-shrink-0 border-t border-slate-100 p-4 bg-white"></div>
+      </aside>
+
+    </div>
+  </div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  (function () {
+    const esc = App.esc;
+    const T   = k => I18N.t(k);
+    const user = App.initChrome();
+    if (!user) return;
+
+    const params = new URLSearchParams(location.search);
+    const docId  = params.get('id');
+    let doc = Store.getDoc(docId);
+
+    document.getElementById('back-link').setAttribute('href', user.home);
+
+    if (!doc) {
+      document.getElementById('bc-doc').textContent = T('dv.notFound');
+      document.getElementById('pdf-stage').innerHTML =
+        '<div class="paper flex items-center justify-center text-slate-400">' + esc(T('dv.notFound')) + '</div>';
+      document.getElementById('info-scroll').innerHTML =
+        '<p class="p-6 text-[13px] text-slate-400">' + esc(T('dv.notFound')) + '</p>';
+      return;
+    }
+
+    /* ══════════════ PDF pages ══════════════ */
+    let zoom = 0.78, tab = 'dar';
+
+    function fld(v, w) {
+      return '<span class="ph" style="min-width:' + (w || 140) + 'px">&nbsp;' + esc(v || '') + '&nbsp;</span>';
+    }
+    function box(on) { return '<span class="chk' + (on ? ' on' : '') + '"></span>'; }
+
+    const D = App.dayLabel;
+
+    function signCell(label, sig, name) {
+      const has = !!sig;
+      const img = has && sig.img;
+      return '<div style="flex:1;text-align:center">' +
+        '<div class="bx" style="height:74px;display:flex;align-items:center;justify-content:center;background:' + (has ? '#f8fafc' : '#fff') + '">' +
+          (img
+            ? '<img src="' + esc(sig.img) + '" style="max-height:66px;max-width:96%;object-fit:contain" alt="" />'
+            : (has
+              ? '<span style="font-family:cursive;font-size:21px;color:#1e3a8a;transform:rotate(-4deg);display:inline-block">' + esc((name || '').slice(0, 18)) + '</span>'
+              : '<span style="color:#cbd5e1;font-size:11px">' + esc(T('sh.waiting')) + '</span>')) +
+        '</div>' +
+        '<div style="font-size:11.5px;margin-top:6px">' + esc(label) + '</div>' +
+        '<div style="font-size:11px;color:#64748b;margin-top:2px">' +
+          esc(T('cr.name')) + ' ' + fld(has ? (name || '') : '', 90) + '</div>' +
+        '<div style="font-size:11px;color:#64748b;margin-top:3px">' +
+          esc(T('cr.signDate')) + ' ' + fld(has ? D(sig.day) : '', 60) + '</div>' +
+      '</div>';
+    }
+
+    function renderPaper() {
+      const lang = I18N.getLang();
+      const title = Store.docTitle(doc, lang);
+      const reqName = lang === 'en' ? doc.requesterNameEn : doc.requesterName;
+      const reqUser = Store.USERS.find(u => u.id === doc.requesterId) || Store.USERS[0];
+      const stk = doc.stakeholders || [];
+      const sg = doc.signatures || {};
+
+      const p1 =
+        '<div class="paper">' +
+          '<div style="display:flex;align-items:center;gap:12px;border-bottom:2px solid #0f172a;padding-bottom:10px">' +
+            '<img src="image/logo.png" style="width:42px;height:42px;object-fit:cover;border-radius:6px" alt="" />' +
+            '<div style="flex:1">' +
+              '<h1>แบบคำขอดำเนินการเกี่ยวกับเอกสาร (Document Action Request)</h1>' +
+              '<div style="font-size:11.5px;color:#475569">Riverpark · Quality Management System — ISO 9001:2015</div>' +
+            '</div>' +
+            '<div style="text-align:right;font-size:11px;color:#475569">' +
+              '<div><b style="color:#0f172a;font-size:13px">' + esc(doc.id) + '</b></div>' +
+              '<div>FM-QP-005-01 Rev.3</div>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="sec">' + esc(T('cr.s1')) + '</div>' +
+          '<table style="margin-top:8px"><tr>' +
+            '<td style="width:50%">' + esc(T('cr.empId')) + ' : ' + fld(doc.requesterEmpId || reqUser.empId) + '</td>' +
+            '<td>' + esc(T('cr.date')) + ' : ' + fld(doc.requestDate || D(doc.createdDay), 90) + '</td>' +
+          '</tr><tr>' +
+            '<td style="padding-top:7px">' + esc(T('cr.name')) + ' : ' + fld(reqName, 190) + '</td>' +
+            '<td style="padding-top:7px">' + esc(T('cr.dept')) + ' : ' + fld(doc.requesterDept, 130) + '</td>' +
+          '</tr></table>' +
+
+          '<div class="sec">' + esc(T('cr.s2')) + '</div>' +
+          '<div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:7px 18px">' +
+            ['new', 'edit', 'cancel', 'copy', 'other'].map(k =>
+              '<div style="display:flex;align-items:center">' + box(doc.purpose === k) + esc(Store.purposeLabel(k, lang)) + '</div>').join('') +
+          '</div>' +
+          (doc.purposeDetail ? '<div style="margin-top:8px">' + esc(T('cr.detail')) + ' : ' + fld(doc.purposeDetail, 320) + '</div>' : '') +
+
+          '<div class="sec">' + esc(T('cr.s3')) + '</div>' +
+          '<div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:7px 18px">' +
+            Object.keys(Store.DOC_TYPES).map(k =>
+              '<div style="display:flex;align-items:center">' + box(doc.type === k) + esc(Store.docTypeLabel(k, lang)) + '</div>').join('') +
+          '</div>' +
+
+          '<div class="sec">' + esc(T('cr.s4')) + '</div>' +
+          '<table style="margin-top:8px"><tr>' +
+            '<td style="width:58%">' + esc(T('cr.docName')) + ' : ' + fld(title, 210) + '</td>' +
+            '<td>' + esc(T('cr.docNo')) + ' : ' + fld(doc.docNo, 120) + '</td>' +
+          '</tr><tr>' +
+            '<td style="padding-top:7px">' + esc(T('cr.revision')) + ' : ' + fld(String(doc.revision), 50) + '</td>' +
+            '<td style="padding-top:7px">' + esc(T('cr.relatedDept')) + ' : ' + fld(doc.relatedDept, 110) + '</td>' +
+          '</tr></table>' +
+          '<div style="margin-top:9px">' + esc(T('cr.desc')) + ' :</div>' +
+          '<div class="bx" style="margin-top:5px;min-height:74px;padding:8px 10px;font-size:12px;white-space:pre-wrap">' + esc(doc.description) + '</div>' +
+          '<div style="margin-top:9px;font-size:12px">' + esc(T('cr.effective')) + ' ' + fld(doc.effectiveDate || '', 110) + '</div>' +
+
+          '<div style="margin-top:22px;display:flex;justify-content:space-between;font-size:10.5px;color:#94a3b8;border-top:1px solid #e2e8f0;padding-top:7px">' +
+            '<span>' + esc(doc.id) + ' · ' + esc(doc.docNo) + '</span><span>1 / 2</span>' +
+          '</div>' +
+        '</div>';
+
+      const p2 =
+        '<div class="paper">' +
+          '<div class="sec" style="margin-top:0">' + esc(T('cr.s5')) + '</div>' +
+          '<div style="margin-top:8px">' +
+            (doc.files || []).length
+              ? (doc.files || []).map((f, i) =>
+                  '<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px dashed #e2e8f0">' +
+                    '<span style="color:#64748b">' + (i + 1) + '.</span>' +
+                    '<span style="flex:1">' + esc(f.name) + '</span>' +
+                    '<span style="color:#64748b;font-size:11px">' + (f.size / 1024).toFixed(0) + ' KB</span>' +
+                  '</div>').join('')
+              : '<div style="color:#94a3b8">' + esc(T('common.empty')) + '</div>' +
+          '</div>' +
+
+          '<div class="sec">' + esc(T('cr.s6')) + '</div>' +
+          '<div style="margin-top:10px;display:flex;gap:22px">' +
+            signCell(T('th.requester'), sg.requester || { day: doc.createdDay }, reqName) +
+            signCell(T('cr.owner'), sg.owner || { day: doc.createdDay }, doc.requesterDept) +
+          '</div>' +
+
+          '<div class="sec">' + esc(T('cr.s7')) + '</div>' +
+          '<div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:16px 22px">' +
+            (stk.length ? stk.map(s =>
+              signCell(lang === 'en' ? s.nameEn : s.name, s.signed ? { day: s.signedDay } : null, lang === 'en' ? s.nameEn : s.name)
+            ).join('') : '<div style="color:#94a3b8">' + esc(T('common.empty')) + '</div>') +
+          '</div>' +
+
+          '<div class="sec">' + esc(T('cr.s8')) + '</div>' +
+          '<div style="margin-top:10px;display:flex;gap:22px">' +
+            signCell(T('cr.approver'), sg.approver || null, lang === 'en' ? Store.USERS[1].nameEn : Store.USERS[1].name) +
+            '<div style="flex:1"></div>' +
+          '</div>' +
+
+          '<div class="sec">' + esc(T('cr.s9')) + '</div>' +
+          '<div style="margin-top:10px;display:flex;gap:22px">' +
+            signCell(T('cr.qcStaff'), sg.qcStaff || null, lang === 'en' ? Store.USERS[3].nameEn : Store.USERS[3].name) +
+            signCell(T('cr.qcManager'), sg.qcManager || null, lang === 'en' ? Store.USERS[3].nameEn : Store.USERS[3].name) +
+          '</div>' +
+
+          '<div style="margin-top:22px;display:flex;justify-content:space-between;font-size:10.5px;color:#94a3b8;border-top:1px solid #e2e8f0;padding-top:7px">' +
+            '<span>' + esc(doc.id) + ' · ' + esc(doc.docNo) + '</span><span>2 / 2</span>' +
+          '</div>' +
+        '</div>';
+
+      return p1 + p2;
+    }
+
+    /* ── ไฟล์แนบ: เปิดไฟล์จริงที่ผู้ใช้อัปโหลด ── */
+    function renderFiles() {
+      const files = doc.files || [];
+      if (!files.length) {
+        return '<div class="paper" style="min-height:120mm;display:flex;align-items:center;justify-content:center;color:#94a3b8">' +
+               esc(T('common.empty')) + '</div>';
+      }
+
+      return files.map((f, i) => {
+        const url = Store.fileURL(f);
+        const kind = Store.fileKind(f);
+        let body;
+
+        if (url && kind === 'pdf') {
+          body = '<iframe src="' + url + '#toolbar=0" style="width:100%;height:210mm;border:1px solid #e2e8f0;border-radius:6px;background:#fff"></iframe>';
+        } else if (url && kind === 'image') {
+          body = '<div style="border:1px solid #e2e8f0;border-radius:6px;padding:10px;background:#fff;text-align:center">' +
+                 '<img src="' + url + '" style="max-width:100%;max-height:200mm;object-fit:contain" alt="" /></div>';
+        } else {
+          const msg = f.dropped ? T('dv.fileDropped') : (url ? T('dv.noPreview') : T('dv.noFile'));
+          body =
+            '<div style="border:1px dashed #cbd5e1;border-radius:8px;background:#f8fafc;padding:26px;text-align:center;color:#64748b">' +
+              '<svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>' +
+              '<div style="margin-top:10px;font-size:12px;line-height:1.6">' + esc(msg) + '</div>' +
+            '</div>' +
+            /* ตัวอย่างหน้ากระดาษจำลอง สำหรับข้อมูลตัวอย่างที่ไม่มีไฟล์จริง */
+            '<div style="margin-top:16px;display:flex;flex-direction:column;gap:9px;opacity:.55">' +
+              [92, 78, 96, 64, 88, 71, 94, 55, 83].map(w =>
+                '<div style="height:9px;border-radius:4px;background:#e8edf4;width:' + w + '%"></div>').join('') +
+            '</div>';
+        }
+
+        const actions = url
+          ? '<a href="' + url + '" download="' + esc(f.name) + '" style="display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:#2563eb;text-decoration:none">' +
+              '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>' +
+              esc(T('act.download')) + '</a>' +
+            '<a href="' + url + '" target="_blank" rel="noopener" style="margin-left:14px;font-size:11.5px;font-weight:600;color:#64748b;text-decoration:none">' + esc(T('dv.openTab')) + '</a>'
+          : '';
+
+        return '<div class="paper" style="min-height:120mm">' +
+            '<div style="display:flex;align-items:center;gap:10px;border-bottom:1px solid #e2e8f0;padding-bottom:9px">' +
+              '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="' + (kind === 'pdf' ? '#dc2626' : '#2563eb') + '" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>' +
+              '<div style="flex:1;min-width:0">' +
+                '<div style="font-weight:700;word-break:break-all">' + esc(f.name) + '</div>' +
+                '<div style="font-size:11px;color:#64748b">' + (f.size / 1024).toFixed(0) + ' KB · ' +
+                  esc(f.kind === 'dar' ? T('dv.pdf') : T('dv.attach')) + ' · ' + (i + 1) + '/' + files.length + '</div>' +
+              '</div>' +
+              '<div style="flex-shrink:0">' + actions + '</div>' +
+            '</div>' +
+            '<div style="margin-top:14px">' + body + '</div>' +
+          '</div>';
+      }).join('');
+    }
+
+    function paintStage() {
+      const stage = document.getElementById('pdf-stage');
+      stage.innerHTML = '<div id="pdf-pages">' + (tab === 'dar' ? renderPaper() : renderFiles()) + '</div>';
+      applyZoom();
+    }
+
+    /* ย่อ/ขยายทั้งกองหน้ากระดาษพร้อมกัน แล้วหักความสูงส่วนเกินออก
+       เพื่อไม่ให้เหลือช่องว่างท้ายหน้าตอนซูมออก */
+    function applyZoom() {
+      const pages = document.getElementById('pdf-pages');
+      if (!pages) return;
+      pages.style.transform = 'scale(' + zoom + ')';
+      pages.style.marginBottom = '0px';
+      const h = pages.offsetHeight;
+      pages.style.marginBottom = -(h * (1 - zoom)) + 'px';
+      document.getElementById('zoom-val').textContent = Math.round(zoom * 100) + '%';
+    }
+
+    function fit() {
+      const stage = document.getElementById('pdf-stage');
+      const avail = stage.clientWidth - 56;
+      const mm = 210 * 3.7795;          /* 210mm → px */
+      zoom = Math.max(0.35, Math.min(1.5, avail / mm));
+      applyZoom();
+    }
+
+    document.getElementById('zoom-in').addEventListener('click', () => { zoom = Math.min(1.6, zoom + 0.1); applyZoom(); });
+    document.getElementById('zoom-out').addEventListener('click', () => { zoom = Math.max(0.35, zoom - 0.1); applyZoom(); });
+    document.getElementById('zoom-fit').addEventListener('click', fit);
+    document.getElementById('btn-print').addEventListener('click', () => {
+      const keep = zoom; zoom = 1; applyZoom();
+      setTimeout(() => { window.print(); zoom = keep; applyZoom(); }, 120);
+    });
+
+    document.querySelectorAll('.v-tab').forEach(b => {
+      b.addEventListener('click', () => {
+        tab = b.getAttribute('data-vtab');
+        document.querySelectorAll('.v-tab').forEach(x => {
+          x.classList.remove('bg-blue-600', 'text-white');
+          x.classList.add('text-slate-500');
+        });
+        b.classList.add('bg-blue-600', 'text-white');
+        b.classList.remove('text-slate-500');
+        paintStage();
+      });
+    });
+
+    /* ══════════════ INFO PANEL ══════════════ */
+    const ACTION_LABEL = {
+      create: { th: 'สร้างเอกสาร', en: 'Created' },
+      send:   { th: 'ส่งให้ผู้อนุมัติตรวจสอบ', en: 'Submitted for review' },
+      approve:{ th: 'อนุมัติ · ส่งต่อผู้เกี่ยวข้อง', en: 'Approved · forwarded' },
+      return: { th: 'ส่งกลับให้แก้ไข', en: 'Returned for edit' },
+      reject: { th: 'ไม่อนุมัติ · ปิดคำขอ', en: 'Rejected · closed' },
+      sign:   { th: 'ลงนาม', en: 'Signed' },
+      toQC:   { th: 'ลงนามครบ · ส่งแผนก QC', en: 'All signed · sent to QC' },
+      register: { th: 'ขึ้นทะเบียนเอกสาร', en: 'Document registered' },
+      expire: { th: 'หมดอายุ · ระบบส่งกลับ', en: 'Expired · auto returned' }
+    };
+    const ACTION_TONE = {
+      create: 'bg-slate-300', send: 'bg-blue-500', approve: 'bg-emerald-500',
+      return: 'bg-red-500', reject: 'bg-rose-600', sign: 'bg-violet-500',
+      toQC: 'bg-emerald-500', register: 'bg-teal-600', expire: 'bg-amber-500'
+    };
+
+    function actorName(id) {
+      const u = Store.USERS.find(x => x.id === id);
+      if (u) return I18N.getLang() === 'en' ? u.nameEn : u.name;
+      if (id === 'SYSTEM') return I18N.getLang() === 'en' ? 'System' : 'ระบบ';
+      return id;
+    }
+
+    function renderInfo() {
+      const lang = I18N.getLang();
+      const title = Store.docTitle(doc, lang);
+      const st = Store.STATUS;
+      const age = Store.ageOf(doc), rem = Store.remainingOf(doc);
+      const active = [st.PENDING_APPROVAL, st.PENDING_SIGN].indexOf(doc.status) !== -1;
+      const done = Store.signedCount(doc), total = Store.totalSigners(doc);
+      const pct = total ? Math.round(done / total * 100) : 0;
+
+      document.getElementById('bc-doc').textContent = doc.id + ' · ' + title;
+      document.getElementById('files-count').textContent = '(' + (doc.files || []).length + ')';
+
+      let h = '';
+
+      /* header */
+      h += '<div class="px-6 pt-6 pb-5 border-b border-slate-100">' +
+        App.statusPill(doc.status) +
+        '<h2 class="mt-3 text-[16px] font-bold text-slate-900 leading-snug">' + esc(title) + '</h2>' +
+        '<p class="mt-1 text-[12.5px] text-slate-400">' + esc(doc.id) + ' · ' + esc(doc.docNo) + ' · Rev.' + doc.revision + '</p>' +
+        '<div class="mt-4 grid grid-cols-2 gap-3">' +
+          '<div class="rounded-xl bg-slate-50 px-3.5 py-2.5">' +
+            '<p class="text-[11px] text-slate-400">' + esc(T('dv.elapsed')) + '</p>' +
+            '<p class="text-[15px] font-bold text-slate-800 mt-0.5">' + age + ' <span class="text-[12px] font-medium text-slate-400">' + esc(T('common.days')) + '</span></p>' +
+          '</div>' +
+          '<div class="rounded-xl px-3.5 py-2.5 ' + (active && rem <= 2 ? 'bg-red-50' : (active && rem <= 4 ? 'bg-amber-50' : 'bg-slate-50')) + '">' +
+            '<p class="text-[11px] text-slate-400">' + esc(active ? T('dv.remaining') : T('dv.deadline')) + '</p>' +
+            '<p class="text-[15px] font-bold mt-0.5 ' + (active && rem <= 2 ? 'text-red-600' : (active && rem <= 4 ? 'text-amber-600' : 'text-slate-800')) + '">' +
+              (active ? (rem >= 0 ? rem + ' <span class="text-[12px] font-medium text-slate-400">' + esc(T('common.days')) + '</span>' : esc(T('dv.overdue')))
+                      : doc.dueDays + ' <span class="text-[12px] font-medium text-slate-400">' + esc(T('common.days')) + '</span>') +
+            '</p>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+      /* remark */
+      if (doc.lastRemark && [st.RETURNED, st.REJECTED, st.EXPIRED_RETURNED].indexOf(doc.status) !== -1) {
+        h += '<div class="mx-6 mt-5 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3.5">' +
+          '<p class="text-[12px] font-bold text-amber-800">' + esc(T('common.remark')) + '</p>' +
+          '<p class="mt-1 text-[12.5px] text-amber-700 leading-relaxed">' + esc(doc.lastRemark) + '</p>' +
+        '</div>';
+      }
+
+      /* info */
+      const rows = [
+        [T('th.requester'), lang === 'en' ? doc.requesterNameEn : doc.requesterName],
+        [T('cr.dept'), doc.requesterDept],
+        [T('th.type'), Store.docTypeLabel(doc.type, lang)],
+        [T('cr.s2'), Store.purposeLabel(doc.purpose, lang)],
+        [T('holder.' + doc.status).length ? T('th.currentStep') : '', T('holder.' + doc.status)]
+      ].filter(r => r[0]);
+
+      h += '<div class="px-6 pt-6">' +
+        '<p class="text-[11px] font-semibold uppercase tracking-widest text-slate-300 mb-3">' + esc(T('dv.info')) + '</p>' +
+        '<dl class="flex flex-col gap-2.5">' +
+          rows.map(r =>
+            '<div class="flex items-start gap-3">' +
+              '<dt class="w-[46%] flex-shrink-0 text-[12.5px] text-slate-400">' + esc(r[0]) + '</dt>' +
+              '<dd class="flex-1 text-[12.5px] font-medium text-slate-700 text-right">' + esc(r[1]) + '</dd>' +
+            '</div>').join('') +
+        '</dl></div>';
+
+      /* stakeholders */
+      if (total) {
+        h += '<div class="px-6 pt-7">' +
+          '<div class="flex items-center justify-between mb-3">' +
+            '<p class="text-[11px] font-semibold uppercase tracking-widest text-slate-300">' + esc(T('dv.stakeholders')) + '</p>' +
+            '<span class="text-[12px] font-bold text-slate-600">' + done + '/' + total + '</span>' +
+          '</div>' +
+          '<div class="h-1.5 w-full rounded-full bg-slate-100 overflow-hidden mb-3.5">' +
+            '<div class="h-full rounded-full ' + (pct >= 100 ? 'bg-emerald-500' : 'bg-blue-500') + '" style="width:' + pct + '%"></div>' +
+          '</div>' +
+          '<ul class="flex flex-col gap-1.5">' +
+            (doc.stakeholders || []).map(s => {
+              const me = s.userId === user.id;
+              const canDemo = doc.status === st.PENDING_SIGN && !s.signed && !me;
+              return '<li class="flex items-center gap-2.5 rounded-xl px-3 py-2 ' + (me ? 'bg-blue-50/70' : 'bg-slate-50') + '">' +
+                '<span class="w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 ' +
+                  (s.signed ? 'bg-emerald-500 text-white' : 'bg-white border border-slate-200 text-slate-300') + '">' +
+                  '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></span>' +
+                '<span class="flex-1 min-w-0 text-[12.5px] font-medium text-slate-700 truncate">' +
+                  esc(lang === 'en' ? s.nameEn : s.name) + (me ? ' <span class="text-blue-600">(' + esc(T('nav.myWork')) + ')</span>' : '') + '</span>' +
+                (s.signed
+                  ? '<span class="text-[11px] font-semibold text-emerald-600 flex-shrink-0">' + esc(T('sh.signed')) + '</span>'
+                  : (canDemo
+                      ? '<button data-demo-sign="' + esc(s.id) + '" class="text-[11px] font-semibold text-slate-400 hover:text-violet-600 underline transition-colors flex-shrink-0">' + esc(T('act.sign')) + '</button>'
+                      : '<span class="text-[11px] text-slate-400 flex-shrink-0">' + esc(T('sh.waiting')) + '</span>')) +
+              '</li>';
+            }).join('') +
+          '</ul></div>';
+      }
+
+      /* history */
+      h += '<div class="px-6 py-7">' +
+        '<p class="text-[11px] font-semibold uppercase tracking-widest text-slate-300 mb-4">' + esc(T('dv.history')) + '</p>' +
+        '<ol class="flex flex-col">' +
+          (doc.history || []).slice().reverse().map((ev, i, arr) => {
+            const lbl = ACTION_LABEL[ev.action] ? ACTION_LABEL[ev.action][lang] || ACTION_LABEL[ev.action].th : ev.action;
+            return '<li class="flex gap-3">' +
+              '<div class="flex flex-col items-center flex-shrink-0">' +
+                '<span class="w-2.5 h-2.5 rounded-full mt-1.5 ' + (ACTION_TONE[ev.action] || 'bg-slate-300') + '"></span>' +
+                (i < arr.length - 1 ? '<span class="w-px flex-1 bg-slate-150" style="background:#e2e8f0"></span>' : '') +
+              '</div>' +
+              '<div class="pb-5 min-w-0">' +
+                '<p class="text-[12.5px] font-semibold text-slate-700 leading-snug">' + esc(lbl) + '</p>' +
+                '<p class="text-[11.5px] text-slate-400 mt-0.5">' + esc(actorName(ev.actor)) + ' · ' + D(ev.day) + '</p>' +
+                (ev.note ? '<p class="mt-1.5 rounded-lg bg-slate-50 px-2.5 py-1.5 text-[11.5px] text-slate-500 leading-relaxed">' + esc(ev.note) + '</p>' : '') +
+              '</div>' +
+            '</li>';
+          }).join('') +
+        '</ol></div>';
+
+      document.getElementById('info-scroll').innerHTML = h;
+
+      document.querySelectorAll('[data-demo-sign]').forEach(b => {
+        b.addEventListener('click', () => {
+          doc = Store.signAs(doc.id, b.getAttribute('data-demo-sign'));
+          App.toast(T('n.signed'));
+          refresh();
+        });
+      });
+    }
+
+    /* ══════════════ ACTION BAR (สิทธิ์ตาม role) ══════════════ */
+    function renderActions() {
+      const p = Store.permissions(doc, user);
+      const st = Store.STATUS;
+      const bar = document.getElementById('action-bar');
+      const btns = [];
+
+      const B = (id, label, style, cls) =>
+        '<button id="' + id + '" class="w-full inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-[13.5px] font-semibold transition-all ' +
+        (cls || '') + '" ' + (style ? 'style="' + style + '"' : '') + '>' + esc(label) + '</button>';
+
+      if (p.edit)    btns.push('<a href="create.html?id=' + encodeURIComponent(doc.id) + '" class="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-[13.5px] font-semibold text-slate-600 no-underline hover:bg-slate-50 transition-colors">' + esc(T('act.edit')) + '</a>');
+      if (p.send)    btns.push(B('a-send', T('act.send'), 'background:linear-gradient(90deg,#2563eb 0%,#1d4ed8 100%);box-shadow:0 6px 16px rgba(37,99,235,.28)', 'text-white'));
+      if (p.approve) btns.push(B('a-approve', T('act.approve'), 'background:#16a34a;box-shadow:0 6px 16px rgba(22,163,74,.25)', 'text-white'));
+      if (p.return)  btns.push(B('a-return', T('act.return'), '', 'border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100'));
+      if (p.reject)  btns.push(B('a-reject', T('act.reject'), '', 'border border-slate-200 bg-white text-red-500 hover:bg-red-50'));
+      if (p.sign)    btns.push(B('a-sign', T('act.sign'), 'background:#6d28d9;box-shadow:0 6px 16px rgba(109,40,217,.25)', 'text-white'));
+      if (p.register) btns.push(B('a-register', T('act.register'), 'background:#0d9488;box-shadow:0 6px 16px rgba(13,148,136,.25)', 'text-white'));
+
+      if (!btns.length) {
+        let msg = T('dv.noAccess');
+        if (user.role === 'stakeholder' && doc.status === st.PENDING_SIGN) msg = T('dv.waitOther');
+        if ([st.REJECTED, st.REGISTERED].indexOf(doc.status) !== -1) msg = T('dv.closed');
+        bar.innerHTML = '<p class="rounded-xl bg-slate-50 px-4 py-3.5 text-center text-[12.5px] text-slate-400 leading-relaxed">' + esc(msg) + '</p>';
+        return;
+      }
+      bar.innerHTML = '<div class="flex flex-col gap-2.5">' + btns.join('') + '</div>';
+
+      const on = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('click', fn); };
+
+      on('a-send', async () => {
+        const r = await App.confirmDialog({ title: T('act.send'), sub: T('dv.confirmSend'), tone: 'blue', needNote: true });
+        if (!r) return;
+        doc = Store.send(doc.id, user, r.note);
+        App.toast(T('cr.sentOk')); refresh();
+      });
+      on('a-approve', async () => {
+        const r = await App.confirmDialog({ title: T('act.approve'), sub: T('dv.confirmApprove'), tone: 'green', needNote: true });
+        if (!r) return;
+        doc = Store.approve(doc.id, user, r.note);
+        App.toast(T('n.approved')); refresh();
+      });
+      on('a-return', async () => {
+        const isQC = user.role === 'qc';
+        const r = await App.confirmDialog({
+          title: isQC ? T('act.qcReturn') : T('act.return'),
+          sub: isQC ? T('qc.confirmReturn') : T('dv.confirmReturn'),
+          tone: 'amber', needNote: true, noteRequired: true });
+        if (!r) return;
+        doc = Store.returnForEdit(doc.id, user, r.note);
+        App.toast(T('n.returned'), 'amber'); refresh();
+      });
+      on('a-register', async () => {
+        const r = await App.confirmDialog({ title: T('act.register'), sub: T('qc.confirmRegister'), tone: 'green', needNote: true });
+        if (!r) return;
+        doc = Store.register(doc.id, user, r.note);
+        App.toast(T('n.registered')); refresh();
+      });
+      on('a-reject', async () => {
+        const r = await App.confirmDialog({ title: T('act.reject'), sub: T('dv.confirmReject'), tone: 'red', needNote: true, noteRequired: true });
+        if (!r) return;
+        doc = Store.reject(doc.id, user, r.note);
+        App.toast(T('n.rejected'), 'red'); refresh();
+      });
+      on('a-sign', async () => {
+        const r = await App.confirmDialog({ title: T('act.sign'), sub: T('dv.confirmSign'), tone: 'violet', needNote: true });
+        if (!r) return;
+        doc = Store.sign(doc.id, user, r.note);
+        App.toast(doc.status === Store.STATUS.SENT_TO_QC ? T('n.allSigned') : T('n.signed')); refresh();
+      });
+    }
+
+    function refresh() {
+      doc = Store.getDoc(doc.id);
+      renderInfo();
+      renderActions();
+      paintStage();
+    }
+
+    document.addEventListener('langchange', refresh);
+    window.addEventListener('resize', () => { if (document.getElementById('pdf-stage').clientWidth) fit(); });
+
+    paintStage();
+    renderInfo();
+    renderActions();
+    setTimeout(fit, 60);
+  })();
+  </script>
+
+</body>
+</html>
