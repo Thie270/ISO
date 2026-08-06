@@ -371,7 +371,7 @@
           <!-- Step 8 -->
           <div id="step-8" class="step-content hidden flex flex-col gap-3 w-full">
             <label class="text-[13px] font-medium text-slate-700"><span data-i18n="cr.approver"></span> <span class="text-red-500">*</span></label>
-            <div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center w-full" style="min-height:120px;">
+            <div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center w-full" data-sign-key="approver" style="min-height:120px;">
               <button type="button" data-sign-btn class="rounded-xl px-6 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;" data-i18n="cr.signDoc"></button>
             </div>
             <div class="flex flex-col gap-2 text-[13px] text-slate-700 items-center text-center">
@@ -439,11 +439,12 @@
         <span data-i18n="act.preview"></span>
       </button>
       <div class="flex items-center gap-3">
+        <button id="ready-chip" type="button" class="hidden items-center gap-1.5 rounded-xl px-3 py-2 text-[12.5px] font-semibold transition-colors"></button>
         <button id="draft-btn" class="flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-colors" style="background:linear-gradient(90deg,#60a5fa 0%,#3b82f6 100%); box-shadow:0 4px 10px rgba(59,130,246,.25);">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
           <span data-i18n="act.draft"></span>
         </button>
-        <button id="sent-btn" class="flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-colors" style="background:linear-gradient(90deg,#2563eb 0%,#1d4ed8 100%); box-shadow:0 4px 10px rgba(37,99,235,.25);">
+        <button id="sent-btn" class="flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-colors" style="background:linear-gradient(90deg,#34d399 0%,#16a34a 100%); box-shadow:0 4px 10px rgba(22,163,74,.28);">
           <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
           <span data-i18n="act.send"></span>
         </button>
@@ -541,12 +542,20 @@
     const esc = App.esc, T = k => I18N.t(k);
     const user = App.initChrome();
     if (!user) return;
-    if (user.role !== 'requester') { App.toast(T('dv.noAccess'), 'red'); location.replace(user.home); return; }
 
     /* ─────────── โหลดเอกสารเดิม (ถ้ามี ?id=) ─────────── */
     const editId = new URLSearchParams(location.search).get('id');
     let editing = editId ? Store.getDoc(editId) : null;
-    if (editing && editing.requesterId !== user.id) editing = null;
+
+    /* ผู้อนุมัติเปิดหน้าเดียวกับผู้ร้องขอเพื่อ "ตรวจสอบ" แล้วเซ็นในส่วนที่ 5.3 */
+    const reviewMode = !!(editing && user.role === 'approver');
+
+    /* ผู้มีส่วนเกี่ยวข้องเปิดหน้าเดียวกันเพื่อเซ็นช่องของตัวเองในส่วนที่ 5.2 */
+    const mySlot = (editing && user.role === 'stakeholder') ? Store.mySignSlot(editing, user) : null;
+    const signMode = !!mySlot;
+
+    if (user.role !== 'requester' && !reviewMode && !signMode) { App.toast(T('dv.noAccess'), 'red'); location.replace(user.home); return; }
+    if (!reviewMode && !signMode && editing && editing.requesterId !== user.id) editing = null;
 
     /* ─────────── stepper ─────────── */
     let currentStep = 1, isViewAll = false;
@@ -1034,6 +1043,12 @@
     });
 
     document.getElementById('sent-btn').addEventListener('click', async () => {
+      const miss = missingItems();
+      if (miss.length) {
+        App.toast(T('cr.missingHint') + ' — ' + miss.map(function (m) { return T(m.key); }).join(', '), 'red');
+        document.getElementById('ready-chip').click();
+        return;
+      }
       const d = persist();
       if (!d) return;
       const r = await App.confirmDialog({ title: T('act.send'), sub: T('dv.confirmSend'), tone: 'green', needNote: true });
@@ -1049,10 +1064,368 @@
       location.href = 'document.html?id=' + encodeURIComponent(d.id);
     });
 
+
+    /* ═══════════════════════════════════════════════════════════
+       ผู้จัดทำต้องกรอกงานของตัวเองให้ครบ (ส่วนที่ 1–5.2)
+       ก่อนจึงจะกด "ส่งตรวจสอบ" ได้
+       ═══════════════════════════════════════════════════════════ */
+    function fval(id) {
+      const el = document.getElementById(id);
+      return el ? String(el.value || '').trim() : '';
+    }
+
+    const REQUIRED = [
+      { step: 1, id: 'f-empid',      key: 'cr.empId',      ok: function () { return !!fval('f-empid'); } },
+      { step: 1, id: 'f-fname',      key: 'cr.fname',      ok: function () { return !!fval('f-fname'); } },
+      { step: 1, id: 'f-lname',      key: 'cr.lname',      ok: function () { return !!fval('f-lname'); } },
+      { step: 1, id: 'f-dept',       key: 'cr.dept',       ok: function () { return !!fval('f-dept'); } },
+      { step: 1, id: 'f-date',       key: 'cr.date',       ok: function () { return !!fval('f-date'); } },
+      { step: 2, id: 'step-2',       key: 'cr.s2',         ok: function () { return !!document.querySelector('input[name="purpose"]:checked'); } },
+      { step: 2, id: 'purpose-detail', key: 'cr.detail',   ok: function () {
+          const p = document.querySelector('input[name="purpose"]:checked');
+          return !p || p.value !== 'other' || !!fval('purpose-detail'); } },
+      { step: 3, id: 'step-3',       key: 'cr.s3',         ok: function () { return !!document.querySelector('input[name="doctype"]:checked'); } },
+      { step: 4, id: 'f-docname',    key: 'cr.docName',    ok: function () { return !!fval('f-docname'); } },
+      { step: 4, id: 'f-docno',      key: 'cr.docNo',      ok: function () { return !!fval('f-docno'); } },
+      { step: 4, id: 'f-relateddept', key: 'cr.relatedDept', ok: function () { return !!fval('f-relateddept'); } },
+      { step: 4, id: 'desc-step4',   key: 'cr.desc',       ok: function () { return !!fval('desc-step4'); } },
+      { step: 4, id: 'f-effective',  key: 'cr.effective',  ok: function () { return !!fval('f-effective'); } },
+      { step: 5, id: 'step-5',       key: 'cr.s5',         ok: function () { return files.length > 0; } },
+      { step: 6, id: 'step-6',       key: 'th.requester',  ok: function () { return !!SignModal.data.requester; } },
+      { step: 6, id: 'step-6',       key: 'cr.owner',      ok: function () { return !!SignModal.data.owner; } },
+      { step: 7, id: 'related-select', key: 'cr.pickRelated', ok: function () { return related.length > 0; } }
+    ];
+
+    function missingItems() { return REQUIRED.filter(function (r) { return !r.ok(); }); }
+
+    function paintReady() {
+      if (reviewMode) return;
+      const miss = missingItems();
+      const ok = miss.length === 0;
+      const btn = document.getElementById('sent-btn');
+      const chip = document.getElementById('ready-chip');
+      if (!btn || !chip) return;
+
+      btn.disabled = !ok;
+      btn.classList.toggle('opacity-40', !ok);
+      btn.classList.toggle('cursor-not-allowed', !ok);
+
+      chip.classList.remove('hidden');
+      chip.classList.add('inline-flex');
+      if (ok) {
+        chip.className = 'inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12.5px] font-semibold bg-emerald-50 text-emerald-600';
+        chip.textContent = T('cr.readyToSend');
+        chip.title = '';
+      } else {
+        chip.className = 'inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-[12.5px] font-semibold bg-amber-50 text-amber-700 hover:bg-amber-100 transition-colors';
+        chip.textContent = T('cr.incomplete') + ' · ' + miss.length + ' ' + T('cr.items');
+        chip.title = miss.map(function (m) { return T(m.key); }).join(', ');
+      }
+      chip.dataset.step = ok ? '' : String(miss[0].step);
+      chip.dataset.field = ok ? '' : miss[0].id;
+    }
+
+    document.getElementById('ready-chip').addEventListener('click', function () {
+      const miss = missingItems();
+      if (!miss.length) return;
+      const first = miss[0];
+      if (isViewAll) document.getElementById('step-' + first.step).scrollIntoView({ behavior: 'smooth', block: 'center' });
+      else goToStep(first.step);
+      const el = document.getElementById(first.id);
+      if (el) {
+        setTimeout(function () {
+          el.classList.add('ring-2', 'ring-red-300');
+          if (el.focus) { try { el.focus({ preventScroll: true }); } catch (e) { el.focus(); } }
+          setTimeout(function () { el.classList.remove('ring-2', 'ring-red-300'); }, 2200);
+        }, 250);
+      }
+      App.toast(T('cr.missingHint') + ' — ' + miss.map(function (m) { return T(m.key); }).join(', '), 'amber');
+    });
+
+    document.addEventListener('input', paintReady);
+    document.addEventListener('change', paintReady);
+    document.addEventListener('langchange', paintReady);
+    document.getElementById('sign-modal-confirm').addEventListener('click', function () { setTimeout(paintReady, 0); });
+
+    /* ═══════════════════════════════════════════════════════════
+       ผู้จัดทำ (requester) — ส่วนที่ 5.3 ผู้อนุมัติ และส่วนที่ 6 QC
+       เป็นของบทบาทอื่น จึงล็อกไว้ กรอก/เซ็นไม่ได้
+       ═══════════════════════════════════════════════════════════ */
+    function lockOtherRoleSections() {
+      [['step-8', 'rv.lockApprover'], ['step-9', 'rv.lockQc']].forEach(function (pair) {
+        const sec = document.getElementById(pair[0]);
+        if (!sec) return;
+
+        sec.querySelectorAll('input, select, textarea').forEach(function (el) {
+          el.disabled = true;
+          el.classList.add('bg-slate-50', 'cursor-not-allowed');
+        });
+        sec.querySelectorAll('.sign-box').forEach(function (box) {
+          box.classList.add('bg-slate-50');
+          box.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+          if (!box.querySelector('.lock-note')) {
+            const p = document.createElement('p');
+            p.className = 'lock-note text-[12.5px] text-slate-400';
+            p.setAttribute('data-lock-key', pair[1]);
+            p.textContent = T(pair[1]);
+            box.appendChild(p);
+          }
+        });
+      });
+    }
+    document.addEventListener('langchange', function () {
+      document.querySelectorAll('.lock-note').forEach(function (p) { p.textContent = T(p.getAttribute('data-lock-key')); });
+    });
+
+    /* ═══════════════════════════════════════════════════════════
+       โหมดผู้มีส่วนเกี่ยวข้อง — เปิดเอกสารยาวแบบเดียวกับผู้ร้องขอ
+       เซ็นได้เฉพาะช่องของตัวเองในส่วนที่ 5.2
+       ═══════════════════════════════════════════════════════════ */
+    function paintSignSlots() {
+      if (!signMode) return;
+      const live = Store.getDoc(editing.id) || editing;
+      const myKey = 'rel:' + mySlot.id;
+
+      document.querySelectorAll('#related-sign-boxes .sign-box').forEach(function (box) {
+        const key = box.getAttribute('data-sign-key') || '';
+        const rid = key.replace('rel:', '');
+        const slot = (live.stakeholders || []).filter(function (x) { return x.id === rid; })[0];
+        const isMine = key === myKey;
+
+        box.querySelectorAll('.slot-note').forEach(function (n) { n.remove(); });
+
+        if (isMine) {
+          box.classList.add('ring-2', 'ring-violet-300');
+          box.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = ''; });
+          if (slot && slot.signed) {
+            box.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+            addNote(box, T('sg.alreadySigned'));
+          }
+        } else {
+          box.classList.add('bg-slate-50');
+          box.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+          addNote(box, slot && slot.signed ? T('sg.signedBy') : T('sg.waitOther'));
+        }
+      });
+
+      function addNote(box, text) {
+        if (box.querySelector('img')) return;
+        const p = document.createElement('p');
+        p.className = 'slot-note text-[12.5px] text-slate-400';
+        p.textContent = text;
+        box.appendChild(p);
+      }
+    }
+
+    function initSignMode() {
+      const doc = editing;
+      const bc = document.getElementById('bc-title');
+      bc.removeAttribute('data-i18n');
+      bc.textContent = doc.id + ' · ' + T('act.sign');
+      document.addEventListener('langchange', function () { bc.textContent = doc.id + ' · ' + T('act.sign'); });
+
+      document.querySelectorAll('#sidebar .nav-link').forEach(function (a) {
+        a.classList.toggle('active', a.hasAttribute('data-my-work'));
+      });
+
+      /* หน้ายาวเสมอ */
+      const viewAllBtn = document.getElementById('view-all-btn');
+      viewAllBtn.click();
+      viewAllBtn.style.display = 'none';
+
+      /* อ่านอย่างเดียวทุกส่วน ยกเว้นกล่องเซ็นของตัวเองใน 5.2 */
+      ['step-1', 'step-2', 'step-3', 'step-4', 'step-5', 'step-6', 'step-8', 'step-9'].forEach(function (id) {
+        const sec = document.getElementById(id);
+        if (!sec) return;
+        sec.querySelectorAll('input, select, textarea').forEach(function (el) {
+          el.disabled = true;
+          el.classList.add('bg-slate-50', 'cursor-not-allowed');
+        });
+        sec.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+        const drop = sec.querySelector('#drop-zone');
+        if (drop) drop.classList.add('opacity-60', 'pointer-events-none');
+      });
+
+      /* 5.2 — ปิดการแก้ไขรายชื่อ แต่ยังเซ็นช่องตัวเองได้ */
+      const s7 = document.getElementById('step-7');
+      s7.querySelectorAll('input, select, textarea').forEach(function (el) {
+        el.disabled = true;
+        el.classList.add('bg-slate-50', 'cursor-not-allowed');
+      });
+      s7.querySelectorAll('#related-chips button').forEach(function (x) { x.style.display = 'none'; });
+
+      const hint = document.createElement('div');
+      hint.className = 'rounded-xl border border-violet-100 bg-violet-50 px-4 py-3 text-[12.5px] text-violet-700';
+      hint.textContent = T('sg.hint');
+      s7.insertBefore(hint, s7.firstChild);
+
+      paintSignSlots();
+
+      /* แถบล่าง: Preview PDF + ปุ่มเซ็น */
+      const oldPreview = document.getElementById('preview-btn');
+      const preview = oldPreview.cloneNode(true);
+      oldPreview.parentNode.replaceChild(preview, oldPreview);
+      preview.addEventListener('click', function () {
+        location.href = 'document.html?id=' + encodeURIComponent(doc.id);
+      });
+
+      const bar = document.getElementById('draft-btn').parentNode;
+      bar.innerHTML =
+        '<button id="sg-sign" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-colors" style="background:linear-gradient(90deg,#8b5cf6 0%,#6d28d9 100%);box-shadow:0 4px 10px rgba(109,40,217,.28)">' + esc(T('act.sign')) + '</button>';
+
+      document.getElementById('sg-sign').addEventListener('click', async function () {
+        const key = 'rel:' + mySlot.id;
+        if (!SignModal.data[key]) {
+          App.toast(T('sg.needSign'), 'red');
+          document.getElementById('step-7').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+        const r = await App.confirmDialog({ title: T('act.sign'), sub: T('dv.confirmSign'), tone: 'violet', needNote: true });
+        if (!r) return;
+
+        const d = Store.sign(doc.id, user, r.note);
+
+        /* เก็บภาพลายเซ็นไว้กับช่องของตัวเอง */
+        const live = Store.getDoc(doc.id);
+        (live.stakeholders || []).forEach(function (x) { if (x.id === mySlot.id) x.sigImg = SignModal.data[key]; });
+        Store.save();
+
+        App.toast(d.status === Store.STATUS.SENT_TO_QC ? T('n.allSigned') : T('n.signed'));
+        setTimeout(function () { location.href = 'role-stakeholder.html'; }, 700);
+      });
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       โหมดผู้อนุมัติ "ตรวจสอบ" — เห็นเอกสารยาวเหมือนหน้าผู้ร้องขอ
+       อ่านอย่างเดียวทุกส่วน ยกเว้น 5.2 (เลือกผู้เกี่ยวข้อง) และ 5.3 (เซ็น)
+       ═══════════════════════════════════════════════════════════ */
+    function initReviewMode() {
+      const doc = editing;
+      const bc = document.getElementById('bc-title');
+      bc.removeAttribute('data-i18n');                 /* กัน i18n เขียนทับ */
+      bc.textContent = doc.id + ' · ' + T('act.review');
+      document.addEventListener('langchange', function () { bc.textContent = doc.id + ' · ' + T('act.review'); });
+
+      /* เมนูซ้าย: ไฮไลต์ "งานของฉัน" แทน "สร้างเอกสาร" */
+      document.querySelectorAll('#sidebar .nav-link').forEach(function (a) {
+        a.classList.toggle('active', a.hasAttribute('data-my-work'));
+      });
+
+      /* หน้ายาวเสมอ แล้วซ่อนปุ่มสลับมุมมอง */
+      const viewAllBtn = document.getElementById('view-all-btn');
+      viewAllBtn.click();
+      viewAllBtn.style.display = 'none';
+
+      /* อ่านอย่างเดียวทุกส่วน (รวม 5.2 ที่ผู้ร้องขอเลือกมาแล้ว) เหลือทำงานได้เฉพาะ 5.3 */
+      ['step-1', 'step-2', 'step-3', 'step-4', 'step-5', 'step-6', 'step-7', 'step-9'].forEach(function (id) {
+        const sec = document.getElementById(id);
+        if (!sec) return;
+        sec.querySelectorAll('input, select, textarea').forEach(function (el) {
+          el.disabled = true;
+          el.classList.add('bg-slate-50', 'cursor-not-allowed');
+        });
+        sec.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+        const drop = sec.querySelector('#drop-zone');
+        if (drop) drop.classList.add('opacity-60', 'pointer-events-none');
+      });
+
+      /* 5.2 — แสดงรายชื่อที่ผู้ร้องขอเลือกไว้แบบอ่านอย่างเดียว */
+      function lockRelated() {
+        const s7 = document.getElementById('step-7');
+        s7.querySelectorAll('#related-chips button').forEach(function (x) { x.style.display = 'none'; });
+        s7.querySelectorAll('input, select, textarea').forEach(function (el) {
+          el.disabled = true;
+          el.classList.add('bg-slate-50', 'cursor-not-allowed');
+        });
+        s7.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+      }
+      lockRelated();
+      document.addEventListener('langchange', function () { setTimeout(lockRelated, 0); });
+
+      /* ชี้ว่าต้องทำอะไรต่อ */
+      const s8 = document.getElementById('step-8');
+      const hint = document.createElement('div');
+      hint.className = 'rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-[12.5px] text-blue-700';
+      hint.textContent = T('rv.hint');
+      s8.insertBefore(hint, s8.firstChild);
+
+      /* ── แถบล่าง: Preview PDF (ฟังก์ชัน) + ส่งกลับ + ไม่อนุมัติ + อนุมัติ ── */
+      const oldPreview = document.getElementById('preview-btn');
+      const preview = oldPreview.cloneNode(true);
+      oldPreview.parentNode.replaceChild(preview, oldPreview);
+      preview.addEventListener('click', function () {
+        location.href = 'document.html?id=' + encodeURIComponent(doc.id);
+      });
+
+      const bar = document.getElementById('draft-btn').parentNode;
+      bar.innerHTML =
+        '<button id="rv-return" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-amber-200 bg-amber-50 px-5 py-2.5 text-sm font-semibold text-amber-700 hover:bg-amber-100 transition-colors">' + esc(T('act.return')) + '</button>' +
+        '<button id="rv-reject" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 transition-colors">' + esc(T('act.reject')) + '</button>' +
+        '<button id="rv-approve" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#16a34a;box-shadow:0 4px 10px rgba(22,163,74,.25)">' + esc(T('act.approve')) + '</button>';
+
+      function jumpTo(id) {
+        document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      document.getElementById('rv-approve').addEventListener('click', async function () {
+        /* ผู้มีส่วนเกี่ยวข้อง (5.2) ผู้ร้องขอเลือกมาตั้งแต่ตอนสร้างเอกสารแล้ว */
+        if (!(Store.getDoc(doc.id).stakeholders || []).length) { App.toast(T('rv.noRelated'), 'red'); jumpTo('step-7'); return; }
+        if (!SignModal.data.approver) { App.toast(T('rv.needSign'), 'red'); jumpTo('step-8'); return; }
+
+        const r = await App.confirmDialog({ title: T('act.approve'), sub: T('dv.confirmApprove'), tone: 'green', needNote: true });
+        if (!r) return;
+
+        /* ใช้รายชื่อผู้เกี่ยวข้องเดิมที่ผู้ร้องขอเลือกไว้ แล้วเปลี่ยนสถานะตาม flow */
+        Store.approve(doc.id, user, r.note);
+
+        /* แนบภาพลายเซ็นของผู้อนุมัติ (ส่วนที่ 5.3) */
+        const after = Store.getDoc(doc.id);
+        after.signatures = Object.assign({}, after.signatures, {
+          approver: Object.assign({}, after.signatures.approver, { img: SignModal.data.approver })
+        });
+        Store.save();
+
+        App.toast(T('n.approved'));
+        setTimeout(function () { location.href = 'role-approver.html'; }, 700);
+      });
+
+      document.getElementById('rv-return').addEventListener('click', async function () {
+        const r = await App.confirmDialog({ title: T('act.return'), sub: T('dv.confirmReturn'), tone: 'amber', needNote: true, noteRequired: true });
+        if (!r) return;
+        Store.returnForEdit(doc.id, user, r.note);
+        App.toast(T('n.returned'));
+        setTimeout(function () { location.href = 'role-approver.html'; }, 700);
+      });
+
+      document.getElementById('rv-reject').addEventListener('click', async function () {
+        const r = await App.confirmDialog({ title: T('act.reject'), sub: T('dv.confirmReject'), tone: 'red', needNote: true, noteRequired: true });
+        if (!r) return;
+        Store.reject(doc.id, user, r.note);
+        App.toast(T('n.rejected'));
+        setTimeout(function () { location.href = 'role-approver.html'; }, 700);
+      });
+    }
+
     /* ─────────── init ─────────── */
     document.addEventListener('langchange', () => { paintCounter(); paintRelated(); });
+
+    /* ให้ทุกการเปลี่ยนแปลงไฟล์แนบ / ผู้เกี่ยวข้อง อัปเดตสถานะปุ่มส่ง */
+    const _paintFiles = paintFiles, _paintRelated = paintRelated;
+    paintFiles = function () { _paintFiles.apply(null, arguments); paintReady(); };
+    paintRelated = function () {
+      _paintRelated.apply(null, arguments);
+      /* ให้แต่ละกล่องเซ็นของผู้เกี่ยวข้องมีคีย์ประจำตัว rel:<id> */
+      const boxes = document.querySelectorAll('#related-sign-boxes .sign-box');
+      related.forEach(function (rid, i) { if (boxes[i]) boxes[i].setAttribute('data-sign-key', 'rel:' + rid); });
+      paintReady();
+      if (signMode) paintSignSlots();
+    };
+
     fill();
     goToStep(1);
+    if (reviewMode) initReviewMode();
+    else if (signMode) initSignMode();
+    else { lockOtherRoleSections(); paintReady(); }
   })();
   </script>
 

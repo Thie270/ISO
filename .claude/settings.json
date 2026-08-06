@@ -9,7 +9,11 @@
       "Bash('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' --headless=new --disable-gpu --hide-scrollbars --virtual-time-budget=12000 --window-size=1440,800 --screenshot=/private/tmp/claude-501/-Users-cs-Desktop-ISO/2b6d2429-e97d-493d-a0d1-ba00ce19ad99/scratchpad/va_mid3.png __va2.html)",
       "Bash(python3 /private/tmp/claude-501/-Users-cs-Desktop-ISO/2b6d2429-e97d-493d-a0d1-ba00ce19ad99/scratchpad/gen_roles.py)",
       "Bash(gh auth *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(cd /Users/cs/Desktop/ISO; sed -n '/const IC = {/,/};/p' js/app.js | head -30)"
+    ],
+    "additionalDirectories": [
+      "/Users/cs/Desktop/ISO/js"
     ]
   }
 }

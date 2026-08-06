@@ -268,6 +268,14 @@
         return hay.indexOf(term.toLowerCase()) !== -1;
       });
 
+      function reviewLink(d) {
+        /* ผู้อนุมัติ "ตรวจสอบ" → เปิดหน้าเอกสารยาวแบบเดียวกับผู้ร้องขอ (create.html) */
+        if (d.status === Store.STATUS.PENDING_APPROVAL) {
+          return '<a href="create.html?id=' + encodeURIComponent(d.id) + '" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-blue-600 px-4 py-2 text-[13px] font-semibold text-white no-underline shadow-[0_4px_10px_rgba(37,99,235,0.25)] hover:bg-blue-700 transition-colors">' + esc(T('act.review')) + '</a>';
+        }
+        return App.docLink(d, T('act.detail'), false);
+      }
+
       const tb = document.getElementById('rows');
       if (!list.length) { tb.innerHTML = App.emptyRow(8, T('ap.noQueue')); return; }
 
@@ -281,8 +289,8 @@
           '<td class="px-5 py-4 bg-slate-50/60">' + App.statusPill(d.status) + '</td>' +
           '<td class="px-5 py-4 bg-slate-50/60">' + App.ageText(d) + '</td>' +
           '<td class="px-5 py-4 bg-slate-50/60"><div class="flex items-center justify-end gap-2">' +
-            App.docLink(d, d.status === Store.STATUS.PENDING_APPROVAL ? T('act.review') : T('act.detail'),
-                        d.status === Store.STATUS.PENDING_APPROVAL) +
+            reviewLink(d) +
+            '<a href="document.html?id=' + encodeURIComponent(d.id) + '" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-3 py-2 text-[13px] font-semibold text-slate-600 no-underline hover:bg-slate-50 transition-colors" title="' + esc(T('dv.pdf')) + '">' + App.IC.eye + '</a>' +
             '<button class="row-action" data-i18n-aria="act.options">' + App.IC.dots + '</button>' +
           '</div></td>' +
         '</tr>').join('');
@@ -315,7 +323,8 @@
           '<div class="flex flex-wrap items-center gap-3">' +
             '<button id="d-return" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-[13px] font-semibold text-amber-700 hover:bg-amber-100 transition-colors">' + esc(T('act.return')) + '</button>' +
             '<button id="d-reject" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-[13px] font-semibold text-red-500 hover:bg-red-50 transition-colors">' + esc(T('act.reject')) + '</button>' +
-            '<a href="document.html?id=' + encodeURIComponent(next.id) + '" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-[13px] font-semibold text-slate-600 no-underline hover:bg-slate-50 transition-colors">' + esc(T('act.open')) + '</a>' +
+            '<a href="document.html?id=' + encodeURIComponent(next.id) + '" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-[13px] font-semibold text-slate-600 no-underline hover:bg-slate-50 transition-colors">' + esc(T('dv.pdf')) + '</a>' +
+            '<a href="create.html?id=' + encodeURIComponent(next.id) + '" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-blue-600 px-4 py-2.5 text-[13px] font-semibold text-white no-underline shadow-[0_4px_10px_rgba(37,99,235,0.25)] hover:bg-blue-700 transition-colors">' + esc(T('act.review')) + '</a>' +
             '<button id="d-approve" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-4 py-2.5 text-[13px] font-semibold text-white transition-colors" style="background:#16a34a;box-shadow:0 4px 10px rgba(22,163,74,.25)">' + esc(T('act.approve')) + '</button>' +
           '</div>' +
         '</div>';
