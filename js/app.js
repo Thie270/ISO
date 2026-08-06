@@ -495,9 +495,121 @@
     return user;
   }
 
+
+  /* ============================================================
+     ตารางงาน — เรียงลำดับ + แบ่งหน้า (ค่าเริ่มต้น 10 แถว/หน้า)
+     ============================================================ */
+  const STATUS_ORDER = ['DRAFT','RETURNED','EXPIRED_RETURNED','PENDING_APPROVAL','PENDING_SIGN','SENT_TO_QC','REGISTERED','REJECTED'];
+
+  function newTableState(key, dir, per) {
+    return { page: 1, per: per || 10, key: key || 'age', dir: dir || 'desc' };
+  }
+
+  function sortValue(d, key, lang) {
+    switch (key) {
+      case 'id':        return d.id || '';
+      case 'docNo':     return d.docNo || '';
+      case 'requester': return (lang === 'en' ? d.requesterNameEn : d.requesterName) || '';
+      case 'title':     return Store.docTitle(d, lang) || '';
+      case 'type':      return Store.docTypeLabel(d.type, lang) || '';
+      case 'status':    return STATUS_ORDER.indexOf(d.status);
+      case 'age':       return Store.ageOf(d);
+      case 'due':       return Store.remainingOf(d);
+      case 'progress':  return Store.totalSigners(d) ? Store.signedCount(d) / Store.totalSigners(d) : -1;
+      default:          return 0;
+    }
+  }
+
+  function sortDocs(list, state, lang) {
+    const sign = state.dir === 'asc' ? 1 : -1;
+    return list.slice().sort((a, b) => {
+      const va = sortValue(a, state.key, lang), vb = sortValue(b, state.key, lang);
+      if (typeof va === 'number' && typeof vb === 'number') return (va - vb) * sign;
+      return String(va).localeCompare(String(vb), 'th') * sign;
+    });
+  }
+
+  /* คืนแถวเฉพาะหน้าปัจจุบัน + ข้อมูลสำหรับแถบแบ่งหน้า */
+  function pageOf(list, state, lang) {
+    const sorted = sortDocs(list, state, lang);
+    const pages = Math.max(1, Math.ceil(sorted.length / state.per));
+    if (state.page > pages) state.page = pages;
+    if (state.page < 1) state.page = 1;
+    const from = (state.page - 1) * state.per;
+    return { rows: sorted.slice(from, from + state.per), total: sorted.length, pages: pages, from: from };
+  }
+
+  /* แถบแบ่งหน้าใต้ตาราง */
+  function paintPager(el, state, info, onChange) {
+    if (!el) return;
+    const tr = k => I18N.t(k);
+    if (!info.total) { el.innerHTML = ''; el.className = ''; return; }
+
+    el.className = 'flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 px-5 py-3.5 text-[13px] text-slate-500';
+    el.innerHTML =
+      '<div class="flex items-center gap-2">' +
+        '<span>' + esc(tr('common.show')) + '</span>' +
+        '<div class="relative">' +
+          '<select data-per class="appearance-none rounded-lg border border-slate-200 bg-white pl-3 pr-8 py-1.5 text-[13px] text-slate-700 outline-none focus:border-blue-500 cursor-pointer">' +
+            [10, 25, 50].map(n => '<option value="' + n + '"' + (state.per === n ? ' selected' : '') + '>' + n + '</option>').join('') +
+          '</select>' +
+          '<span class="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400">' +
+            '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>' +
+          '</span>' +
+        '</div>' +
+        '<span>' + esc(tr('common.items')) + '</span>' +
+      '</div>' +
+      '<p class="text-slate-400">' + esc(tr('common.page')) + ' ' + state.page + ' ' + esc(tr('common.of')) + ' ' + info.pages +
+        ' · ' + esc(tr('common.total')) + ' ' + info.total + ' ' + esc(tr('common.items')) + '</p>' +
+      '<div class="flex items-center gap-2">' +
+        '<button data-page="prev"' + (state.page <= 1 ? ' disabled' : '') +
+          ' class="rounded-xl border border-slate-200 bg-white px-4 py-2 font-medium text-slate-600 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors">← ' + esc(tr('common.prev')) + '</button>' +
+        '<button data-page="next"' + (state.page >= info.pages ? ' disabled' : '') +
+          ' class="rounded-xl border border-slate-200 bg-white px-4 py-2 font-semibold text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 transition-colors">' + esc(tr('common.next')) + ' →</button>' +
+      '</div>';
+
+    el.querySelector('[data-per]').addEventListener('change', function () {
+      state.per = Number(this.value); state.page = 1; onChange();
+    });
+    el.querySelectorAll('[data-page]').forEach(b => {
+      b.addEventListener('click', () => {
+        state.page += (b.getAttribute('data-page') === 'next' ? 1 : -1);
+        onChange();
+      });
+    });
+  }
+
+  /* หัวตารางที่กดเรียงลำดับได้ — ใส่ data-sort="key" ที่ <th> */
+  function bindSortHeaders(root, state, onChange) {
+    (root || document).querySelectorAll('th[data-sort]').forEach(th => {
+      const key = th.getAttribute('data-sort');
+      th.classList.add('cursor-pointer', 'select-none');
+      th.title = I18N.t('common.sort');
+
+      if (!th.dataset.bound) {
+        th.dataset.bound = '1';
+        th.addEventListener('click', () => {
+          if (state.key === key) state.dir = state.dir === 'asc' ? 'desc' : 'asc';
+          else { state.key = key; state.dir = 'asc'; }
+          state.page = 1;
+          onChange();
+        });
+      }
+
+      th.querySelectorAll('[data-caret]').forEach(c => c.remove());
+      const caret = document.createElement('span');
+      caret.setAttribute('data-caret', '1');
+      caret.className = 'ml-1 inline-block align-middle ' + (state.key === key ? 'text-blue-600' : 'text-slate-300');
+      caret.style.fontSize = '9px';
+      caret.textContent = state.key === key ? (state.dir === 'asc' ? '▲' : '▼') : '▲▼';
+      th.appendChild(caret);
+    });
+  }
+
   global.App = {
     esc, initChrome, requireLogin, initSidebar, initLang, initFilterTabs,
     statusPill, progressBar, ageText, docLink, emptyRow,
-    confirmDialog, toast, relDay, dayLabel, IC
+    confirmDialog, toast, relDay, dayLabel, IC,
+    newTableState, sortDocs, pageOf, paintPager, bindSortHeaders
   };
 })(window);

@@ -117,17 +117,17 @@
         <div id="doc-zone" class="flex-1 min-h-0 flex flex-col gap-3 p-3 overflow-y-auto" style="background:#fefefe;">
 
         <!-- ① Tab group -->
-        <div id="doc-tabs" class="bg-white rounded-2xl overflow-x-auto flex-shrink-0" style="border:1px solid #ffffff; box-shadow:0 16px 16px rgba(0,0,0,0.10);">
-          <div class="flex gap-2 min-w-max p-3">
-            <button class="step-tab flex-shrink-0 rounded-xl px-4 py-2 text-[12.5px] font-semibold transition-all duration-200 bg-blue-600 text-white shadow-sm" data-step="1" data-i18n="cr.s1"></button>
-            <button class="step-tab flex-shrink-0 rounded-xl px-4 py-2 text-[12.5px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="2" data-i18n="cr.s2"></button>
-            <button class="step-tab flex-shrink-0 rounded-xl px-4 py-2 text-[12.5px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="3" data-i18n="cr.s3"></button>
-            <button class="step-tab flex-shrink-0 rounded-xl px-4 py-2 text-[12.5px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="4" data-i18n="cr.s4"></button>
-            <button class="step-tab flex-shrink-0 rounded-xl px-4 py-2 text-[12.5px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="5" data-i18n="cr.s5"></button>
-            <button class="step-tab flex-shrink-0 rounded-xl px-4 py-2 text-[12.5px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="6" data-i18n="cr.s6"></button>
-            <button class="step-tab flex-shrink-0 rounded-xl px-4 py-2 text-[12.5px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="7" data-i18n="cr.s7"></button>
-            <button class="step-tab flex-shrink-0 rounded-xl px-4 py-2 text-[12.5px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="8" data-i18n="cr.s8"></button>
-            <button class="step-tab flex-shrink-0 rounded-xl px-4 py-2 text-[12.5px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="9" data-i18n="cr.s9"></button>
+        <div id="doc-tabs" class="flex-shrink-0 overflow-x-auto">
+          <div class="flex items-center gap-1 min-w-max py-1">
+            <button class="step-tab flex-shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold transition-all duration-200 bg-blue-600 text-white shadow-sm" data-step="1" data-i18n="cr.s1"></button>
+            <button class="step-tab flex-shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="2" data-i18n="cr.s2"></button>
+            <button class="step-tab flex-shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="3" data-i18n="cr.s3"></button>
+            <button class="step-tab flex-shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="4" data-i18n="cr.s4"></button>
+            <button class="step-tab flex-shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="5" data-i18n="cr.s5"></button>
+            <button class="step-tab flex-shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="6" data-i18n="cr.s6"></button>
+            <button class="step-tab flex-shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="7" data-i18n="cr.s7"></button>
+            <button class="step-tab flex-shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="8" data-i18n="cr.s8"></button>
+            <button class="step-tab flex-shrink-0 rounded-lg px-2.5 py-1.5 text-[12px] font-semibold text-slate-500 transition-all duration-200 hover:bg-slate-100" data-step="9" data-i18n="cr.s9"></button>
           </div>
         </div>
 
@@ -386,7 +386,7 @@
             <div class="grid grid-cols-2 gap-6 w-full">
               <div class="flex flex-col gap-3">
                 <label class="text-[13px] font-normal text-slate-700"><span data-i18n="cr.qcStaff"></span> <span class="text-red-500">*</span></label>
-                <div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center" style="min-height:120px;">
+                <div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center" data-sign-key="qcStaff" style="min-height:120px;">
                   <button type="button" data-sign-btn class="rounded-xl px-6 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;" data-i18n="cr.signDoc"></button>
                 </div>
                 <div class="flex flex-col gap-2 text-[13px] text-slate-700 items-center text-center">
@@ -397,7 +397,7 @@
 
               <div class="flex flex-col gap-3">
                 <label class="text-[13px] font-normal text-slate-700"><span data-i18n="cr.qcManager"></span> <span class="text-red-500">*</span></label>
-                <div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center" style="min-height:120px;">
+                <div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center" data-sign-key="qcManager" style="min-height:120px;">
                   <button type="button" data-sign-btn class="rounded-xl px-6 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;" data-i18n="cr.signDoc"></button>
                 </div>
                 <div class="flex flex-col gap-2 text-[13px] text-slate-700 items-center text-center">
@@ -452,6 +452,30 @@
     </div>
 
   </div><!-- /main-wrapper -->
+
+  <!-- ════════════════════════════════════════════ FILE PREVIEW MODAL ════════════════════════════════════════════ -->
+  <div id="fp-backdrop" class="fixed inset-0 z-[2500] hidden items-center justify-center" style="background:rgba(15,23,42,0.55);">
+    <div class="bg-white rounded-2xl shadow-2xl flex flex-col overflow-hidden" style="width:900px; max-width:94vw; height:86vh;">
+      <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 flex-shrink-0">
+        <div class="flex items-center gap-2 min-w-0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+          <p id="fp-name" class="text-[14px] font-semibold text-slate-800 truncate"></p>
+          <span id="fp-size" class="text-[12px] text-slate-400 flex-shrink-0"></span>
+        </div>
+        <div class="flex items-center gap-2 flex-shrink-0">
+          <a id="fp-download" href="#" download class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-[12.5px] font-semibold text-slate-600 no-underline hover:bg-slate-50 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span data-i18n="act.download"></span>
+          </a>
+          <a id="fp-newtab" href="#" target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-[12.5px] font-semibold text-slate-600 no-underline hover:bg-slate-50 transition-colors" data-i18n="dv.openTab"></a>
+          <button id="fp-close" type="button" class="w-9 h-9 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+      </div>
+      <div id="fp-body" class="flex-1 min-h-0 bg-slate-100 flex items-center justify-center overflow-auto"></div>
+    </div>
+  </div>
 
   <!-- ════════════════════════════════════════════ SIGN MODAL ════════════════════════════════════════════ -->
   <div id="sign-modal-backdrop" class="fixed inset-0 z-[2000] flex items-center justify-center hidden" style="background:rgba(0,0,0,0.35);">
@@ -554,8 +578,11 @@
     const mySlot = (editing && user.role === 'stakeholder') ? Store.mySignSlot(editing, user) : null;
     const signMode = !!mySlot;
 
-    if (user.role !== 'requester' && !reviewMode && !signMode) { App.toast(T('dv.noAccess'), 'red'); location.replace(user.home); return; }
-    if (!reviewMode && !signMode && editing && editing.requesterId !== user.id) editing = null;
+    /* แผนกควบคุมคุณภาพเปิดหน้าเดียวกันเพื่อเซ็นในส่วนที่ 6 แล้วขึ้นทะเบียน */
+    const qcMode = !!(editing && user.role === 'qc');
+
+    if (user.role !== 'requester' && !reviewMode && !signMode && !qcMode) { App.toast(T('dv.noAccess'), 'red'); location.replace(user.home); return; }
+    if (!reviewMode && !signMode && !qcMode && editing && editing.requesterId !== user.id) editing = null;
 
     /* ─────────── stepper ─────────── */
     let currentStep = 1, isViewAll = false;
@@ -670,6 +697,9 @@
                 '<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>PDF/IMG</span>'
               : (f.dropped ? '<span class="rounded-lg bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-600">name only</span>' : '')) +
             '<span class="text-slate-400">' + (f.size / 1024).toFixed(1) + ' KB</span>' +
+            '<button type="button" data-fp="' + i + '" class="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11.5px] font-semibold text-slate-600 hover:bg-slate-50 transition-colors">' +
+              '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>' +
+              esc(T('act.preview')) + '</button>' +
             '<button type="button" data-rm="' + i + '" class="text-slate-300 hover:text-red-500 transition-colors">' +
               '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
             '</button>' +
@@ -680,7 +710,12 @@
         li.querySelector('.truncate').textContent = files[i].name;
       });
       fileList.querySelectorAll('[data-rm]').forEach(b => {
+        /* ผู้อนุมัติ / ผู้เกี่ยวข้อง ลบไฟล์ของผู้ร้องขอไม่ได้ */
+        if (reviewMode || signMode) { b.remove(); return; }
         b.addEventListener('click', () => { files.splice(Number(b.getAttribute('data-rm')), 1); paintFiles(); });
+      });
+      fileList.querySelectorAll('[data-fp]').forEach(b => {
+        b.addEventListener('click', () => openFilePreview(files[Number(b.getAttribute('data-fp'))]));
       });
     }
 
@@ -1145,7 +1180,9 @@
     document.addEventListener('input', paintReady);
     document.addEventListener('change', paintReady);
     document.addEventListener('langchange', paintReady);
-    document.getElementById('sign-modal-confirm').addEventListener('click', function () { setTimeout(paintReady, 0); });
+    document.getElementById('sign-modal-confirm').addEventListener('click', function () {
+      setTimeout(function () { paintReady(); paintSignBtn(); paintQcBtn(); }, 0);
+    });
 
     /* ═══════════════════════════════════════════════════════════
        ผู้จัดทำ (requester) — ส่วนที่ 5.3 ผู้อนุมัติ และส่วนที่ 6 QC
@@ -1178,6 +1215,162 @@
     });
 
     /* ═══════════════════════════════════════════════════════════
+       พรีวิวไฟล์แนบ (PDF / รูปภาพ) — ไฟล์อื่นให้ดาวน์โหลด
+       ═══════════════════════════════════════════════════════════ */
+    function openFilePreview(f) {
+      if (!f) return;
+      const url = Store.fileURL(f);
+      const kind = Store.fileKind(f);
+      const body = document.getElementById('fp-body');
+      const bd = document.getElementById('fp-backdrop');
+
+      document.getElementById('fp-name').textContent = f.name;
+      document.getElementById('fp-size').textContent = (f.size / 1024).toFixed(1) + ' KB';
+
+      const dl = document.getElementById('fp-download');
+      const nt = document.getElementById('fp-newtab');
+      if (url) {
+        dl.href = url; dl.setAttribute('download', f.name); dl.classList.remove('hidden');
+        nt.href = url; nt.classList.remove('hidden');
+      } else {
+        dl.classList.add('hidden'); nt.classList.add('hidden');
+      }
+
+      if (!url) {
+        body.innerHTML = '<p class="text-[13.5px] text-slate-400 px-6 text-center">' +
+          esc(f.dropped ? T('dv.fileDropped') : T('dv.noFile')) + '</p>';
+      } else if (kind === 'image') {
+        body.innerHTML = '<img src="' + url + '" alt="" class="max-w-full max-h-full object-contain" />';
+      } else if (kind === 'pdf') {
+        body.innerHTML = '<iframe src="' + url + '" class="w-full h-full" style="border:0;background:#fff"></iframe>';
+      } else {
+        body.innerHTML = '<div class="flex flex-col items-center gap-3 px-6 text-center">' +
+          '<p class="text-[13.5px] text-slate-500">' + esc(T('dv.noPreview')) + '</p>' +
+          '<a href="' + url + '" download="' + esc(f.name) + '" class="rounded-xl bg-blue-600 px-4 py-2 text-[13px] font-semibold text-white no-underline hover:bg-blue-700 transition-colors">' + esc(T('act.download')) + '</a></div>';
+      }
+
+      bd.classList.remove('hidden');
+      bd.classList.add('flex');
+      I18N.apply(bd);
+    }
+
+    function closeFilePreview() {
+      const bd = document.getElementById('fp-backdrop');
+      bd.classList.add('hidden');
+      bd.classList.remove('flex');
+      document.getElementById('fp-body').innerHTML = '';
+    }
+    document.getElementById('fp-close').addEventListener('click', closeFilePreview);
+    document.getElementById('fp-backdrop').addEventListener('click', function (e) {
+      if (e.target === this) closeFilePreview();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !document.getElementById('fp-backdrop').classList.contains('hidden')) closeFilePreview();
+    });
+
+    /* ═══════════════════════════════════════════════════════════
+       โหมดแผนกควบคุมคุณภาพ (QC) — เห็นเอกสารยาวเหมือนบทบาทอื่น
+       เซ็นได้เฉพาะส่วนที่ 6 แล้วจึงขึ้นทะเบียนเอกสารได้
+       ═══════════════════════════════════════════════════════════ */
+    function qcSignedBoth() {
+      return !!(SignModal.data.qcStaff && SignModal.data.qcManager);
+    }
+
+    function paintQcBtn() {
+      if (!qcMode) return;
+      const btn = document.getElementById('qc-register');
+      if (!btn) return;
+      const ok = qcSignedBoth();
+      const canRegister = (Store.getDoc(editing.id) || editing).status === Store.STATUS.SENT_TO_QC;
+      btn.disabled = !ok || !canRegister;
+      btn.classList.toggle('opacity-40', btn.disabled);
+      btn.classList.toggle('cursor-not-allowed', btn.disabled);
+      btn.textContent = !canRegister ? T('qc.btnDone') : (ok ? T('qc.btnReady') : T('qc.btnWait'));
+    }
+
+    function initQcMode() {
+      const doc = editing;
+      const bc = document.getElementById('bc-title');
+      bc.removeAttribute('data-i18n');
+      bc.textContent = doc.id + ' · ' + T('act.register');
+      document.addEventListener('langchange', function () { bc.textContent = doc.id + ' · ' + T('act.register'); });
+
+      document.querySelectorAll('#sidebar .nav-link').forEach(function (a) {
+        a.classList.toggle('active', a.hasAttribute('data-my-work'));
+      });
+
+      const viewAllBtn = document.getElementById('view-all-btn');
+      viewAllBtn.click();
+      viewAllBtn.style.display = 'none';
+
+      /* อ่านอย่างเดียวทุกส่วน ยกเว้นกล่องเซ็นในส่วนที่ 6 */
+      ['step-1', 'step-2', 'step-3', 'step-4', 'step-5', 'step-6', 'step-7', 'step-8'].forEach(function (id) {
+        const sec = document.getElementById(id);
+        if (!sec) return;
+        sec.querySelectorAll('input, select, textarea').forEach(function (el) {
+          el.disabled = true;
+          el.classList.add('bg-slate-50', 'cursor-not-allowed');
+        });
+        sec.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+        sec.querySelectorAll('#related-chips button').forEach(function (x) { x.style.display = 'none'; });
+        const drop = sec.querySelector('#drop-zone');
+        if (drop) drop.classList.add('opacity-60', 'pointer-events-none');
+      });
+
+      const s9 = document.getElementById('step-9');
+      s9.querySelectorAll('.sign-box').forEach(function (b) { b.classList.add('ring-2', 'ring-teal-300'); });
+      const hint = document.createElement('div');
+      hint.className = 'rounded-xl border border-teal-100 bg-teal-50 px-4 py-3 text-[12.5px] text-teal-700';
+      hint.textContent = T('qc.hint');
+      s9.insertBefore(hint, s9.firstChild);
+
+      /* แถบล่าง: Preview PDF + ปุ่มขึ้นทะเบียน */
+      const oldPreview = document.getElementById('preview-btn');
+      const preview = oldPreview.cloneNode(true);
+      oldPreview.parentNode.replaceChild(preview, oldPreview);
+      preview.addEventListener('click', function () {
+        location.href = 'document.html?id=' + encodeURIComponent(doc.id);
+      });
+
+      const bar = document.getElementById('draft-btn').parentNode;
+      bar.innerHTML =
+        '<button id="qc-return" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-amber-200 bg-amber-50 px-5 py-2.5 text-sm font-semibold text-amber-700 hover:bg-amber-100 transition-colors">' + esc(T('act.qcReturn')) + '</button>' +
+        '<button id="qc-register" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-colors" ' +
+        'style="background:linear-gradient(90deg,#34d399 0%,#16a34a 100%);box-shadow:0 4px 10px rgba(22,163,74,.28)"></button>';
+      paintQcBtn();
+      document.addEventListener('langchange', paintQcBtn);
+
+      document.getElementById('qc-register').addEventListener('click', async function () {
+        if (!qcSignedBoth()) {
+          App.toast(T('qc.needSign'), 'red');
+          document.getElementById('step-9').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+        const r = await App.confirmDialog({ title: T('act.register'), sub: T('qc.confirmRegister'), tone: 'green', needNote: true });
+        if (!r) return;
+
+        Store.register(doc.id, user, r.note);
+        const live = Store.getDoc(doc.id);
+        live.signatures = Object.assign({}, live.signatures, {
+          qcStaff: Object.assign({}, live.signatures.qcStaff, { img: SignModal.data.qcStaff }),
+          qcManager: Object.assign({}, live.signatures.qcManager, { img: SignModal.data.qcManager })
+        });
+        Store.save();
+
+        App.toast(T('n.registered'));
+        setTimeout(function () { location.href = 'role-qc.html'; }, 700);
+      });
+
+      document.getElementById('qc-return').addEventListener('click', async function () {
+        const r = await App.confirmDialog({ title: T('act.qcReturn'), sub: T('dv.confirmReturn'), tone: 'amber', needNote: true, noteRequired: true });
+        if (!r) return;
+        Store.returnForEdit(doc.id, user, r.note);
+        App.toast(T('n.returned'));
+        setTimeout(function () { location.href = 'role-qc.html'; }, 700);
+      });
+    }
+
+    /* ═══════════════════════════════════════════════════════════
        โหมดผู้มีส่วนเกี่ยวข้อง — เปิดเอกสารยาวแบบเดียวกับผู้ร้องขอ
        เซ็นได้เฉพาะช่องของตัวเองในส่วนที่ 5.2
        ═══════════════════════════════════════════════════════════ */
@@ -1208,6 +1401,8 @@
         }
       });
 
+      paintSignBtn();
+
       function addNote(box, text) {
         if (box.querySelector('img')) return;
         const p = document.createElement('p');
@@ -1215,6 +1410,24 @@
         p.textContent = text;
         box.appendChild(p);
       }
+    }
+
+    /* ปุ่มล่างของผู้เกี่ยวข้อง — เปิดใช้งานเมื่อเซ็นช่องตัวเองแล้วเท่านั้น */
+    function paintSignBtn() {
+      if (!signMode) return;
+      const btn = document.getElementById('sg-sign');
+      if (!btn) return;
+
+      const live = Store.getDoc(editing.id) || editing;
+      const signedHere = !!SignModal.data['rel:' + mySlot.id];
+      const others = (live.stakeholders || []).filter(function (x) { return x.id !== mySlot.id && !x.signed; }).length;
+
+      btn.disabled = !signedHere;
+      btn.classList.toggle('opacity-40', !signedHere);
+      btn.classList.toggle('cursor-not-allowed', !signedHere);
+      btn.textContent = !signedHere
+        ? T('sg.btnWait')
+        : (others > 0 ? T('sg.btnForward') : T('sg.btnQc'));
     }
 
     function initSignMode() {
@@ -1271,7 +1484,10 @@
 
       const bar = document.getElementById('draft-btn').parentNode;
       bar.innerHTML =
-        '<button id="sg-sign" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-colors" style="background:linear-gradient(90deg,#8b5cf6 0%,#6d28d9 100%);box-shadow:0 4px 10px rgba(109,40,217,.28)">' + esc(T('act.sign')) + '</button>';
+        '<button id="sg-sign" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-colors" ' +
+        'style="background:linear-gradient(90deg,#34d399 0%,#16a34a 100%);box-shadow:0 4px 10px rgba(22,163,74,.28)"></button>';
+      paintSignBtn();
+      document.addEventListener('langchange', paintSignBtn);
 
       document.getElementById('sg-sign').addEventListener('click', async function () {
         const key = 'rel:' + mySlot.id;
@@ -1425,6 +1641,7 @@
     goToStep(1);
     if (reviewMode) initReviewMode();
     else if (signMode) initSignMode();
+    else if (qcMode) initQcMode();
     else { lockOtherRoleSections(); paintReady(); }
   })();
   </script>

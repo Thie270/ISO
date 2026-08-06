@@ -94,42 +94,7 @@
 
     <div class="dashboard-bg flex-1 min-h-0 overflow-y-auto flex flex-col">
 
-    <!-- ── Header ── -->
-    <div class="flex-shrink-0 px-6 pt-6">
-      <div class="rounded-3xl bg-white border border-slate-100 shadow-[0_2px_16px_rgba(15,23,42,0.05)] px-7 py-6">
-        <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p class="text-[11px] font-bold tracking-[0.25em] uppercase text-blue-500 mb-1.5" data-i18n="wf.badge"></p>
-            <h1 class="text-[22px] font-bold text-slate-900" data-i18n="ap.title"></h1>
-            <p class="mt-1 text-[13.5px] text-slate-400" data-i18n="ap.sub"></p>
-          </div>
-        </div>
-
-        <div class="mt-6 flex items-center gap-3 overflow-x-auto pb-1">
-          <div class="flex items-center gap-3 flex-shrink-0">
-            <span class="w-7 h-7 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[12px] font-bold flex-shrink-0">1</span>
-            <span class="text-[13px] text-slate-700 whitespace-nowrap" data-i18n="ap.step1"></span>
-          </div>
-          <span class="h-px w-8 bg-slate-200 flex-shrink-0"></span>
-          <div class="flex items-center gap-3 flex-shrink-0">
-            <span class="w-7 h-7 rounded-full bg-blue-600 text-white ring-4 ring-blue-100 flex items-center justify-center text-[12px] font-bold flex-shrink-0">2</span>
-            <span class="text-[13px] text-blue-700 font-semibold whitespace-nowrap" data-i18n="ap.step2"></span>
-          </div>
-          <span class="h-px w-8 bg-slate-200 flex-shrink-0"></span>
-          <div class="flex items-center gap-3 flex-shrink-0">
-            <span class="w-7 h-7 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-[12px] font-bold flex-shrink-0">3</span>
-            <span class="text-[13px] text-slate-400 whitespace-nowrap" data-i18n="ap.step3"></span>
-          </div>
-          <span class="h-px w-8 bg-slate-200 flex-shrink-0"></span>
-          <div class="flex items-center gap-3 flex-shrink-0">
-            <span class="w-7 h-7 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-[12px] font-bold flex-shrink-0">4</span>
-            <span class="text-[13px] text-slate-400 whitespace-nowrap" data-i18n="ap.step4"></span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="flex-1 px-6 py-6 flex flex-col gap-5">
+    <div class="flex-1 px-6 pt-6 pb-6 flex flex-col gap-5">
 
       <!-- ── Summary cards ── -->
       <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
@@ -195,18 +160,19 @@
             <thead>
               <tr class="border-y border-slate-100">
                 <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 w-16" data-i18n="th.no"></th>
-                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700" data-i18n="th.docNo"></th>
-                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700" data-i18n="th.requester"></th>
-                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700" data-i18n="th.docName"></th>
+                <th data-sort="id" class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700" data-i18n="th.docNo"></th>
+                <th data-sort="requester" class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700" data-i18n="th.requester"></th>
+                <th data-sort="title" class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700" data-i18n="th.docName"></th>
                 <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700" data-i18n="th.files"></th>
-                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60" data-i18n="th.status"></th>
-                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60" data-i18n="th.age"></th>
+                <th data-sort="status" class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60" data-i18n="th.status"></th>
+                <th data-sort="age" class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60" data-i18n="th.age"></th>
                 <th class="px-5 py-4 text-right text-[13.5px] font-semibold text-slate-700 bg-slate-50/60"></th>
               </tr>
             </thead>
             <tbody id="rows"></tbody>
           </table>
         </div>
+        <div id="pager"></div>
 
         <div class="border-t border-slate-100 px-5 py-3.5 text-[12.5px] text-slate-400 flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 text-amber-400"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
@@ -215,8 +181,6 @@
 
       </div>
 
-      <!-- ── กล่องตัดสินใจ: เอกสารที่รอตรวจสอบรายการแรก ── -->
-      <div id="decision-card" class="rounded-3xl bg-white border border-slate-100 shadow-[0_2px_16px_rgba(15,23,42,0.05)] p-6"></div>
 
     </div>
 
@@ -258,6 +222,8 @@
       document.getElementById('c-near').textContent     = s.near;
     }
 
+    const tableState = App.newTableState('age', 'desc', 10);
+
     function paintRows() {
       const lang = I18N.getLang();
       const allow = filter ? filter.split(',') : null;
@@ -276,12 +242,16 @@
         return App.docLink(d, T('act.detail'), false);
       }
 
+      const info = App.pageOf(list, tableState, lang);
+
+      const pageRows = info.rows;
+
       const tb = document.getElementById('rows');
       if (!list.length) { tb.innerHTML = App.emptyRow(8, T('ap.noQueue')); return; }
 
-      tb.innerHTML = list.map((d, i) =>
+      tb.innerHTML = pageRows.map((d, i) =>
         '<tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">' +
-          '<td class="px-5 py-4 text-slate-500">' + (i + 1) + '</td>' +
+          '<td class="px-5 py-4 text-slate-500">' + (info.from + i + 1) + '</td>' +
           '<td class="px-5 py-4 font-semibold text-slate-800">' + esc(d.id) + '<span class="block text-[11.5px] font-normal text-slate-400">' + esc(d.docNo) + '</span></td>' +
           '<td class="px-5 py-4 text-slate-600">' + esc(lang === 'en' ? d.requesterNameEn : d.requesterName) + '</td>' +
           '<td class="px-5 py-4 text-slate-700">' + esc(Store.docTitle(d, lang)) + '</td>' +
@@ -295,61 +265,11 @@
           '</div></td>' +
         '</tr>').join('');
       I18N.apply(tb);
+      App.paintPager(document.getElementById('pager'), tableState, info, paintRows);
+      App.bindSortHeaders(document, tableState, paintRows);
     }
 
-    function paintDecision() {
-      const lang = I18N.getLang();
-      const next = Store.docsForRole('approver').filter(d => d.status === Store.STATUS.PENDING_APPROVAL)
-        .sort((a, b) => Store.ageOf(b) - Store.ageOf(a))[0];
-      const box = document.getElementById('decision-card');
-
-      if (!next) {
-        box.innerHTML = '<p class="text-center text-[13px] text-slate-400 py-4">' + esc(T('ap.noQueue')) + '</p>';
-        return;
-      }
-      const age = Store.ageOf(next), rem = Store.remainingOf(next);
-
-      box.innerHTML =
-        '<div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">' +
-          '<div class="flex-1 min-w-0">' +
-            '<p class="text-[12px] font-semibold uppercase tracking-widest text-slate-300 mb-2">' + esc(T('ap.reviewing')) + '</p>' +
-            '<h2 class="text-[17px] font-bold text-slate-900">' + esc(next.id) + ' · ' + esc(Store.docTitle(next, lang)) + '</h2>' +
-            '<p class="mt-1 text-[13px] text-slate-400">' + esc(T('th.requester')) + ': ' +
-              esc(lang === 'en' ? next.requesterNameEn : next.requesterName) + ' · ' +
-              esc(T('dv.elapsed')) + ' ' + age + ' / ' + next.dueDays + ' ' + esc(T('common.days')) +
-              (rem <= 2 ? ' <span class="text-red-500 font-semibold">· ' + esc(T('ap.c4')) + '</span>' : '') + '</p>' +
-            '<div class="mt-4 flex flex-wrap gap-2">' + fileTags(next) + '</div>' +
-          '</div>' +
-          '<div class="flex flex-wrap items-center gap-3">' +
-            '<button id="d-return" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-[13px] font-semibold text-amber-700 hover:bg-amber-100 transition-colors">' + esc(T('act.return')) + '</button>' +
-            '<button id="d-reject" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-[13px] font-semibold text-red-500 hover:bg-red-50 transition-colors">' + esc(T('act.reject')) + '</button>' +
-            '<a href="document.html?id=' + encodeURIComponent(next.id) + '" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-[13px] font-semibold text-slate-600 no-underline hover:bg-slate-50 transition-colors">' + esc(T('dv.pdf')) + '</a>' +
-            '<a href="create.html?id=' + encodeURIComponent(next.id) + '" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-blue-600 px-4 py-2.5 text-[13px] font-semibold text-white no-underline shadow-[0_4px_10px_rgba(37,99,235,0.25)] hover:bg-blue-700 transition-colors">' + esc(T('act.review')) + '</a>' +
-            '<button id="d-approve" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-4 py-2.5 text-[13px] font-semibold text-white transition-colors" style="background:#16a34a;box-shadow:0 4px 10px rgba(22,163,74,.25)">' + esc(T('act.approve')) + '</button>' +
-          '</div>' +
-        '</div>';
-
-      document.getElementById('d-approve').addEventListener('click', async () => {
-        const r = await App.confirmDialog({ title: T('act.approve'), sub: T('dv.confirmApprove'), tone: 'green', needNote: true });
-        if (!r) return;
-        Store.approve(next.id, user, r.note);
-        App.toast(T('n.approved')); refresh();
-      });
-      document.getElementById('d-return').addEventListener('click', async () => {
-        const r = await App.confirmDialog({ title: T('act.return'), sub: T('dv.confirmReturn'), tone: 'amber', needNote: true, noteRequired: true });
-        if (!r) return;
-        Store.returnForEdit(next.id, user, r.note);
-        App.toast(T('n.returned'), 'amber'); refresh();
-      });
-      document.getElementById('d-reject').addEventListener('click', async () => {
-        const r = await App.confirmDialog({ title: T('act.reject'), sub: T('dv.confirmReject'), tone: 'red', needNote: true, noteRequired: true });
-        if (!r) return;
-        Store.reject(next.id, user, r.note);
-        App.toast(T('n.rejected'), 'red'); refresh();
-      });
-    }
-
-    function refresh() { paintCards(); paintRows(); paintDecision(); }
+    function refresh() { paintCards(); paintRows(); }
 
     App.initFilterTabs(f => { filter = f; paintRows(); });
     document.getElementById('search').addEventListener('input', e => { term = e.target.value; paintRows(); });

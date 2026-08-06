@@ -91,14 +91,6 @@ body.view-all #doc-box {
   overflow: visible;
 }
 
-/* แถบเมนูส่วนที่ 1–6 ค้างไว้ด้านบนเพื่อใช้กระโดดไปแต่ละส่วน */
-body.view-all #doc-tabs {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  /* วงขอบทึบสีเดียวกับพื้น กันเนื้อหาเลื่อนโผล่รอบแถบเมนู (ทับ inline style เดิม) */
-  box-shadow: 0 0 0 24px #fefefe, 0 6px 16px rgba(0, 0, 0, 0.10) !important;
-}
 
 /* ส่วนที่ 4: คืนความสูงปกติของช่องรายละเอียด (ไม่ยืดเต็มจอแบบทีละส่วน) */
 body.view-all #step-4      { height: auto; }
