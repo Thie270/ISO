@@ -10,7 +10,10 @@
       "Bash(python3 /private/tmp/claude-501/-Users-cs-Desktop-ISO/2b6d2429-e97d-493d-a0d1-ba00ce19ad99/scratchpad/gen_roles.py)",
       "Bash(gh auth *)",
       "Bash(git add *)",
-      "Bash(cd /Users/cs/Desktop/ISO; sed -n '/const IC = {/,/};/p' js/app.js | head -30)"
+      "Bash(cd /Users/cs/Desktop/ISO; sed -n '/const IC = {/,/};/p' js/app.js | head -30)",
+      "Bash(python3 -)",
+      "Bash(git diff *)",
+      "Bash(python3 -c ' *)"
     ],
     "additionalDirectories": [
       "/Users/cs/Desktop/ISO/js"

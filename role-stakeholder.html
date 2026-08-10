@@ -42,7 +42,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
         <span class="nav-text" data-i18n="nav.myWork"></span>
       </a>
-      <a href="#" class="nav-link">
+      <a href="track.html" class="nav-link">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
         <span class="nav-text" data-i18n="nav.track"></span>
       </a>
@@ -263,7 +263,7 @@
           '<td class="px-5 py-4 bg-slate-50/60">' + dueCell(d) + '</td>' +
           '<td class="px-5 py-4 bg-slate-50/60"><div class="flex items-center justify-end gap-2">' +
             (canSign
-              ? '<a href="create.html?id=' + encodeURIComponent(d.id) + '" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-4 py-2 text-[13px] font-semibold text-white no-underline transition-colors" style="background:#6d28d9;box-shadow:0 4px 10px rgba(109,40,217,.25)">' +
+              ? '<a href="create.html?id=' + encodeURIComponent(d.id) + '" class="row-btn inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-4 py-2 text-[13px] font-semibold text-white no-underline transition-colors" style="background:#6d28d9;box-shadow:0 4px 10px rgba(109,40,217,.25)">' +
                 esc(T('act.sign')) + '</a>'
               : App.docLink(d, d.status === Store.STATUS.EXPIRED_RETURNED ? T('act.history') : T('act.detail'), false)) +
             '<a href="document.html?id=' + encodeURIComponent(d.id) + '" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-3 py-2 text-[13px] font-semibold text-slate-600 no-underline hover:bg-slate-50 transition-colors" title="' + esc(T('dv.pdf')) + '">' + App.IC.eye + '</a>' +
@@ -294,6 +294,9 @@
     document.addEventListener('langchange', refresh);
 
     refresh();
+
+    /* ตามการเดินงานจริงแบบ real time — บทบาทอื่นขยับสถานะเมื่อไหร่ หน้านี้อัปเดตตาม */
+    App.liveRefresh(refresh);
   })();
   </script>
 

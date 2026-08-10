@@ -50,7 +50,7 @@
         <span class="nav-text" data-i18n="nav.create"></span>
       </a>
 
-      <a href="#" class="nav-link">
+      <a href="track.html" class="nav-link">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
         <span class="nav-text" data-i18n="nav.track"></span>
       </a>
@@ -321,6 +321,26 @@
       });
     }
 
+    /* ปุ่มท้ายแถว — คำขอของตัวเองเปิด "งานที่ทำ" (ฟอร์ม) · ของคนอื่นเปิดหน้ากระดาษ PDF
+       ฉบับร่างยังแก้ไขได้ ปุ่มจึงเป็น "แก้ไข" ไม่ใช่ "ดูรายละเอียด" */
+    function rowAction(d) {
+      /* งานเดินมาถึงคิวของคนที่ล็อกอินอยู่ → ปุ่มพาไปหน้างานเพื่อเซ็น/ดำเนินการ */
+      const turn = App.myTurnLink(d, user);
+      if (turn) return turn;
+
+      const mine = user.role === 'requester' && d.requesterId === user.id;
+      if (!mine) return App.docLink(d, T('act.detail'), false, 'document.html');
+      const st = Store.STATUS;
+      if (d.status === st.DRAFT) return App.docLink(d, T('act.edit'), true, 'create.html', 'orange');
+      if (d.status === st.RETURNED) return App.docLink(d, T('act.edit'), true, 'create.html', 'orange');
+      if (d.status === st.EXPIRED_RETURNED) return App.noAction(T('status.EXPIRED_RETURNED'));
+      /* flow ยังเดินอยู่ (ผู้อนุมัติ / ผู้เกี่ยวข้อง / QC) → รออยู่ ยังทำอะไรไม่ได้ */
+      if ([st.PENDING_APPROVAL, st.PENDING_SIGN, st.SENT_TO_QC].indexOf(d.status) !== -1) {
+        return App.waitAction(T('status.' + d.status));
+      }
+      return App.docLink(d, T('act.detail'), false, 'create.html');
+    }
+
     function paintRows() {
       const lang = I18N.getLang();
       const list = filtered();
@@ -343,7 +363,7 @@
               (d.status === Store.STATUS.PENDING_SIGN ? App.progressBar(d)
                 : '<span class="text-slate-500">' + esc(T('holder.' + d.status)) + '</span>') + '</td>' +
             '<td class="px-5 py-4 bg-slate-50/60"><div class="flex items-center justify-end gap-2">' +
-              App.docLink(d, T('act.detail'), false) +
+              rowAction(d) +
               '<button class="row-action" data-i18n-aria="act.options">' + App.IC.dots + '</button>' +
             '</div></td>' +
           '</tr>').join('');
@@ -428,6 +448,9 @@
 
     document.addEventListener('langchange', refresh);
     refresh();
+
+    /* ตามการเดินงานจริงแบบ real time — บทบาทอื่นขยับสถานะเมื่อไหร่ หน้านี้อัปเดตตาม */
+    App.liveRefresh(refresh);
   })();
   </script>
 

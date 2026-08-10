@@ -50,7 +50,7 @@
         <span class="nav-text" data-i18n="nav.create"></span>
       </a>
 
-      <a href="#" class="nav-link">
+      <a href="track.html" class="nav-link">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
         <span class="nav-text" data-i18n="nav.track"></span>
       </a>
@@ -137,15 +137,15 @@
           <!-- Step 1 -->
           <div id="step-1" class="step-content flex flex-col gap-4 w-full">
             <div class="flex flex-col gap-1.5">
-              <label for="f-empid" class="text-[13px] font-normal text-slate-700" data-i18n="cr.empId"></label>
-              <input id="f-empid" type="text" data-i18n-ph="common.fill" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
+              <label for="f-empid" class="f-label" data-i18n="cr.empId"></label>
+              <input id="f-empid" type="text" data-i18n-ph="common.fill" class="f-input" />
             </div>
 
             <div class="grid grid-cols-[160px_1fr_1fr] gap-4">
               <div class="flex flex-col gap-1.5">
-                <label for="f-prefix" class="text-[13px] font-normal text-slate-700" data-i18n="cr.prefix"></label>
+                <label for="f-prefix" class="f-label" data-i18n="cr.prefix"></label>
                 <div class="relative">
-                  <select id="f-prefix" class="w-full appearance-none rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-500 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all bg-white cursor-pointer">
+                  <select id="f-prefix" class="f-input appearance-none cursor-pointer">
                     <option value="" disabled selected data-i18n="common.select"></option>
                     <option>นาย</option><option>นาง</option><option>นางสาว</option>
                   </select>
@@ -155,20 +155,20 @@
                 </div>
               </div>
               <div class="flex flex-col gap-1.5">
-                <label for="f-fname" class="text-[13px] font-normal text-slate-700" data-i18n="cr.fname"></label>
-                <input id="f-fname" type="text" data-i18n-ph="common.fill" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
+                <label for="f-fname" class="f-label" data-i18n="cr.fname"></label>
+                <input id="f-fname" type="text" data-i18n-ph="common.fill" class="f-input" />
               </div>
               <div class="flex flex-col gap-1.5">
-                <label for="f-lname" class="text-[13px] font-normal text-slate-700" data-i18n="cr.lname"></label>
-                <input id="f-lname" type="text" data-i18n-ph="common.fill" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
+                <label for="f-lname" class="f-label" data-i18n="cr.lname"></label>
+                <input id="f-lname" type="text" data-i18n-ph="common.fill" class="f-input" />
               </div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
               <div class="flex flex-col gap-1.5">
-                <label for="f-dept" class="text-[13px] font-normal text-slate-700" data-i18n="cr.dept"></label>
+                <label for="f-dept" class="f-label" data-i18n="cr.dept"></label>
                 <div class="relative">
-                  <select id="f-dept" class="w-full appearance-none rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-500 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all bg-white cursor-pointer">
+                  <select id="f-dept" class="f-input appearance-none cursor-pointer">
                     <option value="" disabled selected data-i18n="common.fill"></option>
                     <option>ฝ่ายผลิต</option><option>ฝ่ายบุคคล</option><option>ฝ่ายการเงิน</option><option>ฝ่าย IT</option>
                   </select>
@@ -178,13 +178,8 @@
                 </div>
               </div>
               <div class="flex flex-col gap-1.5">
-                <label for="f-date" class="text-[13px] font-normal text-slate-700" data-i18n="cr.date"></label>
-                <div class="relative">
-                  <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                  </span>
-                  <input id="f-date" type="text" placeholder="DD/MM/YYYY" class="w-full rounded-xl border border-slate-200 pl-11 pr-4 py-3 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
-                </div>
+                <label for="f-date" class="f-label" data-i18n="cr.date"></label>
+                <input id="f-date" type="text" data-datefield placeholder="DD/MM/YYYY" class="f-input" />
               </div>
             </div>
           </div>
@@ -194,32 +189,32 @@
             <div class="flex flex-wrap gap-x-8 gap-y-3">
               <label class="flex items-center gap-2.5 cursor-pointer select-none">
                 <input type="radio" name="purpose" value="new" class="w-4 h-4 accent-blue-600 cursor-pointer" />
-                <span class="text-[13px] text-slate-700" data-i18n="cr.p.new"></span>
+                <span class="f-opt" data-i18n="cr.p.new"></span>
               </label>
               <label class="flex items-center gap-2.5 cursor-pointer select-none">
                 <input type="radio" name="purpose" value="edit" class="w-4 h-4 accent-blue-600 cursor-pointer" />
-                <span class="text-[13px] text-slate-700" data-i18n="cr.p.edit"></span>
+                <span class="f-opt" data-i18n="cr.p.edit"></span>
               </label>
               <label class="flex items-center gap-2.5 cursor-pointer select-none">
                 <input type="radio" name="purpose" value="cancel" class="w-4 h-4 accent-blue-600 cursor-pointer" />
-                <span class="text-[13px] text-slate-700" data-i18n="cr.p.cancel"></span>
+                <span class="f-opt" data-i18n="cr.p.cancel"></span>
               </label>
               <label class="flex items-center gap-2.5 cursor-pointer select-none">
                 <input type="radio" name="purpose" value="copy" class="w-4 h-4 accent-blue-600 cursor-pointer" />
-                <span class="text-[13px] text-slate-700" data-i18n="cr.p.copy"></span>
+                <span class="f-opt" data-i18n="cr.p.copy"></span>
               </label>
             </div>
 
             <div class="flex">
               <label class="flex items-center gap-2.5 cursor-pointer select-none">
                 <input type="radio" name="purpose" value="other" id="purpose-other" class="w-4 h-4 accent-blue-600 cursor-pointer" />
-                <span class="text-[13.5px] text-slate-700" data-i18n="cr.p.other"></span>
+                <span class="f-opt" data-i18n="cr.p.other"></span>
               </label>
             </div>
 
             <div class="flex flex-col gap-1.5">
-              <label for="purpose-detail" class="text-[13px] font-semibold text-slate-700" data-i18n="cr.detail"></label>
-              <textarea id="purpose-detail" rows="3" data-i18n-ph="cr.detail" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300 resize-none"></textarea>
+              <label for="purpose-detail" class="f-label" data-i18n="cr.detail"></label>
+              <textarea id="purpose-detail" rows="3" data-i18n-ph="cr.detail" class="f-input resize-none"></textarea>
             </div>
           </div>
 
@@ -228,27 +223,27 @@
             <div class="grid grid-cols-2 gap-x-16 gap-y-4">
               <label class="flex items-center gap-2.5 cursor-pointer select-none">
                 <input type="radio" name="doctype" value="qm" class="doc-type-radio w-4 h-4 accent-blue-600 cursor-pointer" />
-                <span class="text-[13.5px] text-slate-700" data-i18n="cr.t.qm"></span>
+                <span class="f-opt" data-i18n="cr.t.qm"></span>
               </label>
               <label class="flex items-center gap-2.5 cursor-pointer select-none">
                 <input type="radio" name="doctype" value="qp" class="doc-type-radio w-4 h-4 accent-blue-600 cursor-pointer" />
-                <span class="text-[13.5px] text-slate-700" data-i18n="cr.t.qp"></span>
+                <span class="f-opt" data-i18n="cr.t.qp"></span>
               </label>
               <label class="flex items-center gap-2.5 cursor-pointer select-none">
                 <input type="radio" name="doctype" value="wi" class="doc-type-radio w-4 h-4 accent-blue-600 cursor-pointer" />
-                <span class="text-[13.5px] text-slate-700" data-i18n="cr.t.wi"></span>
+                <span class="f-opt" data-i18n="cr.t.wi"></span>
               </label>
               <label class="flex items-center gap-2.5 cursor-pointer select-none">
                 <input type="radio" name="doctype" value="sd" class="doc-type-radio w-4 h-4 accent-blue-600 cursor-pointer" />
-                <span class="text-[13.5px] text-slate-700" data-i18n="cr.t.sd"></span>
+                <span class="f-opt" data-i18n="cr.t.sd"></span>
               </label>
               <label class="flex items-center gap-2.5 cursor-pointer select-none">
                 <input type="radio" name="doctype" value="form" class="doc-type-radio w-4 h-4 accent-blue-600 cursor-pointer" />
-                <span class="text-[13.5px] text-slate-700" data-i18n="cr.t.form"></span>
+                <span class="f-opt" data-i18n="cr.t.form"></span>
               </label>
               <label class="flex items-center gap-2.5 cursor-pointer select-none">
                 <input type="radio" name="doctype" value="esd" class="doc-type-radio w-4 h-4 accent-blue-600 cursor-pointer" />
-                <span class="text-[13.5px] text-slate-700" data-i18n="cr.t.esd"></span>
+                <span class="f-opt" data-i18n="cr.t.esd"></span>
               </label>
             </div>
           </div>
@@ -257,24 +252,24 @@
           <div id="step-4" class="step-content hidden flex flex-col gap-4 w-full h-full">
             <div class="grid grid-cols-2 gap-4 w-full">
               <div class="flex flex-col gap-1.5">
-                <label for="f-docname" class="text-[13px] font-normal text-slate-700" data-i18n="cr.docName"></label>
-                <input id="f-docname" type="text" data-i18n-ph="common.fill" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
+                <label for="f-docname" class="f-label" data-i18n="cr.docName"></label>
+                <input id="f-docname" type="text" data-i18n-ph="common.fill" class="f-input" />
               </div>
               <div class="flex flex-col gap-1.5">
-                <label for="f-docno" class="text-[13px] font-normal text-slate-700" data-i18n="cr.docNo"></label>
-                <input id="f-docno" type="text" data-i18n-ph="common.fill" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
+                <label for="f-docno" class="f-label" data-i18n="cr.docNo"></label>
+                <input id="f-docno" type="text" data-i18n-ph="common.fill" class="f-input" />
               </div>
             </div>
 
             <div class="flex items-end gap-4 w-full">
               <div class="flex flex-col gap-1.5 w-[160px] flex-shrink-0">
-                <label for="f-revision" class="text-[13px] font-normal text-slate-700" data-i18n="cr.revision"></label>
-                <input id="f-revision" type="number" placeholder="0" min="0" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
+                <label for="f-revision" class="f-label" data-i18n="cr.revision"></label>
+                <input id="f-revision" type="number" placeholder="0" min="0" class="f-input" />
               </div>
               <div class="flex flex-col gap-1.5 flex-1">
-                <label for="f-relateddept" class="text-[13px] font-normal text-slate-700" data-i18n="cr.relatedDept"></label>
+                <label for="f-relateddept" class="f-label" data-i18n="cr.relatedDept"></label>
                 <div class="relative">
-                  <select id="f-relateddept" class="w-full appearance-none rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-500 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all bg-white cursor-pointer">
+                  <select id="f-relateddept" class="f-input appearance-none cursor-pointer">
                     <option value="" disabled selected data-i18n="common.fill"></option>
                     <option>ฝ่ายผลิต</option><option>ฝ่ายบุคคล</option><option>ฝ่ายการเงิน</option><option>ฝ่าย IT</option>
                   </select>
@@ -286,24 +281,24 @@
             </div>
 
             <div id="desc-field-4" class="flex flex-col gap-1.5 w-full flex-1 min-h-0">
-              <label for="desc-step4" class="text-[13px] font-normal text-slate-700 flex-shrink-0" data-i18n="cr.desc"></label>
-              <textarea id="desc-step4" maxlength="1000" rows="3" data-i18n-ph="cr.desc" class="w-full flex-1 min-h-[56px] rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300 resize-none"></textarea>
+              <label for="desc-step4" class="f-label flex-shrink-0" data-i18n="cr.desc"></label>
+              <textarea id="desc-step4" maxlength="1000" rows="3" data-i18n-ph="cr.desc" class="f-input flex-1 min-h-[56px] resize-none"></textarea>
               <p id="desc-counter" class="text-[12px] text-slate-400"></p>
             </div>
 
-            <div class="flex flex-col gap-2 w-full">
-              <label for="f-effective" class="text-[13px] font-normal text-slate-700" data-i18n="cr.effective"></label>
-              <div class="flex items-stretch rounded-xl border border-slate-200 overflow-hidden w-[280px] flex-shrink-0">
-                <div class="flex items-center justify-center bg-white px-4 border-r border-slate-200 text-slate-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                </div>
-                <input id="f-effective" type="text" placeholder="DD/MM/YYYY" class="flex-1 px-4 py-2.5 text-sm text-slate-800 outline-none placeholder:text-slate-300 bg-white" />
+            <div class="flex flex-col gap-1.5 w-full">
+              <label for="f-effective" class="f-label" data-i18n="cr.effective"></label>
+              <div class="w-[280px] flex-shrink-0">
+                <input id="f-effective" type="text" data-datefield placeholder="DD/MM/YYYY" class="f-input" />
               </div>
             </div>
           </div>
 
           <!-- Step 5 -->
           <div id="step-5" class="step-content hidden flex flex-col gap-4 w-full">
+            <p class="inline-flex w-fit items-center gap-1.5 rounded-lg bg-slate-100 px-2.5 py-1 text-[12px] font-semibold text-slate-500">
+             <span data-i18n="cr.optional"></span>
+            </p>
             <div class="w-full rounded-2xl border border-slate-200 p-4">
               <label for="file-upload" class="flex flex-col items-center justify-center gap-3 w-full rounded-xl border border-slate-200 py-12 cursor-pointer hover:bg-slate-50 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -324,25 +319,19 @@
           <div id="step-6" class="step-content hidden flex flex-col gap-4 w-full">
             <div class="grid grid-cols-2 gap-6 w-full">
               <div class="flex flex-col gap-3">
-                <label class="text-[13px] font-normal text-slate-700"><span data-i18n="th.requester"></span> <span class="text-red-500">*</span></label>
+                <label class="f-label"><span data-i18n="th.requester"></span> <span class="text-red-500">*</span></label>
                 <div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center" data-sign-key="requester" style="min-height:120px;">
                   <button type="button" data-sign-btn class="rounded-xl px-6 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;" data-i18n="cr.signDoc"></button>
                 </div>
-                <div class="flex flex-col gap-2 text-[13px] text-slate-700 items-center text-center">
-                  <p><span data-i18n="cr.name"></span><span class="border-b border-slate-400 inline-block" style="width:200px;">&nbsp;</span></p>
-                  <p><span data-i18n="cr.signDate"></span>&nbsp;<span class="border-b border-slate-400 inline-block" style="width:160px;">&nbsp;</span></p>
-                </div>
+                <div data-sign-meta="requester"></div>
               </div>
 
               <div class="flex flex-col gap-3">
-                <label class="text-[13px] font-normal text-slate-700"><span data-i18n="cr.owner"></span> <span class="text-red-500">*</span></label>
+                <label class="f-label"><span data-i18n="cr.owner"></span> <span class="text-red-500">*</span></label>
                 <div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center" data-sign-key="owner" style="min-height:120px;">
                   <button type="button" data-sign-btn class="rounded-xl px-6 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;" data-i18n="cr.signDoc"></button>
                 </div>
-                <div class="flex flex-col gap-2 text-[13px] text-slate-700 items-center text-center">
-                  <p><span data-i18n="cr.name"></span><span class="border-b border-slate-400 inline-block" style="width:200px;">&nbsp;</span></p>
-                  <p><span data-i18n="cr.signDate"></span>&nbsp;<span class="border-b border-slate-400 inline-block" style="width:160px;">&nbsp;</span></p>
-                </div>
+                <div data-sign-meta="owner"></div>
               </div>
             </div>
           </div>
@@ -350,10 +339,10 @@
           <!-- Step 7 -->
           <div id="step-7" class="step-content hidden flex flex-col gap-4 w-full">
             <div class="flex flex-col gap-2 w-full">
-              <label for="related-select" class="text-[13px] font-semibold text-slate-800" data-i18n="cr.pickRelated"></label>
+              <label for="related-select" class="f-label" data-i18n="cr.pickRelated"></label>
               <div id="related-chips" class="flex flex-wrap gap-2"></div>
               <div class="relative w-full">
-                <select id="related-select" class="w-full appearance-none rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-400 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all bg-white cursor-pointer">
+                <select id="related-select" class="f-input appearance-none cursor-pointer">
                   <option value="" disabled selected data-i18n="common.selectData"></option>
                 </select>
                 <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
@@ -370,14 +359,11 @@
 
           <!-- Step 8 -->
           <div id="step-8" class="step-content hidden flex flex-col gap-3 w-full">
-            <label class="text-[13px] font-medium text-slate-700"><span data-i18n="cr.approver"></span> <span class="text-red-500">*</span></label>
+            <label class="f-label"><span data-i18n="cr.approver"></span> <span class="text-red-500">*</span></label>
             <div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center w-full" data-sign-key="approver" style="min-height:120px;">
               <button type="button" data-sign-btn class="rounded-xl px-6 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;" data-i18n="cr.signDoc"></button>
             </div>
-            <div class="flex flex-col gap-2 text-[13px] text-slate-700 items-center text-center">
-              <p><span data-i18n="cr.name"></span><span class="border-b border-slate-400 inline-block" style="width:200px;">&nbsp;</span></p>
-              <p><span data-i18n="cr.signDate"></span>&nbsp;<span class="border-b border-slate-400 inline-block" style="width:160px;">&nbsp;</span></p>
-            </div>
+            <div data-sign-meta="approver" class="w-full max-w-[520px] self-center"></div>
           </div>
 
           <!-- Step 9 -->
@@ -385,25 +371,19 @@
             <h2 class="text-[15px] font-semibold text-slate-800" data-i18n="cr.s9"></h2>
             <div class="grid grid-cols-2 gap-6 w-full">
               <div class="flex flex-col gap-3">
-                <label class="text-[13px] font-normal text-slate-700"><span data-i18n="cr.qcStaff"></span> <span class="text-red-500">*</span></label>
+                <label class="f-label"><span data-i18n="cr.qcStaff"></span> <span class="text-red-500">*</span></label>
                 <div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center" data-sign-key="qcStaff" style="min-height:120px;">
                   <button type="button" data-sign-btn class="rounded-xl px-6 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;" data-i18n="cr.signDoc"></button>
                 </div>
-                <div class="flex flex-col gap-2 text-[13px] text-slate-700 items-center text-center">
-                  <p><span data-i18n="cr.name"></span><span class="border-b border-slate-400 inline-block" style="width:200px;">&nbsp;</span></p>
-                  <p><span data-i18n="cr.signDate"></span>&nbsp;<span class="border-b border-slate-400 inline-block" style="width:160px;">&nbsp;</span></p>
-                </div>
+                <div data-sign-meta="qcStaff"></div>
               </div>
 
               <div class="flex flex-col gap-3">
-                <label class="text-[13px] font-normal text-slate-700"><span data-i18n="cr.qcManager"></span> <span class="text-red-500">*</span></label>
+                <label class="f-label"><span data-i18n="cr.qcManager"></span> <span class="text-red-500">*</span></label>
                 <div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center" data-sign-key="qcManager" style="min-height:120px;">
                   <button type="button" data-sign-btn class="rounded-xl px-6 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;" data-i18n="cr.signDoc"></button>
                 </div>
-                <div class="flex flex-col gap-2 text-[13px] text-slate-700 items-center text-center">
-                  <p><span data-i18n="cr.name"></span><span class="border-b border-slate-400 inline-block" style="width:200px;">&nbsp;</span></p>
-                  <p><span data-i18n="cr.signDate"></span>&nbsp;<span class="border-b border-slate-400 inline-block" style="width:160px;">&nbsp;</span></p>
-                </div>
+                <div data-sign-meta="qcManager"></div>
               </div>
             </div>
           </div>
@@ -538,9 +518,9 @@
 
       <div class="px-6 pb-6 flex flex-col gap-4 border-t border-slate-100 pt-4">
         <div class="grid grid-cols-2 gap-3">
-          <input type="text" data-i18n-ph="cr.signName" class="rounded-xl border border-slate-200 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 placeholder:text-slate-300 transition-all" />
+          <input id="sign-modal-name" type="text" data-i18n-ph="cr.signName" class="f-input" />
           <div class="relative">
-            <select class="w-full appearance-none rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-400 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 bg-white cursor-pointer transition-all">
+            <select id="sign-modal-position" class="f-input appearance-none cursor-pointer">
               <option value="" disabled selected data-i18n="cr.position"></option>
               <option>ผู้จัดการ</option><option>หัวหน้าฝ่าย</option><option>พนักงาน</option>
             </select>
@@ -583,6 +563,265 @@
 
     if (user.role !== 'requester' && !reviewMode && !signMode && !qcMode) { App.toast(T('dv.noAccess'), 'red'); location.replace(user.home); return; }
     if (!reviewMode && !signMode && !qcMode && editing && editing.requesterId !== user.id) editing = null;
+
+    /* เปิดคำขอของคนอื่น (หรือไม่มีคำขอนี้) → ส่งไปดูหน้ากระดาษแทน ไม่ใช่ฟอร์มเปล่า */
+    if (editId && !editing) { location.replace('document.html?id=' + encodeURIComponent(editId)); return; }
+
+    /* ผู้ร้องขอเปิดคำขอที่ส่งออกไปแล้ว → เห็น "งานที่ทำ" ทั้งฉบับแบบอ่านอย่างเดียว (ติดตามสถานะ)
+       ยังแก้ไขได้เฉพาะฉบับร่าง / ที่ถูกส่งกลับ / ที่หมดเวลาลงนาม */
+    const EDITABLE = [Store.STATUS.DRAFT, Store.STATUS.RETURNED, Store.STATUS.EXPIRED_RETURNED];
+    const trackMode = !!(editing && !reviewMode && !signMode && !qcMode &&
+                         EDITABLE.indexOf(editing.status) === -1);
+
+    /* ═══════════════════════════════════════════════════════════
+       ช่องวันที่ (ใช้เหมือนกันทุกส่วนของฟอร์ม)
+       — พิมพ์เองได้ในรูปแบบ วว/ดด/ปปปป
+       — กดไอคอนปฏิทินเพื่อเลือกวันจากปฏิทินของเบราว์เซอร์
+       ═══════════════════════════════════════════════════════════ */
+    const CAL_ICON = '<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>';
+
+    const DateField = (function () {
+      /* วว/ดด/ปปปป → ปปปป-ดด-วว (รูปแบบที่ปฏิทินของเบราว์เซอร์ใช้) */
+      function toISO(v) {
+        const m = /^(\d{1,2})\s*\/\s*(\d{1,2})\s*\/\s*(\d{4})$/.exec(String(v || '').trim());
+        if (!m) return '';
+        const dd = ('0' + m[1]).slice(-2), mm = ('0' + m[2]).slice(-2);
+        if (Number(mm) < 1 || Number(mm) > 12 || Number(dd) < 1 || Number(dd) > 31) return '';
+        return m[3] + '-' + mm + '-' + dd;
+      }
+      /* ปปปป-ดด-วว → วว/ดด/ปปปป */
+      function toThai(v) {
+        const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(v || '').trim());
+        return m ? (m[3] + '/' + m[2] + '/' + m[1]) : '';
+      }
+      function todayStr() {
+        const d = new Date();
+        return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear();
+      }
+
+      /* คืนค่า HTML ของช่องวันที่ — ใช้ได้ทั้งใน HTML และในส่วนที่สร้างด้วย JS */
+      function html(id, extraClass) {
+        return '<div class="datefield">' +
+          '<button type="button" class="datefield-btn" tabindex="-1" aria-hidden="true">' + CAL_ICON + '</button>' +
+          '<input id="' + id + '" type="text" inputmode="numeric" placeholder="DD/MM/YYYY" class="f-input ' + (extraClass || '') + '" />' +
+          '<input type="date" class="datefield-native" tabindex="-1" aria-hidden="true" />' +
+        '</div>';
+      }
+
+      /* ห่อ <input data-datefield> ที่เขียนไว้ใน HTML ให้กลายเป็นช่องวันที่เต็มรูปแบบ */
+      function wrap(input) {
+        const holder = document.createElement('div');
+        holder.className = 'datefield';
+        input.parentNode.insertBefore(holder, input);
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'datefield-btn';
+        btn.tabIndex = -1;
+        btn.setAttribute('aria-hidden', 'true');
+        btn.innerHTML = CAL_ICON;
+        holder.appendChild(btn);
+
+        holder.appendChild(input);
+        if (!input.placeholder) input.placeholder = 'DD/MM/YYYY';
+        input.setAttribute('inputmode', 'numeric');
+
+        const native = document.createElement('input');
+        native.type = 'date';
+        native.className = 'datefield-native';
+        native.tabIndex = -1;
+        native.setAttribute('aria-hidden', 'true');
+        holder.appendChild(native);
+        return holder;
+      }
+
+      function bind(holder) {
+        if (!holder || holder.dataset.bound) return;
+        holder.dataset.bound = '1';
+        const btn = holder.querySelector('.datefield-btn');
+        const text = holder.querySelector('.f-input');
+        const native = holder.querySelector('.datefield-native');
+        if (!btn || !text || !native) return;
+
+        function openPicker() {
+          if (text.disabled) return;
+          native.value = toISO(text.value) || '';
+          native.disabled = false;
+          try {
+            if (native.showPicker) native.showPicker();
+            else { native.focus(); native.click(); }
+          } catch (e) {
+            /* เบราว์เซอร์ที่เปิดปฏิทินเองไม่ได้ — ยังพิมพ์วันที่เองได้ตามปกติ */
+            text.focus();
+          }
+        }
+
+        btn.addEventListener('click', openPicker);
+        native.addEventListener('change', function () {
+          const v = toThai(native.value);
+          if (!v) return;
+          text.value = v;
+          text.dispatchEvent(new Event('input', { bubbles: true }));
+          text.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+
+        /* พิมพ์เอง: รับเฉพาะตัวเลขกับ "/" และเติม "/" ให้อัตโนมัติเมื่อพิมพ์ต่อท้าย
+           (พิมพ์ 1/2/2030 เองก็ได้ — ระบบไม่ไปจัดกลุ่มใหม่ให้ผิด) */
+        text.addEventListener('input', function (e) {
+          /* กัน "/" ซ้ำ กรณีผู้ใช้พิมพ์ "/" เองหลังจากระบบเติมให้แล้ว */
+          const clean = text.value.replace(/[^\d/]/g, '').replace(/\/{2,}/g, '/');
+          const atEnd = text.selectionStart === text.value.length;
+          if (!atEnd) { if (clean !== text.value) text.value = clean; return; }
+
+          const del = !!(e && e.inputType && e.inputType.indexOf('delete') === 0);
+          const p = clean.split('/');
+          let out;
+
+          if (p.length === 1) {
+            /* พิมพ์/วางเป็นตัวเลขล้วน — จัดกลุ่มเป็น วว/ดด/ปปปป ให้ */
+            const dg = p[0].slice(0, 8);
+            out = dg.slice(0, 2);
+            if (dg.length > 2) out += '/' + dg.slice(2, 4);
+            else if (!del && dg.length === 2) out += '/';
+            if (dg.length > 4) out += '/' + dg.slice(4, 8);
+            else if (!del && dg.length === 4) out += '/';
+          } else {
+            /* ผู้ใช้ใส่ "/" เอง — เคารพการแบ่งช่วงที่พิมพ์มา */
+            const dd = (p[0] || '').slice(0, 2);
+            const mm = (p[1] || '').slice(0, 2);
+            const yy = (p[2] || '').slice(0, 4);
+            out = dd + '/' + mm;
+            if (p.length > 2 || (!del && mm.length === 2)) out += '/' + yy;
+          }
+          if (out !== text.value) text.value = out;
+        });
+
+        /* ปุ่มปฏิทินต้องปิดตามช่องกรอกเมื่ออยู่ในโหมดอ่านอย่างเดียว */
+        function syncDisabled() { btn.disabled = text.disabled; }
+        syncDisabled();
+        holder._sync = syncDisabled;
+      }
+
+      /* เรียกซ้ำได้ — ผูกเฉพาะช่องที่ยังไม่ได้ผูก */
+      function init(root) {
+        (root || document).querySelectorAll('input[data-datefield]').forEach(function (input) {
+          input.removeAttribute('data-datefield');
+          bind(wrap(input));
+        });
+        (root || document).querySelectorAll('.datefield').forEach(bind);
+      }
+
+      function syncAll() {
+        document.querySelectorAll('.datefield').forEach(function (h) { if (h._sync) h._sync(); });
+      }
+
+      return { init: init, html: html, toISO: toISO, toThai: toThai, today: todayStr, syncAll: syncAll };
+    })();
+
+    DateField.init();
+
+    /* ═══════════════════════════════════════════════════════════
+       ชื่อผู้ลงนาม + วันที่ ใต้กล่องเซ็นทุกกล่อง (5.1 / 5.2 / 5.3 / 6)
+       ใช้หน้าตาและขนาดตัวอักษรชุดเดียวกันทั้งฟอร์ม
+       ═══════════════════════════════════════════════════════════ */
+    /* ตำแหน่งที่เลือกได้ — รวมตำแหน่งมาตรฐานกับตำแหน่งจริงของผู้ใช้ในระบบ */
+    function positionList() {
+      const lang = I18N.getLang();
+      const base = lang === 'en'
+        ? ['Manager', 'Section Head', 'Staff']
+        : ['ผู้จัดการ', 'หัวหน้าฝ่าย', 'พนักงาน'];
+      Store.USERS.forEach(function (u) {
+        const p = lang === 'en' ? (u.positionEn || u.position) : u.position;
+        if (p && base.indexOf(p) === -1) base.push(p);
+      });
+      return base;
+    }
+
+    function positionOptions(selected) {
+      const list = positionList().slice();
+      if (selected && list.indexOf(selected) === -1) list.push(selected);
+      return '<option value="">' + esc(T('cr.position')) + '</option>' +
+        list.map(function (p) {
+          return '<option value="' + esc(p) + '"' + (p === selected ? ' selected' : '') + '>' + esc(p) + '</option>';
+        }).join('');
+    }
+
+    function signMetaHtml(key) {
+      return '<div class="grid grid-cols-[1fr_1fr_170px] gap-3 w-full">' +
+        '<div class="flex flex-col gap-1.5">' +
+          '<label class="f-sublabel" for="s5-name-' + esc(key) + '">' + esc(T('cr.name')) + ' <span class="text-red-500">*</span></label>' +
+          '<input id="s5-name-' + esc(key) + '" type="text" class="f-input" placeholder="' + esc(T('common.fill')) + '" />' +
+        '</div>' +
+        '<div class="flex flex-col gap-1.5">' +
+          '<label class="f-sublabel" for="s5-pos-' + esc(key) + '">' + esc(T('cr.position')) + '</label>' +
+          '<select id="s5-pos-' + esc(key) + '" class="f-input cursor-pointer">' + positionOptions('') + '</select>' +
+        '</div>' +
+        '<div class="flex flex-col gap-1.5">' +
+          '<label class="f-sublabel" for="s5-date-' + esc(key) + '">' + esc(T('cr.signDate')) + ' <span class="text-red-500">*</span></label>' +
+          DateField.html('s5-date-' + esc(key)) +
+        '</div>' +
+      '</div>';
+    }
+
+    function paintSignMeta(root) {
+      (root || document).querySelectorAll('[data-sign-meta]').forEach(function (holder) {
+        const key = holder.getAttribute('data-sign-meta');
+        const oldName = holder.querySelector('[id^="s5-name-"]');
+        const oldDate = holder.querySelector('[id^="s5-date-"]');
+        const oldPos = holder.querySelector('[id^="s5-pos-"]');
+        const keep = {
+          name: oldName ? oldName.value : '',
+          at: oldDate ? oldDate.value : '',
+          position: oldPos ? oldPos.value : '',
+          locked: oldName ? oldName.disabled : false
+        };
+        holder.innerHTML = signMetaHtml(key);
+        DateField.init(holder);
+        setSignMeta(key, keep.name, keep.at, keep.position);
+        if (keep.locked) lockSignMeta(key, true);
+      });
+      DateField.syncAll();
+    }
+
+    function setSignMeta(key, name, at, position) {
+      const n = document.getElementById('s5-name-' + key);
+      const d = document.getElementById('s5-date-' + key);
+      const p = document.getElementById('s5-pos-' + key);
+      if (n && name !== null && name !== undefined) n.value = name;
+      /* วันที่ที่เคยบันทึกไว้เป็น ปปปป-ดด-วว ให้แสดงเป็น วว/ดด/ปปปป */
+      if (d && at !== null && at !== undefined) d.value = DateField.toThai(at) || at;
+      if (p && position) {
+        /* ตำแหน่งที่บันทึกไว้อาจไม่อยู่ในรายการของภาษาปัจจุบัน — เพิ่มเข้าไปให้แสดงได้ */
+        if (!Array.prototype.some.call(p.options, function (o) { return o.value === position; })) {
+          const opt = document.createElement('option');
+          opt.value = position; opt.textContent = position;
+          p.appendChild(opt);
+        }
+        p.value = position;
+      }
+    }
+
+    function getSignMeta(key) {
+      return {
+        name: fval('s5-name-' + key),
+        at: fval('s5-date-' + key),
+        position: fval('s5-pos-' + key)
+      };
+    }
+
+    function lockSignMeta(key, locked) {
+      ['s5-name-' + key, 's5-pos-' + key, 's5-date-' + key].forEach(function (id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.disabled = !!locked;
+        el.classList.toggle('is-locked', !!locked);
+        el.classList.toggle('cursor-not-allowed', !!locked);
+      });
+      DateField.syncAll();
+    }
+
+    paintSignMeta();
+    document.addEventListener('langchange', function () { setTimeout(function () { paintSignMeta(); }, 0); });
 
     /* ─────────── stepper ─────────── */
     let currentStep = 1, isViewAll = false;
@@ -805,17 +1044,36 @@
         const col = document.createElement('div');
         col.className = 'flex flex-col gap-3';
         col.innerHTML =
-          '<p class="text-[13px] font-normal text-slate-700"></p>' +
-          '<div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center" style="min-height:160px;">' +
+          '<p class="f-label"></p>' +
+          '<div class="sign-box rounded-2xl border border-slate-200 flex items-center justify-center" data-sign-key="rel:' + esc(id) + '" style="min-height:160px;">' +
             '<button type="button" data-sign-btn class="rounded-xl px-6 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#4338ca;">' + esc(T('cr.signDoc')) + '</button>' +
           '</div>' +
-          '<div class="flex flex-col gap-2 text-[13px] text-slate-700 items-center text-center">' +
-            '<p>' + esc(T('cr.name')) + '<span class="border-b border-slate-400 inline-block" style="width:200px;">&nbsp;</span></p>' +
-            '<p>' + esc(T('cr.signDate')) + '&nbsp;<span class="border-b border-slate-400 inline-block" style="width:160px;">&nbsp;</span></p>' +
-          '</div>';
+          '<div data-sign-meta="rel:' + esc(id) + '"></div>';
         col.querySelector('p').textContent = label;
         SignModal.bind(col.querySelector('[data-sign-btn]'));
         signBoxes.appendChild(col);
+        paintSignMeta(col);
+
+        /* ดึงลายเซ็น/ชื่อ/วันที่ ที่ผู้เกี่ยวข้องคนนี้เคยลงไว้ ขึ้นมาแสดงให้ทุกบทบาทเห็น */
+        const saved = ((editing && editing.stakeholders) || []).filter(function (x) { return x.id === id; })[0];
+        if (saved) {
+          if (saved.sigImg) SignModal.restore(col.querySelector('.sign-box'), saved.sigImg);
+          setSignMeta('rel:' + id, saved.signName || '', saved.signAt || '', saved.signPosition || '');
+        }
+
+        /* ส่วนที่ 5.2 เป็นของผู้มีส่วนเกี่ยวข้อง — บทบาทอื่นดูได้อย่างเดียว */
+        const isMySlot = signMode && mySlot && mySlot.id === id;
+        if (!isMySlot) {
+          col.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+          col.querySelectorAll('.change-sig, .del-sig').forEach(function (b) { b.remove(); });
+          lockSignMeta('rel:' + id, true);
+          if (!col.querySelector('.sign-box img')) {
+            const note = document.createElement('p');
+            note.className = 'slot-note text-[12.5px] text-slate-400';
+            note.textContent = T('sg.waitOther');
+            col.querySelector('.sign-box').appendChild(note);
+          }
+        }
       });
 
       signBoxes.className = related.length === 1
@@ -870,6 +1128,14 @@
         currentBox = box;
         backdrop.classList.remove('hidden');
         resetTabs();
+        /* เติมชื่อ/ตำแหน่งที่เคยกรอกไว้ของช่องนี้ ให้เห็นก่อนเซ็น */
+        const k = box.getAttribute('data-sign-key') || '';
+        const meta = k ? getSignMeta(k) : { name: '', position: '' };
+        const nameEl = document.getElementById('sign-modal-name');
+        const posEl = document.getElementById('sign-modal-position');
+        if (nameEl) nameEl.value = meta.name || (I18N.getLang() === 'en' ? (user.nameEn || user.name) : user.name);
+        if (posEl) posEl.innerHTML = positionOptions(meta.position ||
+          (I18N.getLang() === 'en' ? (user.positionEn || user.position) : user.position) || '');
         /* สำคัญ: ต้อง resize หลังกล่องแสดงผลแล้ว มิฉะนั้นเส้นจะเพี้ยน */
         requestAnimationFrame(resizeCanvas);
       }
@@ -946,19 +1212,24 @@
 
       document.getElementById('sign-modal-confirm').addEventListener('click', () => {
         if (!currentBox) { close(); return; }
+        const key = currentBox.getAttribute('data-sign-key') || '';
         const active = document.querySelector('.sign-modal-tab.text-blue-600').dataset.signTab;
+        let signed = false;
         if (active === 'draw') {
           const blank = document.createElement('canvas');
           blank.width = canvas.width; blank.height = canvas.height;
           if (canvas.toDataURL() === blank.toDataURL()) { close(); return; }
           showImg(currentBox, canvas.toDataURL('image/png'));
+          signed = true;
         } else if (active === 'upload') {
           const li = document.getElementById('sign-upload-list').firstElementChild;
-          if (li && uploads.get(li)) showImg(currentBox, uploads.get(li));
+          if (li && uploads.get(li)) { showImg(currentBox, uploads.get(li)); signed = true; }
         } else {
           const c = document.querySelector('input[name="sig-select"]:checked');
-          if (c) showLabel(currentBox, c.parentElement.querySelector('span').textContent);
+          if (c) { showLabel(currentBox, c.parentElement.querySelector('span').textContent); signed = true; }
         }
+        /* เซ็นแล้วให้เติมชื่อผู้ลงนามและวันที่ให้อัตโนมัติ (ถ้ายังไม่ได้กรอกเอง) */
+        if (signed && key) afterSign(key);
         close();
       });
 
@@ -987,15 +1258,53 @@
       return { bind: bind, open: open, data: sigData, restore: showImg };
     })();
 
+    /* ชื่อ + วันที่ ที่เติมให้อัตโนมัติเมื่อเซ็นเสร็จ */
+    function afterSign(key) {
+      const nameEl = document.getElementById('s5-name-' + key);
+      const dateEl = document.getElementById('s5-date-' + key);
+      const typed = fval('sign-modal-name');
+      const pickedPos = fval('sign-modal-position');
+      if (nameEl && (typed || !nameEl.value.trim())) {
+        nameEl.value = typed || (I18N.getLang() === 'en' ? (user.nameEn || user.name) : user.name);
+      }
+      /* ตำแหน่งที่เลือกในหน้าต่างเซ็น ต้องขึ้นแสดงใต้ลายเซ็นด้วย */
+      setSignMeta(key, null, null, pickedPos ||
+        (I18N.getLang() === 'en' ? (user.positionEn || user.position) : user.position) || '');
+      if (dateEl && !dateEl.value.trim()) dateEl.value = DateField.today();
+      paintReady();
+    }
+
     /* ─────────── เก็บค่าจากฟอร์ม ─────────── */
     function collect() {
       const purpose = document.querySelector('input[name="purpose"]:checked');
       const type = document.querySelector('input[name="doctype"]:checked');
 
-      /* ลายเซ็นที่ผู้จัดทำเซ็นตอนสร้างเอกสาร (ส่วนที่ 5) */
+      /* ลายเซ็นทุกช่องในเอกสาร พร้อมชื่อผู้ลงนามและวันที่
+         — ช่องของบทบาทอื่น (5.3 / ส่วนที่ 6) ต้องคงค่าเดิมไว้ ไม่ให้หายตอนบันทึก */
+      const prevSig = (editing && editing.signatures) || {};
       const sig = {};
       ['requester', 'owner'].forEach(k => {
-        if (SignModal.data[k]) sig[k] = { by: user.id, day: Store.today(), img: SignModal.data[k] };
+        if (SignModal.data[k]) sig[k] = Object.assign({}, prevSig[k], {
+          by: (prevSig[k] && prevSig[k].by) || user.id,
+          day: prevSig[k] && prevSig[k].day !== undefined ? prevSig[k].day : Store.today(),
+          img: SignModal.data[k],
+          name: getSignMeta(k).name,
+          at: getSignMeta(k).at,
+          position: getSignMeta(k).position
+        });
+      });
+      ['approver', 'qcStaff', 'qcManager'].forEach(k => {
+        const meta = getSignMeta(k);
+        const img = SignModal.data[k] || (prevSig[k] && prevSig[k].img);
+        if (!img && !meta.name && !meta.at && !prevSig[k]) return;
+        sig[k] = Object.assign({}, prevSig[k], {
+          by: (prevSig[k] && prevSig[k].by) || user.id,
+          day: prevSig[k] && prevSig[k].day !== undefined ? prevSig[k].day : Store.today(),
+          img: img,
+          name: meta.name || (prevSig[k] && prevSig[k].name) || '',
+          at: meta.at || (prevSig[k] && prevSig[k].at) || '',
+          position: meta.position || (prevSig[k] && prevSig[k].position) || ''
+        });
       });
 
       const full = [
@@ -1021,7 +1330,18 @@
         effectiveDate: document.getElementById('f-effective').value.trim(),
         dept: document.getElementById('f-dept').value,
         files: files,
-        stakeholders: related
+        /* คงสถานะการลงนามของผู้เกี่ยวข้องแต่ละคนไว้ (ลายเซ็น + ชื่อ + วันที่) */
+        stakeholders: related.map(function (rid) {
+          const prev = ((editing && editing.stakeholders) || []).filter(function (x) { return x.id === rid; })[0];
+          const meta = getSignMeta('rel:' + rid);
+          const rec = Object.assign({}, prev || {}, { id: rid });
+          const img = SignModal.data['rel:' + rid] || rec.sigImg;
+          if (img) rec.sigImg = img;
+          if (meta.name) rec.signName = meta.name;
+          if (meta.at) rec.signAt = meta.at;
+          if (meta.position) rec.signPosition = meta.position;
+          return rec;
+        })
       };
     }
 
@@ -1033,14 +1353,18 @@
       document.getElementById('f-lname').value = parts.slice(1).join(' ');
       document.getElementById('f-prefix').value = 'นาย';
       document.getElementById('f-dept').value = (editing && editing.requesterDept) || user.dept;
-      document.getElementById('f-date').value = (editing && editing.requestDate) || App.dayLabel(Store.today());
+      document.getElementById('f-date').value = (editing && editing.requestDate) || DateField.today();
 
       if (editing) {
-        /* คืนลายเซ็นที่เคยเซ็นไว้ */
-        ['requester', 'owner'].forEach(k => {
+        /* คืนลายเซ็นของ "ทุกบทบาท" ที่เคยลงไว้ (5.1 / 5.3 / ส่วนที่ 6)
+           เพื่อให้บทบาทถัดไปเห็นงานของบทบาทก่อนหน้าครบทุกช่อง */
+        ['requester', 'owner', 'approver', 'qcStaff', 'qcManager'].forEach(k => {
           const s = (editing.signatures || {})[k];
+          if (!s) return;
           const box = document.querySelector('.sign-box[data-sign-key="' + k + '"]');
-          if (s && s.img && box) SignModal.restore(box, s.img);
+          if (s.img && box) SignModal.restore(box, s.img);
+          /* คืนชื่อผู้ลงนามและวันที่ที่เคยกรอกไว้ */
+          setSignMeta(k, s.name || '', s.at || '', s.position || '');
         });
         document.getElementById('bc-title').textContent = editing.id + ' · ' + T('act.edit');
         document.getElementById('f-docname').value = editing.title;
@@ -1074,7 +1398,7 @@
       const r = await App.confirmDialog({ title: T('cr.savedDraft'), sub: T('cr.savedDraftSub'), tone: 'blue', needNote: true, okText: T('common.confirm') });
       if (!r) return;
       App.toast(T('cr.savedDraft'));
-      setTimeout(() => { location.href = 'document.html?id=' + encodeURIComponent(d.id); }, 700);
+      setTimeout(() => { location.href = user.home; }, 700);
     });
 
     document.getElementById('sent-btn').addEventListener('click', async () => {
@@ -1090,7 +1414,8 @@
       if (!r) return;
       Store.send(d.id, user, r.note);
       App.toast(T('cr.sentOk'));
-      setTimeout(() => { location.href = 'document.html?id=' + encodeURIComponent(d.id); }, 700);
+      /* ส่งแล้วกลับไปหน้างานของฉัน ไม่ต้องเด้งไปพรีวิว PDF */
+      setTimeout(() => { location.href = user.home; }, 700);
     });
 
     document.getElementById('preview-btn').addEventListener('click', () => {
@@ -1125,18 +1450,51 @@
       { step: 4, id: 'f-relateddept', key: 'cr.relatedDept', ok: function () { return !!fval('f-relateddept'); } },
       { step: 4, id: 'desc-step4',   key: 'cr.desc',       ok: function () { return !!fval('desc-step4'); } },
       { step: 4, id: 'f-effective',  key: 'cr.effective',  ok: function () { return !!fval('f-effective'); } },
-      { step: 5, id: 'step-5',       key: 'cr.s5',         ok: function () { return files.length > 0; } },
+      /* ส่วนแบบเอกสารต่าง (ไฟล์แนบ) ไม่บังคับ — แนบหรือไม่แนบก็ส่งตรวจสอบได้ */
       { step: 6, id: 'step-6',       key: 'th.requester',  ok: function () { return !!SignModal.data.requester; } },
+      { step: 6, id: 's5-name-requester', key: 'cr.name',  ok: function () { return !!fval('s5-name-requester'); } },
+      { step: 6, id: 's5-date-requester', key: 'cr.signDate', ok: function () { return !!fval('s5-date-requester'); } },
       { step: 6, id: 'step-6',       key: 'cr.owner',      ok: function () { return !!SignModal.data.owner; } },
+      { step: 6, id: 's5-name-owner', key: 'cr.name',      ok: function () { return !!fval('s5-name-owner'); } },
+      { step: 6, id: 's5-date-owner', key: 'cr.signDate',  ok: function () { return !!fval('s5-date-owner'); } },
       { step: 7, id: 'related-select', key: 'cr.pickRelated', ok: function () { return related.length > 0; } }
     ];
 
     function missingItems() { return REQUIRED.filter(function (r) { return !r.ok(); }); }
 
+    /* ── สถานะรายส่วน: ส่วนไหนกรอกครบแล้ว / ยังขาด ──
+       ติดเครื่องหมายบนแท็บหัวข้อ เพื่อให้เห็นได้โดยไม่ต้องไล่เปิดทีละส่วน */
+    const CHECK_SM = '<svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+
+    function paintStepMarks() {
+      const state = {};
+      REQUIRED.forEach(function (r) {
+        if (!(r.step in state)) state[r.step] = true;
+        if (!r.ok()) state[r.step] = false;
+      });
+
+      document.querySelectorAll('.step-tab').forEach(function (tab) {
+        const n = Number(tab.getAttribute('data-step'));
+        let mark = tab.querySelector('.tab-mark');
+        if (!(n in state)) { if (mark) mark.remove(); return; }
+        if (!mark) {
+          mark = document.createElement('span');
+          mark.className = 'tab-mark';
+          tab.appendChild(mark);
+        }
+        const good = state[n];
+        mark.className = 'tab-mark ml-1 inline-flex items-center justify-center align-middle w-[13px] h-[13px] rounded-full text-white ' +
+          (good ? 'bg-emerald-500' : 'bg-amber-400');
+        mark.innerHTML = good ? CHECK_SM : '<span class="text-[9px] font-bold leading-none">!</span>';
+        mark.title = good ? T('cr.readyToSend') : T('cr.incomplete');
+      });
+    }
+
     function paintReady() {
-      if (reviewMode) return;
+      if (reviewMode || signMode || qcMode || trackMode) return;
       const miss = missingItems();
       const ok = miss.length === 0;
+      paintStepMarks();
       const btn = document.getElementById('sent-btn');
       const chip = document.getElementById('ready-chip');
       if (!btn || !chip) return;
@@ -1181,7 +1539,41 @@
     document.addEventListener('change', paintReady);
     document.addEventListener('langchange', paintReady);
     document.getElementById('sign-modal-confirm').addEventListener('click', function () {
-      setTimeout(function () { paintReady(); paintSignBtn(); paintQcBtn(); }, 0);
+      setTimeout(function () { paintReady(); paintSignBtn(); paintQcBtn(); clearSignWarn(); }, 0);
+    });
+
+    /* ═══════════════════════════════════════════════════════════
+       เส้นเตือนที่ขอบกล่องเซ็น — ใช้ตอนกดดำเนินการต่อทั้งที่ยังไม่ได้เซ็น
+       ═══════════════════════════════════════════════════════════ */
+    const WARN_ICON = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>';
+
+    function markSignWarn(signKey, msgKey) {
+      const box = document.querySelector('.sign-box[data-sign-key="' + signKey + '"]');
+      if (!box) return;
+      box.classList.remove('sign-warn');
+      void box.offsetWidth;                     /* รีสตาร์ท animation เมื่อกดซ้ำ */
+      box.classList.add('sign-warn');
+
+      let note = box.parentNode.querySelector('.sign-warn-note');
+      if (!note) {
+        note = document.createElement('p');
+        note.className = 'sign-warn-note flex items-center justify-center gap-1.5 text-[12.5px] font-semibold text-red-600';
+        note.innerHTML = WARN_ICON + '<span></span>';
+        box.parentNode.insertBefore(note, box.nextSibling);
+      }
+      note.setAttribute('data-warn-key', msgKey);
+      note.querySelector('span').textContent = T(msgKey);
+    }
+
+    function clearSignWarn() {
+      document.querySelectorAll('.sign-box.sign-warn').forEach(function (b) { b.classList.remove('sign-warn'); });
+      document.querySelectorAll('.sign-warn-note').forEach(function (n) { n.remove(); });
+    }
+
+    document.addEventListener('langchange', function () {
+      document.querySelectorAll('.sign-warn-note').forEach(function (n) {
+        n.querySelector('span').textContent = T(n.getAttribute('data-warn-key'));
+      });
     });
 
     /* ═══════════════════════════════════════════════════════════
@@ -1195,11 +1587,14 @@
 
         sec.querySelectorAll('input, select, textarea').forEach(function (el) {
           el.disabled = true;
-          el.classList.add('bg-slate-50', 'cursor-not-allowed');
+          el.classList.add('is-locked', 'cursor-not-allowed');
         });
         sec.querySelectorAll('.sign-box').forEach(function (box) {
-          box.classList.add('bg-slate-50');
           box.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+          box.querySelectorAll('.change-sig, .del-sig').forEach(function (b) { b.remove(); });
+          /* ถ้าบทบาทนั้นเซ็นมาแล้ว ให้เห็นลายเซ็นจริง ไม่ต้องขึ้นข้อความว่าล็อกไว้ */
+          if (box.querySelector('img')) return;
+          box.classList.add('bg-slate-50');
           if (!box.querySelector('.lock-note')) {
             const p = document.createElement('p');
             p.className = 'lock-note text-[12.5px] text-slate-400';
@@ -1309,9 +1704,11 @@
         if (!sec) return;
         sec.querySelectorAll('input, select, textarea').forEach(function (el) {
           el.disabled = true;
-          el.classList.add('bg-slate-50', 'cursor-not-allowed');
+          el.classList.add('is-locked', 'cursor-not-allowed');
         });
         sec.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+        /* ลายเซ็นของบทบาทอื่น: ดูได้อย่างเดียว แก้/ลบไม่ได้ */
+        sec.querySelectorAll('.change-sig, .del-sig').forEach(function (b) { b.remove(); });
         sec.querySelectorAll('#related-chips button').forEach(function (x) { x.style.display = 'none'; });
         const drop = sec.querySelector('#drop-zone');
         if (drop) drop.classList.add('opacity-60', 'pointer-events-none');
@@ -1342,18 +1739,27 @@
 
       document.getElementById('qc-register').addEventListener('click', async function () {
         if (!qcSignedBoth()) {
+          if (!SignModal.data.qcStaff)   markSignWarn('qcStaff', 'qc.needSign');
+          if (!SignModal.data.qcManager) markSignWarn('qcManager', 'qc.needSign');
           App.toast(T('qc.needSign'), 'red');
           document.getElementById('step-9').scrollIntoView({ behavior: 'smooth', block: 'center' });
           return;
         }
+        const metaStaff = getSignMeta('qcStaff'), metaMgr = getSignMeta('qcManager');
+        if (!metaStaff.name || !metaStaff.at || !metaMgr.name || !metaMgr.at) {
+          App.toast(T('cr.missingHint') + ' — ' + T('cr.name') + ' / ' + T('cr.signDate'), 'red');
+          document.getElementById('step-9').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+        clearSignWarn();
         const r = await App.confirmDialog({ title: T('act.register'), sub: T('qc.confirmRegister'), tone: 'green', needNote: true });
         if (!r) return;
 
         Store.register(doc.id, user, r.note);
         const live = Store.getDoc(doc.id);
         live.signatures = Object.assign({}, live.signatures, {
-          qcStaff: Object.assign({}, live.signatures.qcStaff, { img: SignModal.data.qcStaff }),
-          qcManager: Object.assign({}, live.signatures.qcManager, { img: SignModal.data.qcManager })
+          qcStaff: Object.assign({}, live.signatures.qcStaff, { img: SignModal.data.qcStaff, name: metaStaff.name, at: metaStaff.at, position: metaStaff.position }),
+          qcManager: Object.assign({}, live.signatures.qcManager, { img: SignModal.data.qcManager, name: metaMgr.name, at: metaMgr.at, position: metaMgr.position })
         });
         Store.save();
 
@@ -1390,13 +1796,18 @@
         if (isMine) {
           box.classList.add('ring-2', 'ring-violet-300');
           box.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = ''; });
+          /* ช่องของตัวเอง: กรอกชื่อ/วันที่ได้ */
+          lockSignMeta(key, !!(slot && slot.signed));
           if (slot && slot.signed) {
             box.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+            box.querySelectorAll('.change-sig, .del-sig').forEach(function (b) { b.remove(); });
             addNote(box, T('sg.alreadySigned'));
           }
         } else {
           box.classList.add('bg-slate-50');
           box.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+          box.querySelectorAll('.change-sig, .del-sig').forEach(function (b) { b.remove(); });
+          lockSignMeta(key, true);
           addNote(box, slot && slot.signed ? T('sg.signedBy') : T('sg.waitOther'));
         }
       });
@@ -1419,7 +1830,8 @@
       if (!btn) return;
 
       const live = Store.getDoc(editing.id) || editing;
-      const signedHere = !!SignModal.data['rel:' + mySlot.id];
+      const meta = getSignMeta('rel:' + mySlot.id);
+      const signedHere = !!SignModal.data['rel:' + mySlot.id] && !!meta.name && !!meta.at;
       const others = (live.stakeholders || []).filter(function (x) { return x.id !== mySlot.id && !x.signed; }).length;
 
       btn.disabled = !signedHere;
@@ -1428,6 +1840,111 @@
       btn.textContent = !signedHere
         ? T('sg.btnWait')
         : (others > 0 ? T('sg.btnForward') : T('sg.btnQc'));
+    }
+
+    /* ═══════════════════════════════════════════════════════════
+       โหมดติดตามสถานะ (ผู้ร้องขอ) — คำขอที่ส่งออกไปแล้ว
+       เห็น "งานที่ทำ" ทั้งฉบับเหมือนตอนกรอก แต่แก้ไขไม่ได้
+       ดูเป็น PDF ได้จากปุ่ม "พรีวิว" ที่แถบล่าง
+       ═══════════════════════════════════════════════════════════ */
+    function initTrackMode() {
+      const doc = editing;
+
+      const bc = document.getElementById('bc-title');
+      bc.removeAttribute('data-i18n');
+      const paintBc = function () { bc.textContent = doc.id + ' · ' + T('act.track'); };
+      paintBc();
+      document.addEventListener('langchange', paintBc);
+
+      /* เมนูซ้าย: ไฮไลต์ "งานของฉัน" แทน "สร้างเอกสาร" */
+      document.querySelectorAll('#sidebar .nav-link').forEach(function (a) {
+        a.classList.toggle('active', a.hasAttribute('data-my-work'));
+      });
+
+      /* หน้ายาวเสมอ แล้วซ่อนปุ่มสลับมุมมอง */
+      const viewAllBtn = document.getElementById('view-all-btn');
+      viewAllBtn.click();
+      viewAllBtn.style.display = 'none';
+
+      /* อ่านอย่างเดียวทั้งฉบับ */
+      function lockAll() {
+        for (let i = 1; i <= totalSteps; i++) {
+          const sec = document.getElementById('step-' + i);
+          if (!sec) continue;
+          sec.querySelectorAll('input, select, textarea').forEach(function (el) {
+            el.disabled = true;
+            el.classList.add('is-locked', 'cursor-not-allowed');
+          });
+          sec.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+        /* ลายเซ็นของบทบาทอื่น: ดูได้อย่างเดียว แก้/ลบไม่ได้ */
+        sec.querySelectorAll('.change-sig, .del-sig').forEach(function (b) { b.remove(); });
+          sec.querySelectorAll('#related-chips button').forEach(function (x) { x.style.display = 'none'; });
+          const drop = sec.querySelector('#drop-zone');
+          if (drop) drop.classList.add('opacity-60', 'pointer-events-none');
+        }
+      }
+      lockAll();
+      document.addEventListener('langchange', function () { setTimeout(lockAll, 0); });
+
+      /* ส่วนที่ 5.2 — บอกว่าใครเซ็นแล้ว ใครยังรออยู่ */
+      function paintTrackSlots() {
+        const live = Store.getDoc(doc.id) || doc;
+        document.querySelectorAll('#related-sign-boxes .sign-box').forEach(function (box) {
+          const rid = (box.getAttribute('data-sign-key') || '').replace('rel:', '');
+          const slot = (live.stakeholders || []).filter(function (x) { return x.id === rid; })[0];
+          box.classList.add('is-locked');
+          box.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+          box.querySelectorAll('.slot-note').forEach(function (n) { n.remove(); });
+          if (box.querySelector('img')) return;
+          const p = document.createElement('p');
+          p.className = 'slot-note text-[12.5px] ' + (slot && slot.signed ? 'text-emerald-600' : 'text-slate-400');
+          p.textContent = slot && slot.signed ? T('sg.signedBy') : T('sg.waitOther');
+          box.appendChild(p);
+        });
+      }
+      paintTrackSlots();
+      document.addEventListener('langchange', function () { setTimeout(paintTrackSlots, 0); });
+
+      /* แถบบอกสถานะ + หมายเหตุจากผู้ตรวจ (ถ้ามี) */
+      const banner = document.createElement('div');
+      banner.className = 'flex flex-col gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3';
+      function paintBanner() {
+        const live = Store.getDoc(doc.id) || doc;
+        const st = Store.STATUS;
+        const inFlight = [st.PENDING_APPROVAL, st.PENDING_SIGN, st.SENT_TO_QC].indexOf(live.status) !== -1;
+        let sub = esc(T('holder.' + live.status));
+        if (inFlight) {
+          sub = esc(T('tk.waiting')) + ' ' + sub +
+            (live.status === st.PENDING_SIGN
+              ? ' · ' + esc(Store.signedCount(live) + '/' + Store.totalSigners(live))
+              : '');
+        }
+        banner.innerHTML =
+          '<div class="flex flex-wrap items-center gap-3">' + App.statusPill(live.status) +
+            '<span class="text-[12.5px] text-slate-500">' + sub + '</span></div>' +
+          '<p class="text-[12.5px] text-slate-500 leading-relaxed">' + esc(T('tk.hint')) + '</p>' +
+          (live.lastRemark
+            ? '<p class="rounded-lg border border-amber-100 bg-amber-50 px-3 py-2 text-[12.5px] text-amber-700 leading-relaxed">' +
+              '<span class="font-semibold">' + esc(T('tk.remark')) + ':</span> ' + esc(live.lastRemark) + '</p>'
+            : '');
+      }
+      paintBanner();
+      document.addEventListener('langchange', paintBanner);
+      const s1 = document.getElementById('step-1');
+      s1.insertBefore(banner, s1.firstChild);
+
+      /* แถบล่าง: เหลือแค่ปุ่มพรีวิว PDF (ไม่มีบันทึกร่าง / ส่งตรวจสอบ) */
+      const oldPreview = document.getElementById('preview-btn');
+      const preview = oldPreview.cloneNode(true);
+      oldPreview.parentNode.replaceChild(preview, oldPreview);
+      preview.addEventListener('click', function () {
+        location.href = 'document.html?id=' + encodeURIComponent(doc.id);
+      });
+
+      const bar = document.getElementById('draft-btn').parentNode;
+      bar.innerHTML =
+        '<a href="' + esc(user.home) + '" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 no-underline hover:bg-slate-50 transition-colors" data-i18n="common.back"></a>';
+      I18N.apply(bar);
     }
 
     function initSignMode() {
@@ -1452,9 +1969,11 @@
         if (!sec) return;
         sec.querySelectorAll('input, select, textarea').forEach(function (el) {
           el.disabled = true;
-          el.classList.add('bg-slate-50', 'cursor-not-allowed');
+          el.classList.add('is-locked', 'cursor-not-allowed');
         });
         sec.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+        /* ลายเซ็นของบทบาทอื่น: ดูได้อย่างเดียว แก้/ลบไม่ได้ */
+        sec.querySelectorAll('.change-sig, .del-sig').forEach(function (b) { b.remove(); });
         const drop = sec.querySelector('#drop-zone');
         if (drop) drop.classList.add('opacity-60', 'pointer-events-none');
       });
@@ -1463,7 +1982,7 @@
       const s7 = document.getElementById('step-7');
       s7.querySelectorAll('input, select, textarea').forEach(function (el) {
         el.disabled = true;
-        el.classList.add('bg-slate-50', 'cursor-not-allowed');
+        el.classList.add('is-locked', 'cursor-not-allowed');
       });
       s7.querySelectorAll('#related-chips button').forEach(function (x) { x.style.display = 'none'; });
 
@@ -1492,18 +2011,28 @@
       document.getElementById('sg-sign').addEventListener('click', async function () {
         const key = 'rel:' + mySlot.id;
         if (!SignModal.data[key]) {
+          markSignWarn(key, 'sg.needSign');
           App.toast(T('sg.needSign'), 'red');
           document.getElementById('step-7').scrollIntoView({ behavior: 'smooth', block: 'center' });
           return;
         }
+        clearSignWarn();
         const r = await App.confirmDialog({ title: T('act.sign'), sub: T('dv.confirmSign'), tone: 'violet', needNote: true });
         if (!r) return;
 
         const d = Store.sign(doc.id, user, r.note);
 
-        /* เก็บภาพลายเซ็นไว้กับช่องของตัวเอง */
+        /* เก็บภาพลายเซ็น + ชื่อผู้ลงนาม + วันที่ ไว้กับช่องของตัวเอง
+           เพื่อให้บทบาทอื่นเปิดเอกสารแล้วเห็นครบ */
+        const meta = getSignMeta(key);
         const live = Store.getDoc(doc.id);
-        (live.stakeholders || []).forEach(function (x) { if (x.id === mySlot.id) x.sigImg = SignModal.data[key]; });
+        (live.stakeholders || []).forEach(function (x) {
+          if (x.id !== mySlot.id) return;
+          x.sigImg = SignModal.data[key];
+          x.signName = meta.name;
+          x.signAt = meta.at;
+          x.signPosition = meta.position;
+        });
         Store.save();
 
         App.toast(d.status === Store.STATUS.SENT_TO_QC ? T('n.allSigned') : T('n.signed'));
@@ -1538,9 +2067,11 @@
         if (!sec) return;
         sec.querySelectorAll('input, select, textarea').forEach(function (el) {
           el.disabled = true;
-          el.classList.add('bg-slate-50', 'cursor-not-allowed');
+          el.classList.add('is-locked', 'cursor-not-allowed');
         });
         sec.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+        /* ลายเซ็นของบทบาทอื่น: ดูได้อย่างเดียว แก้/ลบไม่ได้ */
+        sec.querySelectorAll('.change-sig, .del-sig').forEach(function (b) { b.remove(); });
         const drop = sec.querySelector('#drop-zone');
         if (drop) drop.classList.add('opacity-60', 'pointer-events-none');
       });
@@ -1551,9 +2082,10 @@
         s7.querySelectorAll('#related-chips button').forEach(function (x) { x.style.display = 'none'; });
         s7.querySelectorAll('input, select, textarea').forEach(function (el) {
           el.disabled = true;
-          el.classList.add('bg-slate-50', 'cursor-not-allowed');
+          el.classList.add('is-locked', 'cursor-not-allowed');
         });
         s7.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+        s7.querySelectorAll('.change-sig, .del-sig').forEach(function (b) { b.remove(); });
       }
       lockRelated();
       document.addEventListener('langchange', function () { setTimeout(lockRelated, 0); });
@@ -1586,7 +2118,22 @@
       document.getElementById('rv-approve').addEventListener('click', async function () {
         /* ผู้มีส่วนเกี่ยวข้อง (5.2) ผู้ร้องขอเลือกมาตั้งแต่ตอนสร้างเอกสารแล้ว */
         if (!(Store.getDoc(doc.id).stakeholders || []).length) { App.toast(T('rv.noRelated'), 'red'); jumpTo('step-7'); return; }
-        if (!SignModal.data.approver) { App.toast(T('rv.needSign'), 'red'); jumpTo('step-8'); return; }
+        if (!SignModal.data.approver) {
+          markSignWarn('approver', 'rv.needSign');
+          App.toast(T('rv.needSign'), 'red');
+          jumpTo('step-8');
+          return;
+        }
+        /* ต้องมีชื่อผู้ลงนามและวันที่ด้วย มิฉะนั้นบทบาทถัดไปจะเห็นช่องว่าง */
+        const meta = getSignMeta('approver');
+        if (!meta.name || !meta.at) {
+          App.toast(T('cr.missingHint') + ' — ' + T('cr.name') + ' / ' + T('cr.signDate'), 'red');
+          jumpTo('step-8');
+          const focusEl = document.getElementById(!meta.name ? 's5-name-approver' : 's5-date-approver');
+          if (focusEl) focusEl.focus();
+          return;
+        }
+        clearSignWarn();
 
         const r = await App.confirmDialog({ title: T('act.approve'), sub: T('dv.confirmApprove'), tone: 'green', needNote: true });
         if (!r) return;
@@ -1597,7 +2144,9 @@
         /* แนบภาพลายเซ็นของผู้อนุมัติ (ส่วนที่ 5.3) */
         const after = Store.getDoc(doc.id);
         after.signatures = Object.assign({}, after.signatures, {
-          approver: Object.assign({}, after.signatures.approver, { img: SignModal.data.approver })
+          approver: Object.assign({}, after.signatures.approver, {
+            img: SignModal.data.approver, name: meta.name, at: meta.at, position: meta.position
+          })
         });
         Store.save();
 
@@ -1642,6 +2191,7 @@
     if (reviewMode) initReviewMode();
     else if (signMode) initSignMode();
     else if (qcMode) initQcMode();
+    else if (trackMode) { lockOtherRoleSections(); initTrackMode(); }
     else { lockOtherRoleSections(); paintReady(); }
   })();
   </script>

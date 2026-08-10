@@ -188,7 +188,8 @@
       if (!user) return;
       const back = sessionStorage.getItem('rvp_after_login');
       sessionStorage.removeItem('rvp_after_login');
-      location.href = (back && back.indexOf('login') === -1) ? back : user.home;
+      /* เข้าระบบแล้วเริ่มที่หน้าแรก "เอกสารขอขึ้นทะเบียน" (งานของแต่ละบทบาทอยู่ที่เมนู "งานของฉัน") */
+      location.href = (back && back.indexOf('login') === -1) ? back : 'index.html';
     }
 
     /* ── login form ── */

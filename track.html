@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ติดตามสถานะ — Riverpark Document System</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* เส้นเชื่อมระหว่างขั้นตอนใน stepper */
+    .tr-line { height: 2px; flex: 1; border-radius: 2px; background: #e2e8f0; }
+    .tr-line.done { background: #14b8a6; }
+  </style>
+</head>
+
+<body class="bg-slate-100 min-h-screen flex" style="font-family:'Inter','IBM Plex Sans Thai',sans-serif;">
+
+  <!-- ════════════════════════════════════════════
+       SIDEBAR
+  ════════════════════════════════════════════ -->
+  <aside id="sidebar" class="fixed top-0 left-0 h-full w-[260px] bg-white border-r border-slate-100 shadow-sm flex flex-col z-[500] overflow-hidden">
+
+    <div class="sidebar-expanded-header flex items-center gap-3 px-5 border-b border-slate-100" style="height:64px;">
+      <div class="w-9 h-9 rounded-xl overflow-hidden flex-shrink-0 bg-slate-100">
+        <img src="image/logo.png" alt="Logo" class="w-full h-full object-cover" />
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-[13px] font-bold text-slate-800 truncate leading-tight" data-i18n="app.name"></p>
+        <p class="text-[11px] text-slate-400 truncate" data-i18n="app.sub"></p>
+      </div>
+      <button id="collapse-btn" class="w-7 h-7 rounded-lg hover:bg-slate-100 flex items-center justify-center text-slate-400 flex-shrink-0 transition-colors">
+        <img src="icon/menu-01.svg" width="20" height="20" alt="" />
+      </button>
+    </div>
+
+    <div class="sidebar-collapsed-header hidden items-center justify-center border-b border-slate-100" style="height:64px;">
+      <button id="expand-btn" class="w-9 h-9 rounded-xl overflow-hidden hover:opacity-80 transition-opacity" data-i18n-title="app.name">
+        <img src="image/logo.png" alt="Logo" class="w-full h-full object-cover" />
+      </button>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-0.5">
+      <p class="nav-section-title text-[10px] font-semibold text-slate-300 uppercase tracking-widest px-3 pt-3 pb-1.5" data-i18n="nav.main"></p>
+      <a href="index.html" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+        <span class="nav-text" data-i18n="nav.registry"></span>
+      </a>
+      <a href="#" data-my-work class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+        <span class="nav-text" data-i18n="nav.myWork"></span>
+      </a>
+      <a href="create.html" data-role-only="requester" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+        <span class="nav-text" data-i18n="nav.create"></span>
+      </a>
+      <a href="track.html" class="nav-link active">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <span class="nav-text" data-i18n="nav.track"></span>
+      </a>
+
+      <div class="flex-1"></div>
+
+      <p class="nav-section-title text-[10px] font-semibold text-slate-300 uppercase tracking-widest px-3 pt-5 pb-1.5" data-i18n="nav.system"></p>
+      <a href="#" class="nav-link">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="3"></circle><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"></path></svg>
+        <span class="nav-text" data-i18n="nav.settings"></span>
+      </a>
+    </nav>
+
+    <div class="sidebar-expanded-header flex items-center gap-3 px-4 py-4 border-t border-slate-100">
+      <div data-user-initials class="w-8 h-8 rounded-lg text-white flex items-center justify-center text-[11px] font-bold flex-shrink-0"></div>
+      <div class="flex-1 min-w-0">
+        <p data-user-name class="text-[13px] font-semibold text-slate-800 truncate leading-tight"></p>
+        <p data-user-rolesub class="text-[11px] text-slate-400 truncate"></p>
+      </div>
+    </div>
+
+    <div class="sidebar-collapsed-header hidden items-center justify-center py-4 border-t border-slate-100">
+      <div data-user-initials class="w-8 h-8 rounded-lg text-white flex items-center justify-center text-[11px] font-bold"></div>
+    </div>
+
+  </aside>
+
+  <!-- ════════════════════════════════════════════
+       MAIN WRAPPER
+  ════════════════════════════════════════════ -->
+  <div id="main-wrapper" class="flex-1 flex flex-col h-screen overflow-hidden" style="margin-left:260px;">
+
+    <!-- ── Topbar ── -->
+    <div class="flex-shrink-0 z-[100] bg-white border-b border-slate-100 flex items-center justify-between px-8" style="height:64px;">
+      <div class="flex items-center gap-2 text-[13px] font-medium">
+        <a href="index.html" class="text-slate-400 no-underline hover:text-blue-600 transition-colors" data-i18n="common.dashboard"></a>
+        <span class="text-slate-300">/</span>
+        <span class="text-slate-900 font-semibold" data-i18n="tr.title"></span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span data-role-badge class="hidden lg:inline-flex items-center gap-2 rounded-xl bg-blue-50 px-3 py-2 text-[12.5px] font-semibold text-blue-600"></span>
+        <button id="notif-btn" class="relative w-10 h-10 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-400 shadow-sm hover:bg-slate-50 hover:text-blue-600 transition-colors" data-i18n-aria="common.notifications">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+        </button>
+        <button id="user-btn" class="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 hover:bg-slate-100 transition-colors cursor-pointer">
+          <div data-user-initials class="w-8 h-8 rounded-lg text-white flex items-center justify-center text-[13px] font-bold"></div>
+          <span data-user-name class="text-sm font-semibold text-slate-900"></span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Scroll area ── -->
+    <div class="dashboard-bg flex-1 min-h-0 overflow-y-auto flex flex-col">
+      <div class="flex-1 px-6 pt-6 pb-6 flex flex-col gap-5">
+
+        <div class="flex flex-col gap-1">
+          <h1 class="text-[20px] font-bold text-slate-900" data-i18n="tr.title"></h1>
+          <p class="text-[13px] text-slate-500" data-i18n="tr.sub"></p>
+        </div>
+
+        <!-- ── ตัวกรอง + ค้นหา ── -->
+        <div class="rounded-3xl bg-white border border-slate-100 shadow-[0_2px_16px_rgba(15,23,42,0.05)] p-4 flex flex-col flex-wrap gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div class="inline-flex flex-wrap items-center gap-1 rounded-2xl border border-slate-200 p-1">
+            <button data-filter="" class="filter-tab active rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="common.all"></button>
+            <button data-filter="DRAFT" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="status.DRAFT"></button>
+            <button data-filter="PENDING_APPROVAL,PENDING_SIGN,SENT_TO_QC" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="status.PENDING_APPROVAL"></button>
+            <button data-filter="RETURNED" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="status.RETURNED"></button>
+            <button data-filter="REGISTERED" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="status.REGISTERED"></button>
+            <button data-filter="REJECTED,EXPIRED_RETURNED" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="status.REJECTED"></button>
+          </div>
+          <div class="relative">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </span>
+            <input id="search" type="text" data-i18n-ph="common.search" class="w-[240px] rounded-xl border border-slate-200 pl-9 pr-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/15 transition-all placeholder:text-slate-300" />
+          </div>
+        </div>
+
+        <!-- ── รายการติดตาม ── -->
+        <div id="cards" class="flex flex-col gap-4"></div>
+      </div>
+    </div>
+
+  </div><!-- /main-wrapper -->
+
+  <script src="js/i18n.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+  (function () {
+    const esc = App.esc, T = k => I18N.t(k);
+    const user = App.initChrome();
+    if (!user) return;
+
+    document.querySelectorAll('[data-my-work]').forEach(a => a.setAttribute('href', user.home));
+    document.querySelectorAll('[data-role-only]').forEach(a => {
+      if (a.getAttribute('data-role-only') !== user.role) a.style.display = 'none';
+    });
+
+    const st = Store.STATUS;
+    let filter = '', term = '';
+
+    /* ── 5 ขั้นตอนของ flow ตามผังงาน DAR ─────────────────────────
+       state: done (ผ่านแล้ว) · now (กำลังอยู่ตรงนี้) · wait (ยังไม่ถึง) · stop (สะดุด) */
+    function stepsOf(d) {
+      const s = ['wait', 'wait', 'wait', 'wait', 'wait'];
+      const mark = (upto) => { for (let i = 0; i < upto; i++) s[i] = 'done'; };
+
+      switch (d.status) {
+        case st.DRAFT:            s[0] = 'now'; break;
+        case st.PENDING_APPROVAL: mark(1); s[1] = 'now'; break;
+        case st.RETURNED:         s[0] = 'now'; s[1] = 'stop'; break;
+        case st.REJECTED:         mark(1); s[1] = 'stop'; break;
+        case st.PENDING_SIGN:     mark(2); s[2] = 'now'; break;
+        case st.EXPIRED_RETURNED: mark(2); s[2] = 'stop'; break;
+        case st.SENT_TO_QC:       mark(3); s[3] = 'now'; break;
+        case st.REGISTERED:       mark(5); break;
+      }
+      return s;
+    }
+
+    const TONE = {
+      done: { dot: 'bg-teal-500 text-white border-teal-500',        text: 'text-slate-600' },
+      now:  { dot: 'bg-violet-500 text-white border-violet-500',    text: 'text-violet-700 font-semibold' },
+      wait: { dot: 'bg-white text-slate-300 border-slate-200',      text: 'text-slate-400' },
+      stop: { dot: 'bg-red-500 text-white border-red-500',          text: 'text-red-600 font-semibold' }
+    };
+    const IC_CHECK = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+    const IC_STOP  = '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+
+    function stepper(d) {
+      const s = stepsOf(d);
+      const done = Store.signedCount(d), total = Store.totalSigners(d);
+
+      return '<div class="flex items-start">' + s.map((state, i) => {
+        const tone = TONE[state];
+        const label = T('tr.step' + (i + 1)) +
+          (i === 2 && total ? ' (' + done + '/' + total + ')' : '');
+        const inner = state === 'done' ? IC_CHECK
+                    : state === 'stop' ? IC_STOP
+                    : '<span class="text-[11px] font-bold">' + (i + 1) + '</span>';
+        return (i > 0 ? '<div class="tr-line mt-[15px] mx-1 ' + (s[i - 1] === 'done' ? 'done' : '') + '"></div>' : '') +
+          '<div class="flex flex-col items-center gap-1.5 w-[104px] flex-shrink-0">' +
+            '<span class="w-8 h-8 rounded-full border-2 flex items-center justify-center ' + tone.dot + '">' + inner + '</span>' +
+            '<span class="text-[11.5px] leading-tight text-center ' + tone.text + '">' + esc(label) + '</span>' +
+          '</div>';
+      }).join('') + '</div>';
+    }
+
+    /* บรรทัดสรุปว่าตอนนี้ค้างอยู่ที่ใคร / เหลือกี่วัน */
+    function nowLine(d) {
+      const lang = I18N.getLang();
+      if (d.status === st.REGISTERED) return '<span class="text-teal-700 font-semibold">' + esc(T('tr.doneAll')) + '</span>';
+      if (d.status === st.REJECTED)   return '<span class="text-rose-600 font-semibold">' + esc(T('tr.closed')) + ' · ' + esc(T('holder.REJECTED')) + '</span>';
+      if (d.status === st.RETURNED || d.status === st.EXPIRED_RETURNED) {
+        return '<span class="text-orange-600 font-semibold">' + esc(T('tr.backToOwner')) + '</span>';
+      }
+      let line = '<span class="text-slate-500">' + esc(T('tr.now')) + ': </span>' +
+                 '<span class="font-semibold text-slate-700">' + esc(T('holder.' + d.status)) + '</span>';
+      if (d.status === st.PENDING_SIGN) {
+        const left = Store.remainingOf(d);
+        line += left >= 0
+          ? ' <span class="text-slate-400">· ' + esc(T('tr.remain')) + ' ' + left + ' ' + esc(T('common.days')) + '</span>'
+          : ' <span class="text-red-500 font-semibold">· ' + esc(T('tr.overdue')) + '</span>';
+      }
+      return line;
+    }
+
+    const ACTION_LABEL = {
+      create:  { th: 'สร้างเอกสาร', en: 'Created' },
+      send:    { th: 'ส่งให้ผู้อนุมัติตรวจสอบ', en: 'Submitted for review' },
+      approve: { th: 'อนุมัติ · ส่งต่อผู้เกี่ยวข้อง', en: 'Approved · forwarded' },
+      return:  { th: 'ส่งกลับให้แก้ไข', en: 'Returned for edit' },
+      reject:  { th: 'ไม่อนุมัติ · ปิดคำขอ', en: 'Rejected · closed' },
+      sign:    { th: 'ลงนาม', en: 'Signed' },
+      toQC:    { th: 'ลงนามครบ · ส่งแผนก QC', en: 'All signed · sent to QC' },
+      register:{ th: 'ขึ้นทะเบียนเอกสาร', en: 'Document registered' },
+      expire:  { th: 'หมดอายุ · ระบบส่งกลับ', en: 'Expired · auto returned' }
+    };
+    const ACTION_TONE = {
+      create: 'bg-slate-300', send: 'bg-violet-500', approve: 'bg-teal-500',
+      return: 'bg-orange-500', reject: 'bg-rose-600', sign: 'bg-violet-500',
+      toQC: 'bg-teal-500', register: 'bg-teal-600', expire: 'bg-red-500'
+    };
+
+    function actorName(id) {
+      const u = Store.USERS.filter(x => x.id === id)[0];
+      if (u) return I18N.getLang() === 'en' ? u.nameEn : u.name;
+      if (id === 'SYSTEM') return I18N.getLang() === 'en' ? 'System' : 'ระบบ';
+      return id;
+    }
+
+    function history(d) {
+      const lang = I18N.getLang();
+      const evs = (d.history || []).slice().reverse();
+      return '<ol class="flex flex-col">' + evs.map((ev, i) => {
+        const lbl = ACTION_LABEL[ev.action] ? (ACTION_LABEL[ev.action][lang] || ACTION_LABEL[ev.action].th) : ev.action;
+        return '<li class="flex gap-3">' +
+          '<div class="flex flex-col items-center flex-shrink-0">' +
+            '<span class="w-2.5 h-2.5 rounded-full mt-1.5 ' + (ACTION_TONE[ev.action] || 'bg-slate-300') + '"></span>' +
+            (i < evs.length - 1 ? '<span class="w-px flex-1" style="background:#e2e8f0"></span>' : '') +
+          '</div>' +
+          '<div class="pb-4 min-w-0">' +
+            '<p class="text-[12.5px] font-semibold text-slate-700">' + esc(lbl) + '</p>' +
+            '<p class="text-[11.5px] text-slate-400 mt-0.5">' + esc(actorName(ev.actor)) + ' · ' + esc(App.dayLabel(ev.day)) + '</p>' +
+            (ev.note ? '<p class="mt-1.5 rounded-lg bg-slate-50 px-2.5 py-1.5 text-[11.5px] text-slate-500 leading-relaxed">' + esc(ev.note) + '</p>' : '') +
+          '</div>' +
+        '</li>';
+      }).join('') + '</ol>';
+    }
+
+    function card(d) {
+      const lang = I18N.getLang();
+      const mine = user.role === 'requester' && d.requesterId === user.id;
+      return '<div class="rounded-2xl bg-white border border-slate-100 shadow-[0_2px_14px_rgba(15,23,42,0.05)] p-5 flex flex-col gap-4">' +
+
+        '<div class="flex flex-wrap items-start justify-between gap-3">' +
+          '<div class="min-w-0">' +
+            '<div class="flex flex-wrap items-center gap-2.5">' +
+              '<span class="text-[14px] font-bold text-slate-900">' + esc(d.id) + '</span>' +
+              '<span class="text-[12px] text-slate-400">' + esc(d.docNo) + '</span>' +
+              App.statusPill(d.status) +
+            '</div>' +
+            '<p class="mt-1.5 text-[13.5px] text-slate-700">' + esc(Store.docTitle(d, lang)) + '</p>' +
+            '<p class="mt-0.5 text-[12px] text-slate-400">' + esc(Store.docTypeLabel(d.type, lang)) +
+              ' · ' + esc(T('th.age')) + ' ' + Store.ageOf(d) + ' ' + esc(T('common.days')) + '</p>' +
+          '</div>' +
+          '<div class="flex items-center gap-2 flex-shrink-0">' +
+            (App.myTurnLink(d, user) ||
+              '<a href="' + (mine ? 'create.html' : 'document.html') + '?id=' + encodeURIComponent(d.id) + '" ' +
+              'class="row-btn inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-4 py-2 text-[13px] font-semibold text-slate-600 no-underline hover:bg-slate-50 transition-colors">' +
+              esc(T('act.detail')) + '</a>') +
+            '<a href="document.html?id=' + encodeURIComponent(d.id) + '" title="' + esc(T('dv.pdf')) + '" ' +
+              'class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-500 no-underline hover:bg-slate-50 transition-colors" style="min-height:36px">' +
+              App.IC.eye + '</a>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="overflow-x-auto pt-1 pb-1">' + stepper(d) + '</div>' +
+
+        '<div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-3.5">' +
+          '<p class="text-[12.5px]">' + nowLine(d) + '</p>' +
+          '<button data-toggle="' + esc(d.id) + '" class="text-[12.5px] font-semibold text-slate-500 hover:text-violet-600 underline transition-colors">' +
+            esc(T('tr.showHistory')) + '</button>' +
+        '</div>' +
+
+        '<div data-hist="' + esc(d.id) + '" class="hidden rounded-xl bg-slate-50/70 px-4 pt-4">' + history(d) + '</div>' +
+      '</div>';
+    }
+
+    function paint() {
+      const allow = filter ? filter.split(',') : null;
+      const lang = I18N.getLang();
+      const list = Store.docsForRole(user.role, user.id).filter(d => {
+        if (allow && allow.indexOf(d.status) === -1) return false;
+        if (!term) return true;
+        const hay = (d.id + ' ' + d.docNo + ' ' + d.title + ' ' + (d.titleEn || '')).toLowerCase();
+        return hay.indexOf(term.toLowerCase()) !== -1;
+      }).sort((a, b) => Store.ageOf(b) - Store.ageOf(a));
+
+      const box = document.getElementById('cards');
+      box.innerHTML = list.length
+        ? list.map(card).join('')
+        : '<div class="rounded-2xl bg-white border border-slate-100 px-6 py-16 text-center text-[13px] text-slate-400">' + esc(T('tr.empty')) + '</div>';
+
+      box.querySelectorAll('[data-toggle]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const panel = box.querySelector('[data-hist="' + btn.getAttribute('data-toggle') + '"]');
+          const open = panel.classList.toggle('hidden');
+          btn.textContent = open ? T('tr.showHistory') : T('tr.hideHistory');
+        });
+      });
+    }
+
+    App.initFilterTabs(f => { filter = f; paint(); });
+    document.getElementById('search').addEventListener('input', e => { term = e.target.value; paint(); });
+    document.addEventListener('langchange', paint);
+    paint();
+
+    /* ตามการเดินงานจริงแบบ real time */
+    App.liveRefresh(paint);
+  })();
+  </script>
+
+</body>
+</html>

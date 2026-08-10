@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap');
 
 * {
   font-family: 'Inter', 'IBM Plex Sans Thai', sans-serif;
@@ -7,6 +7,16 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+/* ════════════════════════════════════════════
+   กระดาษ DAR (หน้าพรีวิว PDF และตอนสั่งพิมพ์)
+   → ใช้ TH Sarabun ตามรูปแบบเอกสารราชการ/ISO
+     ที่เหลือทั้งระบบยังเป็น IBM Plex Sans Thai
+   ════════════════════════════════════════════ */
+.paper,
+.paper * {
+  font-family: 'TH Sarabun New', 'TH SarabunPSK', 'Sarabun', 'IBM Plex Sans Thai', sans-serif;
 }
 
 /* ── Sidebar transition ── */
@@ -151,6 +161,14 @@ body.view-all #doc-stepnav {
   flex-shrink: 0;
 }
 
+/* ── ปุ่ม action ท้ายแถวตาราง — กว้างเท่ากันทุกปุ่ม ไม่ว่าข้อความสั้นยาว ── */
+.row-btn {
+  min-width: 100px;
+  min-height: 36px;
+  justify-content: center;
+  align-items: center;
+}
+
 /* ── ปุ่ม ... ท้ายแถว ── */
 .row-action {
   width: 32px;
@@ -173,6 +191,127 @@ body.view-all #doc-stepnav {
 /* ── Compliance drawer backdrop ── */
 #compliance-backdrop {
   transition: opacity 0.3s ease;
+}
+
+/* ════════════════════════════════════════════
+   ช่องกรอกที่ปิดใช้งาน / อ่านอย่างเดียว
+   → ใช้สีพื้นเดียวกันทุกชนิด (input / select / textarea)
+   ════════════════════════════════════════════ */
+input:disabled:not([type='radio']):not([type='checkbox']):not([type='file']),
+select:disabled,
+textarea:disabled,
+.is-locked {
+  background-color: #f3f4f6 !important;
+  background-image: none !important;
+  color: #475569 !important;
+  -webkit-text-fill-color: #475569;   /* Safari: กันตัวอักษรจางเกินไป */
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+input:disabled::placeholder,
+textarea:disabled::placeholder {
+  color: #94a3b8;
+  -webkit-text-fill-color: #94a3b8;
+}
+
+/* ════════════════════════════════════════════
+   กล่องเซ็นที่ยังไม่ได้เซ็น แต่กดดำเนินการต่อ
+   → ขอบแดงเตือน + ข้อความใต้กล่อง
+   ════════════════════════════════════════════ */
+.sign-box.sign-warn {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.14);
+  animation: signWarnPulse 0.45s ease-in-out 2;
+}
+
+@keyframes signWarnPulse {
+  0%, 100% { box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.14); }
+  50%      { box-shadow: 0 0 0 7px rgba(239, 68, 68, 0.20); }
+}
+
+/* ════════════════════════════════════════════
+   ฟอร์มสร้างเอกสาร — ตัวอักษร/ช่องกรอกให้เหมือนกันทุกส่วน
+   (ป้ายกำกับ 13px · ตัวเลือก 13px · ช่องกรอก 14px)
+   ════════════════════════════════════════════ */
+.f-label {
+  font-size: 13px;
+  font-weight: 400;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.f-opt {
+  font-size: 13px;
+  font-weight: 400;
+  color: #334155;
+}
+
+.f-input {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px 16px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #1e293b;
+  background-color: #ffffff;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.f-input::placeholder { color: #cbd5e1; }
+
+.f-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* ป้ายกำกับย่อยใต้กล่องเซ็น (ชื่อ / วันที่) — ใช้ขนาดเดียวกันทุกส่วน */
+.f-sublabel {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: #475569;
+}
+
+/* ════════════════════════════════════════════
+   ช่องวันที่ — พิมพ์เองได้ และกดไอคอนเพื่อเลือกจากปฏิทิน
+   ════════════════════════════════════════════ */
+.datefield { position: relative; width: 100%; }
+
+.datefield .f-input { padding-left: 42px; }
+
+.datefield-btn {
+  position: absolute;
+  left: 1px;
+  top: 1px;
+  bottom: 1px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  border-radius: 11px 0 0 11px;
+  cursor: pointer;
+  transition: color .15s ease, background-color .15s ease;
+}
+
+.datefield-btn:hover { color: #2563eb; background-color: #f1f5f9; }
+
+.datefield-btn:disabled { cursor: not-allowed; color: #cbd5e1; background-color: transparent; }
+
+/* ช่องปฏิทินจริงของเบราว์เซอร์ — ซ่อนไว้ ใช้เฉพาะตอนเปิดปฏิทิน */
+.datefield-native {
+  position: absolute;
+  left: 12px;
+  bottom: 0;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* ── Filter tab ── */

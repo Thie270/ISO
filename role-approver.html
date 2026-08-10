@@ -42,7 +42,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
         <span class="nav-text" data-i18n="nav.myWork"></span>
       </a>
-      <a href="#" class="nav-link">
+      <a href="track.html" class="nav-link">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
         <span class="nav-text" data-i18n="nav.track"></span>
       </a>
@@ -163,7 +163,6 @@
                 <th data-sort="id" class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700" data-i18n="th.docNo"></th>
                 <th data-sort="requester" class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700" data-i18n="th.requester"></th>
                 <th data-sort="title" class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700" data-i18n="th.docName"></th>
-                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700" data-i18n="th.files"></th>
                 <th data-sort="status" class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60" data-i18n="th.status"></th>
                 <th data-sort="age" class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60" data-i18n="th.age"></th>
                 <th class="px-5 py-4 text-right text-[13.5px] font-semibold text-slate-700 bg-slate-50/60"></th>
@@ -200,20 +199,6 @@
 
     let filter = 'PENDING_APPROVAL', term = '';
 
-    const TAG = (cls, label) =>
-      '<span class="inline-flex items-center gap-1 rounded-lg ' + cls + ' px-2 py-1 text-[11.5px] font-semibold">' +
-      '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> ' +
-      esc(label) + '</span>';
-
-    function fileTags(d) {
-      const dar = (d.files || []).filter(f => f.kind === 'dar').length;
-      const chg = (d.files || []).filter(f => f.kind !== 'dar').length;
-      let h = '';
-      if (dar) h += TAG('bg-blue-50 text-blue-600', 'DAR');
-      if (chg) h += ' ' + TAG('bg-slate-100 text-slate-500', T('dv.attach') + ' ' + chg);
-      return h || '<span class="text-slate-300">' + esc(T('common.none')) + '</span>';
-    }
-
     function paintCards() {
       const s = Store.stats('approver');
       document.getElementById('c-queue').textContent    = s.queue;
@@ -222,7 +207,8 @@
       document.getElementById('c-near').textContent     = s.near;
     }
 
-    const tableState = App.newTableState('age', 'desc', 10);
+    /* เรียงงานล่าสุดขึ้นก่อน (อายุงานน้อย = เพิ่งส่งเข้ามา) ไม่ใช่ของเก่าที่ใกล้หมดอายุ */
+    const tableState = App.newTableState('age', 'asc', 10);
 
     function paintRows() {
       const lang = I18N.getLang();
@@ -237,7 +223,7 @@
       function reviewLink(d) {
         /* ผู้อนุมัติ "ตรวจสอบ" → เปิดหน้าเอกสารยาวแบบเดียวกับผู้ร้องขอ (create.html) */
         if (d.status === Store.STATUS.PENDING_APPROVAL) {
-          return '<a href="create.html?id=' + encodeURIComponent(d.id) + '" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-blue-600 px-4 py-2 text-[13px] font-semibold text-white no-underline shadow-[0_4px_10px_rgba(37,99,235,0.25)] hover:bg-blue-700 transition-colors">' + esc(T('act.review')) + '</a>';
+          return '<a href="create.html?id=' + encodeURIComponent(d.id) + '" class="row-btn inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-blue-600 px-4 py-2 text-[13px] font-semibold text-white no-underline shadow-[0_4px_10px_rgba(37,99,235,0.25)] hover:bg-blue-700 transition-colors">' + esc(T('act.review')) + '</a>';
         }
         return App.docLink(d, T('act.detail'), false);
       }
@@ -247,7 +233,7 @@
       const pageRows = info.rows;
 
       const tb = document.getElementById('rows');
-      if (!list.length) { tb.innerHTML = App.emptyRow(8, T('ap.noQueue')); return; }
+      if (!list.length) { tb.innerHTML = App.emptyRow(7, T('ap.noQueue')); return; }
 
       tb.innerHTML = pageRows.map((d, i) =>
         '<tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">' +
@@ -255,7 +241,6 @@
           '<td class="px-5 py-4 font-semibold text-slate-800">' + esc(d.id) + '<span class="block text-[11.5px] font-normal text-slate-400">' + esc(d.docNo) + '</span></td>' +
           '<td class="px-5 py-4 text-slate-600">' + esc(lang === 'en' ? d.requesterNameEn : d.requesterName) + '</td>' +
           '<td class="px-5 py-4 text-slate-700">' + esc(Store.docTitle(d, lang)) + '</td>' +
-          '<td class="px-5 py-4">' + fileTags(d) + '</td>' +
           '<td class="px-5 py-4 bg-slate-50/60">' + App.statusPill(d.status) + '</td>' +
           '<td class="px-5 py-4 bg-slate-50/60">' + App.ageText(d) + '</td>' +
           '<td class="px-5 py-4 bg-slate-50/60"><div class="flex items-center justify-end gap-2">' +
@@ -276,6 +261,9 @@
     document.addEventListener('langchange', refresh);
 
     refresh();
+
+    /* ตามการเดินงานจริงแบบ real time — บทบาทอื่นขยับสถานะเมื่อไหร่ หน้านี้อัปเดตตาม */
+    App.liveRefresh(refresh);
   })();
   </script>
 

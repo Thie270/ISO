@@ -48,7 +48,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
         <span class="nav-text" data-i18n="nav.create"></span>
       </a>
-      <a href="#" class="nav-link">
+      <a href="track.html" class="nav-link">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
         <span class="nav-text" data-i18n="nav.track"></span>
       </a>
@@ -227,14 +227,24 @@
       document.getElementById('c-qc').textContent       = s.qc;
     }
 
+    /* สถานะที่ flow ยังเดินอยู่ — ป้าย "In process" เหมือนกันหมด */
+    const IN_PROCESS = [Store.STATUS.PENDING_APPROVAL, Store.STATUS.PENDING_SIGN, Store.STATUS.SENT_TO_QC];
+
+    /* ทุกปุ่มเปิด "งานที่ทำ" (create.html) ไม่ใช่หน้ากระดาษ PDF
+       ดูเป็น PDF ได้จากปุ่ม "พรีวิว" ที่แถบล่างของหน้านั้น */
     function actionFor(d) {
       const st = Store.STATUS;
-      if (d.status === st.DRAFT)  return App.docLink(d, T('act.edit'), true);
-      if (d.status === st.RETURNED) return App.docLink(d, T('act.editResend'), true);
-      if (d.status === st.EXPIRED_RETURNED) return App.docLink(d, T('act.resend'), true);
-      if (d.status === st.PENDING_SIGN) return App.docLink(d, T('act.track'), false);
-      if (d.status === st.REJECTED) return App.docLink(d, T('act.reason'), false);
-      return App.docLink(d, T('act.detail'), false);
+      const W = (label, primary, tone) => App.docLink(d, label, primary, 'create.html', tone);
+      /* ปุ่ม "แก้ไข" ใช้สีส้มเหมือนกันทุกที่ */
+      if (d.status === st.DRAFT)  return W(T('act.edit'), true, 'orange');
+      if (d.status === st.RETURNED) return W(T('act.edit'), true, 'orange');
+      /* หมดอายุ · ส่งกลับ → คำขอสิ้นสุดแล้ว ไม่มีปุ่มให้กดต่อ */
+      if (d.status === st.EXPIRED_RETURNED) return App.noAction(T('status.EXPIRED_RETURNED'));
+      /* flow ยังเดินอยู่ (ผู้อนุมัติ / ผู้เกี่ยวข้อง / QC) → รออยู่ ยังทำอะไรไม่ได้ */
+      if (IN_PROCESS.indexOf(d.status) !== -1) return App.waitAction(T('status.' + d.status));
+      if (d.status === st.REJECTED) return W(T('act.reason'), false);
+      /* Approved — ดูงานที่ขึ้นทะเบียนแล้ว */
+      return W(T('act.detail'), false);
     }
 
     const tableState = App.newTableState('age', 'desc', 10);
@@ -285,6 +295,9 @@
     document.addEventListener('storechange', refresh);
 
     refresh();
+
+    /* ตามการเดินงานจริงแบบ real time — บทบาทอื่นขยับสถานะเมื่อไหร่ หน้านี้อัปเดตตาม */
+    App.liveRefresh(refresh);
   })();
   </script>
 

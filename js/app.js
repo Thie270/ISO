@@ -18,18 +18,20 @@
     clock: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>',
     refresh: '<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>',
     dots: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>',
-    eye: '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>'
+    eye: '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>',
+    xCircle: '<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>',
+    sync: '<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 5 21 10 16 10"></polyline><polyline points="3 19 3 14 8 14"></polyline><path d="M19.4 9a7.5 7.5 0 0 0-12.6-2.8L3 10"></path><path d="M4.6 15a7.5 7.5 0 0 0 12.6 2.8L21 14"></path></svg>'
   };
 
   const NOTI_ICON = {
     'n.sent':      { bg: 'bg-blue-50',    fg: 'text-blue-600',    d: 'M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z' },
     'n.approved':  { bg: 'bg-emerald-50', fg: 'text-emerald-600', d: 'M20 6L9 17l-5-5' },
-    'n.returned':  { bg: 'bg-red-50',     fg: 'text-red-500',     d: 'M23 4v6h-6M20.49 15a9 9 0 1 1-2.12-9.36L23 10' },
+    'n.returned':  { bg: 'bg-orange-50',  fg: 'text-orange-600',  d: 'M23 4v6h-6M20.49 15a9 9 0 1 1-2.12-9.36L23 10' },
     'n.rejected':  { bg: 'bg-rose-50',    fg: 'text-rose-600',    d: 'M18 6L6 18M6 6l12 12' },
     'n.signed':    { bg: 'bg-violet-50',  fg: 'text-violet-600',  d: 'M12 20h9M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z' },
     'n.allSigned': { bg: 'bg-emerald-50', fg: 'text-emerald-600', d: 'M20 6L9 17l-5-5' },
     'n.registered':{ bg: 'bg-teal-50',    fg: 'text-teal-700',    d: 'M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11' },
-    'n.expired':   { bg: 'bg-amber-50',   fg: 'text-amber-600',   d: 'M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01' },
+    'n.expired':   { bg: 'bg-red-50',     fg: 'text-red-600',     d: 'M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01' },
     'n.draft':     { bg: 'bg-slate-100',  fg: 'text-slate-500',   d: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z' }
   };
 
@@ -181,7 +183,12 @@
         box.innerHTML = list.slice(0, 20).map(n => {
           const ic = NOTI_ICON[n.key] || NOTI_ICON['n.draft'];
           const title = lang === 'en' && n.titleEn ? n.titleEn : n.title;
-          return '<a href="document.html?id=' + encodeURIComponent(n.docId) + '" data-nid="' + esc(n.id) + '" ' +
+          /* ถ้าเอกสารนั้นเป็นคิวงานของผู้ใช้ (หรือเป็นคำขอของตัวเอง) ให้เปิดหน้างาน ไม่ใช่หน้ากระดาษ */
+          const nDoc = S().getDoc(n.docId);
+          const nPerm = nDoc ? S().permissions(nDoc, user) : null;
+          const toWork = !!(nPerm && (nPerm.approve || nPerm.sign || nPerm.register ||
+                            (user.role === 'requester' && nDoc.requesterId === user.id)));
+          return '<a href="' + (toWork ? 'create.html' : 'document.html') + '?id=' + encodeURIComponent(n.docId) + '" data-nid="' + esc(n.id) + '" ' +
             'class="flex items-start gap-3 px-5 py-3.5 border-b border-slate-50 no-underline hover:bg-slate-50 transition-colors' +
             (n.read ? '' : ' bg-blue-50/40') + '">' +
               '<span class="w-8 h-8 rounded-xl ' + ic.bg + ' ' + ic.fg + ' flex items-center justify-center flex-shrink-0 mt-0.5">' +
@@ -281,7 +288,8 @@
       menu.querySelectorAll('[data-switch]').forEach(b => {
         b.addEventListener('click', () => {
           const u = S().loginAs(b.getAttribute('data-switch'));
-          if (u) location.href = u.home;
+          /* สลับบัญชีสาธิต → เริ่มที่หน้าแรกเหมือนตอนเข้าระบบ */
+          if (u) location.href = 'index.html';
         });
       });
       menu.querySelector('#do-logout').addEventListener('click', () => {
@@ -371,12 +379,48 @@
     return '<span class="' + cls + '">' + age + ' / ' + doc.dueDays + ' ' + esc(t().t('common.days')) + '</span>';
   }
 
-  function docLink(doc, label, primary) {
+  /* page: หน้าปลายทาง — ค่าเริ่มต้นคือหน้ากระดาษ PDF (document.html)
+     ส่งเป็น 'create.html' เมื่ออยากให้เปิด "งานที่ทำ" (ฟอร์ม) แทน
+     tone: สีของปุ่มหลัก — 'blue' (ค่าเริ่มต้น) หรือ 'orange' สำหรับงานที่ถูกส่งกลับ */
+  const BTN_TONE = {
+    blue:   'bg-blue-600 hover:bg-blue-700 shadow-[0_4px_10px_rgba(37,99,235,0.25)]',
+    orange: 'bg-orange-500 hover:bg-orange-600 shadow-[0_4px_10px_rgba(249,115,22,0.28)]',
+    violet: 'bg-violet-600 hover:bg-violet-700 shadow-[0_4px_10px_rgba(109,40,217,0.25)]',
+    teal:   'bg-teal-600 hover:bg-teal-700 shadow-[0_4px_10px_rgba(13,148,136,0.25)]'
+  };
+
+  function docLink(doc, label, primary, page, tone) {
     const cls = primary
-      ? 'inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-blue-600 px-4 py-2 text-[13px] font-semibold text-white no-underline shadow-[0_4px_10px_rgba(37,99,235,0.25)] hover:bg-blue-700 transition-colors'
-      : 'inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-4 py-2 text-[13px] font-semibold text-slate-600 no-underline hover:bg-slate-50 transition-colors';
-    return '<a href="document.html?id=' + encodeURIComponent(doc.id) + '" class="' + cls + '">' + esc(label) + '</a>';
+      ? 'row-btn inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-4 py-2 text-[13px] font-semibold text-white no-underline transition-colors ' +
+        (BTN_TONE[tone] || BTN_TONE.blue)
+      : 'row-btn inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-4 py-2 text-[13px] font-semibold text-slate-600 no-underline hover:bg-slate-50 transition-colors';
+    return '<a href="' + (page || 'document.html') + '?id=' + encodeURIComponent(doc.id) + '" class="' + cls + '">' + esc(label) + '</a>';
   }
+
+  /* งานเดินมาถึงคิวของผู้ใช้คนนี้หรือยัง — ถ้าใช่ คืนปุ่มที่พาไป "หน้างาน" (create.html)
+     ให้ทำงานและเซ็นในตำแหน่งของตัวเอง ไม่ใช่หน้ากระดาษ PDF · ถ้าไม่ใช่คืน null */
+  function myTurnLink(doc, user) {
+    const p = S().permissions(doc, user);
+    let key = null, tone = 'blue';
+    if (p.approve)       { key = 'act.review';   tone = 'blue';   }
+    else if (p.sign)     { key = 'act.sign';     tone = 'violet'; }
+    else if (p.register) { key = 'act.register'; tone = 'teal';   }
+    if (!key) return null;
+    return docLink(doc, t().t(key), true, 'create.html', tone);
+  }
+
+  /* ช่องว่างแทนปุ่ม — ใช้กับแถวที่ผู้ใช้ทำอะไรต่อไม่ได้
+     ขนาดเท่าปุ่มจริงเพื่อให้คอลัมน์ยังเรียงตรงกัน */
+  function idleBox(icon, title) {
+    return '<span class="row-btn inline-flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-slate-300 cursor-not-allowed"' +
+      (title ? ' title="' + esc(title) + '"' : '') + '>' + icon + '</span>';
+  }
+
+  /* คำขอสิ้นสุดแล้ว (เช่น หมดอายุ) */
+  function noAction(title) { return idleBox(IC.xCircle, title); }
+
+  /* คำขออยู่ที่คนอื่น — รอผลอยู่ ยังทำอะไรไม่ได้ */
+  function waitAction(title) { return idleBox(IC.sync, title); }
 
   function emptyRow(cols, msg) {
     return '<tr><td colspan="' + cols + '" class="px-5 py-14 text-center text-[13px] text-slate-400">' +
@@ -497,6 +541,41 @@
 
 
   /* ============================================================
+     อัปเดตหน้าจอตามความเป็นจริงของ flow (real time)
+     — บทบาทอื่นทำงานในแท็บ/หน้าต่างอื่น แล้วหน้านี้ต้องเห็นทันที
+     — กลับมาที่แท็บนี้เมื่อไหร่ก็ดึงข้อมูลล่าสุดมาวาดใหม่
+     — ตรวจเอกสารหมดเวลาลงนามเป็นระยะ สถานะจะได้ขยับเองตามกำหนด
+     ============================================================ */
+  function liveRefresh(fn, opts) {
+    const o = opts || {};
+    const every = o.every || 2000;
+    let queued = false;
+
+    /* รวมหลายสัญญาณที่มาพร้อมกันให้วาดครั้งเดียว
+       (ใช้ setTimeout ไม่ใช่ requestAnimationFrame เพราะแท็บที่ไม่ได้แสดงผล
+        จะไม่เรียก rAF เลย ทำให้ข้อมูลค้างจนกว่าจะกลับมาดู) */
+    function paint() {
+      if (queued) return;
+      queued = true;
+      setTimeout(function () { queued = false; fn(); }, 0);
+    }
+
+    function tick(force) {
+      const changed = S().syncIfStale();
+      const expired = S().runExpiryCheck();      /* หมดเวลา → ระบบส่งกลับเอง */
+      if (changed || expired || force) paint();
+    }
+
+    document.addEventListener('storechange', paint);
+    window.addEventListener('focus', function () { tick(true); });
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) tick(true); });
+    window.addEventListener('pageshow', function (e) { if (e.persisted) tick(true); });
+    const timer = setInterval(function () { if (!document.hidden) tick(false); }, every);
+
+    return { refresh: paint, check: tick, stop: function () { clearInterval(timer); } };
+  }
+
+  /* ============================================================
      ตารางงาน — เรียงลำดับ + แบ่งหน้า (ค่าเริ่มต้น 10 แถว/หน้า)
      ============================================================ */
   const STATUS_ORDER = ['DRAFT','RETURNED','EXPIRED_RETURNED','PENDING_APPROVAL','PENDING_SIGN','SENT_TO_QC','REGISTERED','REJECTED'];
@@ -608,8 +687,9 @@
 
   global.App = {
     esc, initChrome, requireLogin, initSidebar, initLang, initFilterTabs,
-    statusPill, progressBar, ageText, docLink, emptyRow,
+    statusPill, progressBar, ageText, docLink, myTurnLink, noAction, waitAction, emptyRow,
     confirmDialog, toast, relDay, dayLabel, IC,
-    newTableState, sortDocs, pageOf, paintPager, bindSortHeaders
+    newTableState, sortDocs, pageOf, paintPager, bindSortHeaders,
+    liveRefresh
   };
 })(window);

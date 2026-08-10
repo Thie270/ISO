@@ -9,7 +9,7 @@
 
   const DB_KEY = 'rvp_mock_db';
   const SESSION_KEY = 'rvp_session';
-  const DB_VERSION = 4;
+  const DB_VERSION = 6;
 
   /* เพดานพื้นที่ไฟล์แนบที่ยอมให้เก็บลง localStorage (base64) */
   const FILE_QUOTA = 3.5 * 1024 * 1024;
@@ -101,13 +101,15 @@
   /* สีของ pill สถานะ (ใช้ class เดิมที่มีอยู่ใน style.css / tailwind) */
   const STATUS_STYLE = {
     DRAFT:            { pill: 'bg-slate-100 text-slate-500',   dot: 'bg-slate-400'   },
-    PENDING_APPROVAL: { pill: 'bg-blue-50 text-blue-600',      dot: 'bg-blue-500'    },
-    RETURNED:         { pill: 'bg-red-50 text-red-500',        dot: 'bg-red-500'     },
-    REJECTED:         { pill: 'bg-rose-100 text-rose-700',     dot: 'bg-rose-600'    },
+    /* ระหว่างที่ flow ยังเดินอยู่ (รออนุมัติ / รอเซ็น / รอ QC) ใช้ป้าย "In process" สีม่วงเหมือนกันหมด */
+    PENDING_APPROVAL: { pill: 'bg-violet-50 text-violet-600',  dot: 'bg-violet-500'  },
     PENDING_SIGN:     { pill: 'bg-violet-50 text-violet-600',  dot: 'bg-violet-500'  },
-    SENT_TO_QC:       { pill: 'bg-emerald-50 text-emerald-600',dot: 'bg-emerald-500' },
+    SENT_TO_QC:       { pill: 'bg-violet-50 text-violet-600',  dot: 'bg-violet-500'  },
+    RETURNED:         { pill: 'bg-orange-50 text-orange-600',  dot: 'bg-orange-500'  },
+    REJECTED:         { pill: 'bg-rose-100 text-rose-700',     dot: 'bg-rose-600'    },
     REGISTERED:       { pill: 'bg-teal-50 text-teal-700',      dot: 'bg-teal-600'    },
-    EXPIRED_RETURNED: { pill: 'bg-amber-50 text-amber-600',    dot: 'bg-amber-500'   }
+    /* หมดเวลาลงนาม — ปิดตัวเองด้วยความผิดปกติ จึงใช้สีแดง */
+    EXPIRED_RETURNED: { pill: 'bg-red-50 text-red-600',        dot: 'bg-red-500'     }
   };
 
   const DOC_TYPES = {
@@ -140,6 +142,14 @@
   /* ══════════════════════════════════════════
      ข้อมูลตัวอย่างเริ่มต้น
      ══════════════════════════════════════════ */
+  /* รับได้ทั้งรหัส ('QC') และข้อมูลเต็มของผู้เกี่ยวข้องที่เคยบันทึกไว้
+     (คงลายเซ็น/ชื่อ/วันที่ และสถานะการลงนามไว้ครบ) */
+  function normSh(x) {
+    if (!x) return null;
+    if (typeof x === 'string') return sh(x);
+    return Object.assign(sh(x.id), x);
+  }
+
   function sh(id, signed, day) {
     const base = STAKEHOLDER_POOL.find(s => s.id === id) || { id, name: id, nameEn: id, userId: null };
     return { id: base.id, name: base.name, nameEn: base.nameEn, userId: base.userId, signed: !!signed, signedDay: signed ? (day || 0) : null };
@@ -177,53 +187,137 @@
       history: []
     }, o);
 
+    /* ลายเซ็นอิเล็กทรอนิกส์ (ย่อ) */
+    const SIG = (by) => ({ by: by, day: 0, label: 'ลายเซ็นอิเล็กทรอนิกส์' });
+
     const docs = [
+      /* ── ① ร่าง — ยังไม่ส่ง ───────────────────────────────── */
       mk({
-        id: 'DAR001', docNo: 'RVP-WI-014', type: 'wi', purpose: 'edit',
-        title: 'เอกสารความปลอดภัยรถไฟฟ้า', titleEn: 'Electric Train Safety Procedure',
-        revision: 2, status: STATUS.DRAFT, createdDay: 0,
-        description: 'ปรับปรุงขั้นตอนการตรวจสอบความปลอดภัยก่อนนำขบวนออกให้บริการ',
-        files: [{ name: 'DAR-RVP-WI-014.pdf', size: 248320, kind: 'dar' }],
+        id: 'DAR001', docNo: 'RVP-WI-018', type: 'wi', purpose: 'edit',
+        title: 'วิธีปฏิบัติงานตรวจสอบคุณภาพขั้นสุดท้ายก่อนส่งมอบ', titleEn: 'Final Inspection & Release Work Instruction',
+        revision: 2, status: STATUS.DRAFT, createdDay: 0, relatedDept: 'ฝ่ายผลิต',
+        description: 'ปรับเกณฑ์การสุ่มตรวจและผู้มีอำนาจปล่อยงาน ให้สอดคล้อง ISO 9001:2015 ข้อ 8.6 การปล่อยผลิตภัณฑ์และบริการ',
+        files: [{ name: 'DAR-RVP-WI-018.pdf', size: 248320, kind: 'dar' }],
         stakeholders: [sh('SQD'), sh('QC'), sh('PROD')],
         history: [{ day: 0, actor: 'A', action: 'create' }]
       }),
+
+      /* ── ② รอผู้อนุมัติตรวจสอบ ─────────────────────────────── */
       mk({
-        id: 'DAR002', docNo: 'RVP-FM-032', type: 'form', purpose: 'new',
-        title: 'เอกสารการซ่อมบำรุงรางรถไฟ', titleEn: 'Rail Maintenance Record Form',
-        revision: 0, status: STATUS.PENDING_APPROVAL, createdDay: 0, sentDay: 0,
-        description: 'แบบฟอร์มบันทึกการซ่อมบำรุงรางประจำเดือน สำหรับหน่วยซ่อมบำรุงทาง',
+        id: 'DAR002', docNo: 'RVP-FM-105', type: 'form', purpose: 'new',
+        title: 'แบบฟอร์มรายงานสิ่งที่ไม่เป็นไปตามข้อกำหนด (NCR)', titleEn: 'Nonconformity Report (NCR) Form',
+        revision: 0, status: STATUS.PENDING_APPROVAL, createdDay: 0, sentDay: 0, relatedDept: 'ฝ่ายผลิต',
+        description: 'จัดทำแบบฟอร์ม NCR ฉบับใหม่ รองรับการบันทึกสิ่งที่ไม่เป็นไปตามข้อกำหนดตามข้อ 8.7 และเชื่อมกับ CAR ตามข้อ 10.2',
         files: [
-          { name: 'DAR-RVP-FM-032.pdf', size: 214000, kind: 'dar' },
-          { name: 'แบบฟอร์มซ่อมบำรุงราง-r0.docx', size: 88400, kind: 'change' }
+          { name: 'DAR-RVP-FM-105.pdf', size: 214000, kind: 'dar' },
+          { name: 'FM-105-NCR-form-r0.docx', size: 88400, kind: 'change' }
         ],
         stakeholders: [sh('SQD'), sh('QC'), sh('PROD'), sh('IT')],
         history: [{ day: 0, actor: 'A', action: 'create' }, { day: 0, actor: 'A', action: 'send' }]
       }),
+
+      /* ── ③ ถูกส่งกลับให้แก้ไข ─────────────────────────────── */
       mk({
-        id: 'DAR003', docNo: 'RVP-SD-007', type: 'sd', purpose: 'edit',
-        title: 'เอกสารสนับสนุนภายใน', titleEn: 'Internal Supporting Document',
-        revision: 1, status: STATUS.RETURNED, createdDay: 0, sentDay: 0,
-        lastRemark: 'กรุณาแนบฉบับเดิมที่จะถูกแทนที่ และระบุเหตุผลการแก้ไขในส่วนที่ 4 ให้ชัดเจน',
-        description: 'ปรับปรุงเอกสารสนับสนุนภายในให้สอดคล้องกับ ISO 9001:2015 ข้อ 7.5',
-        files: [{ name: 'DAR-RVP-SD-007.pdf', size: 190500, kind: 'dar' }],
+        id: 'DAR003', docNo: 'RVP-SD-022', type: 'sd', purpose: 'edit',
+        title: 'ผังปฏิสัมพันธ์ของกระบวนการในระบบบริหารคุณภาพ', titleEn: 'QMS Process Interaction Map',
+        revision: 1, status: STATUS.RETURNED, createdDay: 0, sentDay: 0, relatedDept: 'ฝ่ายผลิต',
+        lastRemark: 'กรุณาแนบผังฉบับเดิมที่จะถูกแทนที่ และระบุเหตุผลการแก้ไขในส่วนที่ 4 ให้ครบตามข้อ 7.5.3',
+        description: 'ปรับผังกระบวนการหลักให้ครอบคลุมกระบวนการใหม่ และระบุปัจจัยนำเข้า/ผลลัพธ์ตามข้อ 4.4',
+        files: [{ name: 'DAR-RVP-SD-022.pdf', size: 190500, kind: 'dar' }],
         stakeholders: [sh('SQD'), sh('QC')],
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'return', note: 'กรุณาแนบฉบับเดิมที่จะถูกแทนที่ และระบุเหตุผลการแก้ไขในส่วนที่ 4 ให้ชัดเจน' }
+          { day: 0, actor: 'B', action: 'return', note: 'กรุณาแนบผังฉบับเดิมที่จะถูกแทนที่ และระบุเหตุผลการแก้ไขในส่วนที่ 4 ให้ครบตามข้อ 7.5.3' }
         ]
       }),
+
+      /* ── ④ อนุมัติแล้ว รอผู้เกี่ยวข้องลงนาม ─────────────────── */
       mk({
-        id: 'DAR004', docNo: 'RVP-WI-021', type: 'wi', purpose: 'new',
-        title: 'เอกสารความปลอดภัยรถไฟฟ้า (ภาคสนาม)', titleEn: 'Field Safety Work Instruction',
-        revision: 0, status: STATUS.PENDING_SIGN, createdDay: 0, sentDay: 0, approvedDay: 0,
-        description: 'วิธีปฏิบัติงานด้านความปลอดภัยสำหรับเจ้าหน้าที่ภาคสนามในเขตทางวิ่ง',
+        id: 'DAR004', docNo: 'RVP-QP-009', type: 'qp', purpose: 'new',
+        title: 'ขั้นตอนการตรวจติดตามภายใน', titleEn: 'Internal Audit Procedure',
+        revision: 0, status: STATUS.PENDING_SIGN, createdDay: 0, sentDay: 0, approvedDay: 0, relatedDept: 'ฝ่ายผลิต',
+        description: 'จัดทำขั้นตอนการตรวจติดตามภายในตามข้อ 9.2 ครอบคลุมแผนการตรวจประจำปี เกณฑ์คัดเลือกผู้ตรวจ และการรายงานผล',
         files: [
-          { name: 'DAR-RVP-WI-021.pdf', size: 268800, kind: 'dar' },
-          { name: 'WI-021-safety-field-r0.pdf', size: 512000, kind: 'change' }
+          { name: 'DAR-RVP-QP-009.pdf', size: 268800, kind: 'dar' },
+          { name: 'QP-009-internal-audit-r0.pdf', size: 512000, kind: 'change' }
         ],
         stakeholders: [sh('SQD'), sh('QC', true, 0), sh('PROD', true, 0), sh('HR'), sh('IT', true, 0)],
-        signatures: { approver: { by: 'B', day: 0, label: 'ลายเซ็นอิเล็กทรอนิกส์' } },
+        signatures: { approver: SIG('B') },
+        history: [
+          { day: 0, actor: 'A', action: 'create' },
+          { day: 0, actor: 'A', action: 'send' },
+          { day: 0, actor: 'B', action: 'approve' }
+        ]
+      }),
+
+      /* ── ⑤ ลงนามครบ ส่งถึง QC รอขึ้นทะเบียน ────────────────── */
+      mk({
+        id: 'DAR005', docNo: 'RVP-FM-047', type: 'form', purpose: 'edit',
+        title: 'แบบฟอร์มคำขอปฏิบัติการแก้ไข (CAR)', titleEn: 'Corrective Action Request (CAR) Form',
+        revision: 3, status: STATUS.SENT_TO_QC, createdDay: 0, sentDay: 0, approvedDay: 0, closedDay: 0, relatedDept: 'ฝ่ายผลิต',
+        description: 'เพิ่มช่องวิเคราะห์สาเหตุราก (Root Cause) และช่องติดตามผลประสิทธิผลการแก้ไขตามข้อ 10.2.1',
+        files: [{ name: 'DAR-RVP-FM-047.pdf', size: 233000, kind: 'dar' }],
+        stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('PROD', true, 0), sh('HR', true, 0), sh('FIN', true, 0)],
+        signatures: { approver: SIG('B'), qcStaff: SIG('QC') },
+        history: [
+          { day: 0, actor: 'A', action: 'create' },
+          { day: 0, actor: 'A', action: 'send' },
+          { day: 0, actor: 'B', action: 'approve' },
+          { day: 0, actor: 'C', action: 'sign' },
+          { day: 0, actor: 'SYSTEM', action: 'toQC' }
+        ]
+      }),
+
+      /* ── ⑥ ลงนามไม่ครบใน 14 วัน → ระบบส่งกลับ ──────────────── */
+      mk({
+        id: 'DAR006', docNo: 'RVP-ED-011', type: 'esd', purpose: 'new',
+        title: 'มาตรฐาน ISO 9001:2015 ฉบับควบคุมสำเนา', titleEn: 'ISO 9001:2015 Standard — Controlled Copy',
+        revision: 0, status: STATUS.EXPIRED_RETURNED, createdDay: 0, sentDay: 0, approvedDay: 0, relatedDept: 'ฝ่ายผลิต',
+        lastRemark: 'ผู้มีส่วนเกี่ยวข้องลงนามไม่ครบภายใน 14 วัน ระบบส่งกลับอัตโนมัติ',
+        description: 'ขึ้นทะเบียนมาตรฐานสากลเป็นเอกสารสนับสนุนภายนอก และควบคุมการแจกจ่ายสำเนาตามข้อ 7.5.3.2',
+        files: [{ name: 'DAR-RVP-ED-011.pdf', size: 205000, kind: 'dar' }],
+        stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('PROD'), sh('HR'), sh('IT')],
+        history: [
+          { day: 0, actor: 'A', action: 'create' },
+          { day: 0, actor: 'A', action: 'send' },
+          { day: 0, actor: 'B', action: 'approve' },
+          { day: 0, actor: 'SYSTEM', action: 'expire' }
+        ]
+      }),
+
+      /* ── ⑦⑧ รอผู้อนุมัติ (เพิ่มอีก 2 ฉบับ) ─────────────────── */
+      mk({
+        id: 'DAR007', docNo: 'RVP-QP-002', type: 'qp', purpose: 'edit',
+        title: 'ขั้นตอนการควบคุมเอกสารและบันทึกคุณภาพ', titleEn: 'Control of Documented Information Procedure',
+        revision: 4, status: STATUS.PENDING_APPROVAL, createdDay: 0, sentDay: 0, relatedDept: 'ฝ่าย IT',
+        description: 'ปรับขั้นตอนตามข้อ 7.5 ให้รองรับการขออนุมัติและลงนามอิเล็กทรอนิกส์ผ่านระบบ DAR',
+        files: [
+          { name: 'DAR-RVP-QP-002.pdf', size: 259000, kind: 'dar' },
+          { name: 'QP-002-r4-draft.docx', size: 141000, kind: 'change' }
+        ],
+        stakeholders: [sh('SQD'), sh('QC'), sh('IT')],
+        history: [{ day: 0, actor: 'A', action: 'create' }, { day: 0, actor: 'A', action: 'send' }]
+      }),
+      mk({
+        id: 'DAR008', docNo: 'RVP-FM-118', type: 'form', purpose: 'new',
+        title: 'แบบฟอร์มทะเบียนรายชื่อเอกสารควบคุม (Master List)', titleEn: 'Master List of Controlled Documents',
+        revision: 0, status: STATUS.PENDING_APPROVAL, createdDay: 0, sentDay: 0, relatedDept: 'ฝ่าย IT',
+        description: 'แบบฟอร์มทะเบียนกลางสำหรับติดตามเลขที่เอกสาร ฉบับแก้ไข วันที่มีผลบังคับใช้ และจุดแจกจ่าย',
+        files: [{ name: 'DAR-RVP-FM-118.pdf', size: 198700, kind: 'dar' }],
+        stakeholders: [sh('SQD'), sh('QC')],
+        history: [{ day: 0, actor: 'A', action: 'create' }, { day: 0, actor: 'A', action: 'send' }]
+      }),
+
+      /* ── ⑨⑩ อนุมัติแล้ว รอลงนาม (เพิ่มอีก 2 ฉบับ) ──────────── */
+      mk({
+        id: 'DAR009', docNo: 'RVP-SD-009', type: 'sd', purpose: 'cancel',
+        title: 'เกณฑ์ประเมินผู้ส่งมอบฉบับเดิม (ยกเลิกการใช้งาน)', titleEn: 'Legacy Supplier Evaluation Criteria (Withdrawal)',
+        revision: 2, status: STATUS.PENDING_SIGN, createdDay: 0, sentDay: 0, approvedDay: 0, relatedDept: 'ฝ่ายการเงิน',
+        description: 'ยกเลิกการใช้งานเกณฑ์ประเมินผู้ส่งมอบฉบับเดิม ซึ่งถูกแทนที่ด้วย FM-063 ตามข้อ 8.4.1',
+        files: [{ name: 'DAR-RVP-SD-009.pdf', size: 187300, kind: 'dar' }],
+        stakeholders: [sh('SQD'), sh('QC'), sh('FIN', true, 0), sh('HR')],
+        signatures: { approver: SIG('B') },
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
@@ -231,16 +325,155 @@
         ]
       }),
       mk({
-        id: 'DAR005', docNo: 'RVP-FM-018', type: 'form', purpose: 'edit',
-        title: 'แบบฟอร์มตรวจรับงานซ่อมบำรุง', titleEn: 'Maintenance Acceptance Form',
-        revision: 3, status: STATUS.SENT_TO_QC, createdDay: 0, sentDay: 0, approvedDay: 0, closedDay: 0,
-        description: 'ปรับช่องลงนามผู้ตรวจรับให้รองรับการลงนามอิเล็กทรอนิกส์',
-        files: [{ name: 'DAR-RVP-FM-018.pdf', size: 233000, kind: 'dar' }],
-        stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('PROD', true, 0), sh('HR', true, 0), sh('FIN', true, 0)],
-        signatures: {
-          approver: { by: 'B', day: 0, label: 'ลายเซ็นอิเล็กทรอนิกส์' },
-          qcStaff: { by: 'QC', day: 0, label: 'ลายเซ็นอิเล็กทรอนิกส์' }
-        },
+        id: 'DAR010', docNo: 'RVP-WI-041', type: 'wi', purpose: 'new',
+        title: 'วิธีปฏิบัติงานสอบเทียบเครื่องมือวัด', titleEn: 'Measuring Equipment Calibration Work Instruction',
+        revision: 0, status: STATUS.PENDING_SIGN, createdDay: 0, sentDay: 0, approvedDay: 0, relatedDept: 'ฝ่ายผลิต',
+        description: 'กำหนดรอบสอบเทียบ ผู้รับผิดชอบ และการชี้บ่งสถานะเครื่องมือวัด ตามข้อ 7.1.5 ทรัพยากรสำหรับการติดตามและวัดผล',
+        files: [{ name: 'DAR-RVP-WI-041.pdf', size: 241000, kind: 'dar' }],
+        stakeholders: [sh('SQD'), sh('QC'), sh('PROD'), sh('IT')],
+        signatures: { approver: SIG('B') },
+        history: [
+          { day: 0, actor: 'A', action: 'create' },
+          { day: 0, actor: 'A', action: 'send' },
+          { day: 0, actor: 'B', action: 'approve' }
+        ]
+      }),
+
+      /* ── ⑪ ไม่อนุมัติ (ปิดคำขอ) ───────────────────────────── */
+      mk({
+        id: 'DAR011', docNo: 'RVP-QM-001', type: 'qm', purpose: 'edit',
+        title: 'คู่มือคุณภาพ (Quality Manual)', titleEn: 'Quality Manual',
+        revision: 6, status: STATUS.REJECTED, createdDay: 0, sentDay: 0, closedDay: 0, relatedDept: 'ฝ่ายผลิต',
+        lastRemark: 'การแก้ไขขอบเขตและบริบทองค์กรกระทบหลายกระบวนการ ให้เสนอผ่านการทบทวนของฝ่ายบริหารก่อนยื่นใหม่',
+        description: 'ปรับขอบเขตระบบบริหารคุณภาพและบริบทองค์กรตามข้อ 4.1–4.3 ให้สอดคล้องโครงสร้างองค์กรใหม่',
+        files: [{ name: 'DAR-RVP-QM-001.pdf', size: 302400, kind: 'dar' }],
+        stakeholders: [sh('SQD'), sh('QC')],
+        history: [
+          { day: 0, actor: 'A', action: 'create' },
+          { day: 0, actor: 'A', action: 'send' },
+          { day: 0, actor: 'B', action: 'reject', note: 'การแก้ไขขอบเขตและบริบทองค์กรกระทบหลายกระบวนการ ให้เสนอผ่านการทบทวนของฝ่ายบริหารก่อนยื่นใหม่' }
+        ]
+      }),
+
+      /* ── ⑫–⑯ ขึ้นทะเบียนแล้ว (ทะเบียนเอกสารควบคุม) ────────── */
+      mk({
+        id: 'DAR012', docNo: 'RVP-QP-011', type: 'qp', purpose: 'edit',
+        title: 'ขั้นตอนการทบทวนของฝ่ายบริหาร', titleEn: 'Management Review Procedure',
+        revision: 5, status: STATUS.REGISTERED, createdDay: 0, sentDay: 0, approvedDay: 0, closedDay: 0, relatedDept: 'ฝ่ายผลิต',
+        description: 'ปรับวาระการประชุมทบทวนฝ่ายบริหารให้ครบตามปัจจัยนำเข้า/ผลลัพธ์ในข้อ 9.3.2 และ 9.3.3',
+        files: [{ name: 'DAR-RVP-QP-011.pdf', size: 226000, kind: 'dar' }],
+        stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('PROD', true, 0)],
+        signatures: { approver: SIG('B'), qcStaff: SIG('D'), qcManager: SIG('D') },
+        history: [
+          { day: 0, actor: 'A', action: 'create' },
+          { day: 0, actor: 'A', action: 'send' },
+          { day: 0, actor: 'B', action: 'approve' },
+          { day: 0, actor: 'C', action: 'sign' },
+          { day: 0, actor: 'SYSTEM', action: 'toQC' },
+          { day: 0, actor: 'D', action: 'register', note: 'ขึ้นทะเบียนเรียบร้อย · แจกจ่ายฉบับควบคุมแล้ว' }
+        ]
+      }),
+      mk({
+        id: 'DAR013', docNo: 'RVP-WI-052', type: 'wi', purpose: 'new',
+        title: 'วิธีปฏิบัติงานชี้บ่งและสอบกลับผลิตภัณฑ์', titleEn: 'Identification & Traceability Work Instruction',
+        revision: 0, status: STATUS.REGISTERED, createdDay: 0, sentDay: 0, approvedDay: 0, closedDay: 0, relatedDept: 'ฝ่ายผลิต',
+        description: 'กำหนดวิธีชี้บ่งสถานะและการสอบกลับตลอดสายการผลิต ตามข้อ 8.5.2 การชี้บ่งและสอบกลับได้',
+        files: [{ name: 'DAR-RVP-WI-052.pdf', size: 219400, kind: 'dar' }],
+        stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('PROD', true, 0)],
+        signatures: { approver: SIG('B'), qcStaff: SIG('D'), qcManager: SIG('D') },
+        history: [
+          { day: 0, actor: 'A', action: 'create' },
+          { day: 0, actor: 'A', action: 'send' },
+          { day: 0, actor: 'B', action: 'approve' },
+          { day: 0, actor: 'C', action: 'sign' },
+          { day: 0, actor: 'SYSTEM', action: 'toQC' },
+          { day: 0, actor: 'D', action: 'register', note: 'ขึ้นทะเบียนเรียบร้อย · แจกจ่ายฉบับควบคุมแล้ว' }
+        ]
+      }),
+      mk({
+        id: 'DAR014', docNo: 'RVP-FM-063', type: 'form', purpose: 'edit',
+        title: 'แบบฟอร์มประเมินผู้ส่งมอบประจำปี', titleEn: 'Annual Supplier Evaluation Form',
+        revision: 2, status: STATUS.REGISTERED, createdDay: 0, sentDay: 0, approvedDay: 0, closedDay: 0, relatedDept: 'ฝ่ายการเงิน',
+        description: 'เพิ่มเกณฑ์ด้านคุณภาพ การส่งมอบ และการตอบสนอง สำหรับการประเมินผู้ส่งมอบภายนอกตามข้อ 8.4.1',
+        files: [{ name: 'DAR-RVP-FM-063.pdf', size: 204800, kind: 'dar' }],
+        stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('FIN', true, 0)],
+        signatures: { approver: SIG('B'), qcStaff: SIG('D'), qcManager: SIG('D') },
+        history: [
+          { day: 0, actor: 'A', action: 'create' },
+          { day: 0, actor: 'A', action: 'send' },
+          { day: 0, actor: 'B', action: 'approve' },
+          { day: 0, actor: 'C', action: 'sign' },
+          { day: 0, actor: 'SYSTEM', action: 'toQC' },
+          { day: 0, actor: 'D', action: 'register', note: 'ขึ้นทะเบียนเรียบร้อย · แจกจ่ายฉบับควบคุมแล้ว' }
+        ]
+      }),
+      mk({
+        id: 'DAR015', docNo: 'RVP-QP-014', type: 'qp', purpose: 'new',
+        title: 'ขั้นตอนการจัดการความเสี่ยงและโอกาส', titleEn: 'Risk & Opportunity Management Procedure',
+        revision: 0, status: STATUS.REGISTERED, createdDay: 0, sentDay: 0, approvedDay: 0, closedDay: 0, relatedDept: 'ฝ่ายผลิต',
+        description: 'กำหนดวิธีชี้บ่ง ประเมิน และจัดการความเสี่ยง/โอกาสของแต่ละกระบวนการ ตามข้อ 6.1',
+        files: [{ name: 'DAR-RVP-QP-014.pdf', size: 251900, kind: 'dar' }],
+        stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('PROD', true, 0), sh('IT', true, 0)],
+        signatures: { approver: SIG('B'), qcStaff: SIG('D'), qcManager: SIG('D') },
+        history: [
+          { day: 0, actor: 'A', action: 'create' },
+          { day: 0, actor: 'A', action: 'send' },
+          { day: 0, actor: 'B', action: 'approve' },
+          { day: 0, actor: 'C', action: 'sign' },
+          { day: 0, actor: 'SYSTEM', action: 'toQC' },
+          { day: 0, actor: 'D', action: 'register', note: 'ขึ้นทะเบียนเรียบร้อย · แจกจ่ายฉบับควบคุมแล้ว' }
+        ]
+      }),
+      mk({
+        id: 'DAR016', docNo: 'RVP-SD-031', type: 'sd', purpose: 'edit',
+        title: 'แผนฝึกอบรมและตารางความสามารถบุคลากร', titleEn: 'Training Plan & Competency Matrix',
+        revision: 1, status: STATUS.REGISTERED, createdDay: 0, sentDay: 0, approvedDay: 0, closedDay: 0, relatedDept: 'ฝ่ายบุคคล',
+        description: 'ปรับตารางความสามารถและแผนฝึกอบรมประจำปีให้ครอบคลุมตำแหน่งงานที่กระทบคุณภาพ ตามข้อ 7.2',
+        files: [{ name: 'DAR-RVP-SD-031.pdf', size: 197600, kind: 'dar' }],
+        stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('HR', true, 0)],
+        signatures: { approver: SIG('B'), qcStaff: SIG('D'), qcManager: SIG('D') },
+        history: [
+          { day: 0, actor: 'A', action: 'create' },
+          { day: 0, actor: 'A', action: 'send' },
+          { day: 0, actor: 'B', action: 'approve' },
+          { day: 0, actor: 'C', action: 'sign' },
+          { day: 0, actor: 'SYSTEM', action: 'toQC' },
+          { day: 0, actor: 'D', action: 'register', note: 'ขึ้นทะเบียนเรียบร้อย · แจกจ่ายฉบับควบคุมแล้ว' }
+        ]
+      }),
+
+      /* ── ⑰–㉑ อีกชุดหนึ่ง เพื่อให้ทุกสถานะมีตัวอย่างอย่างน้อย 2 ฉบับ ───── */
+      mk({
+        id: 'DAR017', docNo: 'RVP-QP-016', type: 'qp', purpose: 'new',
+        title: 'ขั้นตอนการควบคุมผลิตภัณฑ์ที่ไม่เป็นไปตามข้อกำหนด', titleEn: 'Control of Nonconforming Output Procedure',
+        revision: 0, status: STATUS.DRAFT, createdDay: 0, relatedDept: 'ฝ่ายผลิต',
+        description: 'กำหนดวิธีชี้บ่ง แยกเก็บ ตัดสินใจ และบันทึกผลิตภัณฑ์ที่ไม่เป็นไปตามข้อกำหนด ตามข้อ 8.7',
+        files: [{ name: 'DAR-RVP-QP-016.pdf', size: 238100, kind: 'dar' }],
+        stakeholders: [sh('SQD'), sh('QC'), sh('PROD')],
+        history: [{ day: 0, actor: 'A', action: 'create' }]
+      }),
+      mk({
+        id: 'DAR018', docNo: 'RVP-FM-072', type: 'form', purpose: 'edit',
+        title: 'แบบฟอร์มรายงานผลการตรวจติดตามภายใน', titleEn: 'Internal Audit Report Form',
+        revision: 1, status: STATUS.RETURNED, createdDay: 0, sentDay: 0, relatedDept: 'ฝ่ายผลิต',
+        lastRemark: 'ยังไม่ได้แนบ Checklist ที่ใช้ตรวจจริง และช่องสรุปผลควรแยกข้อบกพร่องหลัก/รอง ตามข้อ 9.2.2',
+        description: 'ปรับแบบฟอร์มรายงานผลการตรวจติดตามภายในให้บันทึกข้อบกพร่องและกำหนดวันปิดได้ในฉบับเดียว',
+        files: [{ name: 'DAR-RVP-FM-072.pdf', size: 201400, kind: 'dar' }],
+        stakeholders: [sh('SQD'), sh('QC')],
+        history: [
+          { day: 0, actor: 'A', action: 'create' },
+          { day: 0, actor: 'A', action: 'send' },
+          { day: 0, actor: 'B', action: 'return', note: 'ยังไม่ได้แนบ Checklist ที่ใช้ตรวจจริง และช่องสรุปผลควรแยกข้อบกพร่องหลัก/รอง ตามข้อ 9.2.2' }
+        ]
+      }),
+      mk({
+        id: 'DAR019', docNo: 'RVP-WI-027', type: 'wi', purpose: 'edit',
+        title: 'วิธีปฏิบัติงานควบคุมสภาพแวดล้อมในการทำงาน', titleEn: 'Work Environment Control Work Instruction',
+        revision: 2, status: STATUS.SENT_TO_QC, createdDay: 0, sentDay: 0, approvedDay: 0, closedDay: 0, relatedDept: 'ฝ่ายผลิต',
+        description: 'เพิ่มเกณฑ์อุณหภูมิ ความชื้น และความสะอาดของพื้นที่ปฏิบัติงาน พร้อมรอบการตรวจ ตามข้อ 7.1.4',
+        files: [{ name: 'DAR-RVP-WI-027.pdf', size: 228700, kind: 'dar' }],
+        stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('PROD', true, 0), sh('HR', true, 0)],
+        signatures: { approver: SIG('B'), qcStaff: SIG('QC') },
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
@@ -250,13 +483,14 @@
         ]
       }),
       mk({
-        id: 'DAR006', docNo: 'RVP-ED-003', type: 'esd', purpose: 'new',
-        title: 'เอกสารสนับสนุนภายนอก (มาตรฐานผู้ผลิต)', titleEn: 'External Supporting Document (Vendor Standard)',
-        revision: 0, status: STATUS.EXPIRED_RETURNED, createdDay: 0, sentDay: 0, approvedDay: 0,
+        id: 'DAR020', docNo: 'RVP-SD-045', type: 'sd', purpose: 'new',
+        title: 'ทะเบียนกฎหมายและข้อกำหนดที่เกี่ยวข้อง', titleEn: 'Register of Legal & Other Requirements',
+        revision: 0, status: STATUS.EXPIRED_RETURNED, createdDay: 0, sentDay: 0, approvedDay: 0, relatedDept: 'ฝ่ายบุคคล',
         lastRemark: 'ผู้มีส่วนเกี่ยวข้องลงนามไม่ครบภายใน 14 วัน ระบบส่งกลับอัตโนมัติ',
-        description: 'ขึ้นทะเบียนคู่มือผู้ผลิตอุปกรณ์อาณัติสัญญาณเป็นเอกสารสนับสนุนภายนอก',
-        files: [{ name: 'DAR-RVP-ED-003.pdf', size: 205000, kind: 'dar' }],
-        stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('PROD'), sh('HR'), sh('IT')],
+        description: 'รวบรวมกฎหมายและข้อกำหนดที่องค์กรต้องปฏิบัติตาม พร้อมผู้รับผิดชอบและรอบทบทวน ตามข้อ 4.2',
+        files: [{ name: 'DAR-RVP-SD-045.pdf', size: 212900, kind: 'dar' }],
+        stakeholders: [sh('SQD', true, 0), sh('HR', true, 0), sh('QC'), sh('FIN'), sh('IT')],
+        signatures: { approver: SIG('B') },
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
@@ -265,93 +499,54 @@
         ]
       }),
       mk({
-        id: 'DAR007', docNo: 'RVP-QP-005', type: 'qp', purpose: 'edit',
-        title: 'ขั้นตอนการควบคุมเอกสารคุณภาพ', titleEn: 'Quality Document Control Procedure',
-        revision: 4, status: STATUS.PENDING_APPROVAL, createdDay: 0, sentDay: 0,
-        description: 'ปรับขั้นตอนการควบคุมเอกสารให้รองรับระบบ DAR อิเล็กทรอนิกส์',
-        files: [
-          { name: 'DAR-RVP-QP-005.pdf', size: 259000, kind: 'dar' },
-          { name: 'QP-005-r4-draft.docx', size: 141000, kind: 'change' }
-        ],
-        stakeholders: [sh('SQD'), sh('QC'), sh('IT')],
-        history: [{ day: 0, actor: 'A', action: 'create' }, { day: 0, actor: 'A', action: 'send' }]
-      }),
-      mk({
-        id: 'DAR008', docNo: 'RVP-FM-041', type: 'form', purpose: 'new',
-        title: 'แบบฟอร์มขอเปลี่ยนแปลงเอกสาร', titleEn: 'Document Change Request Form',
-        revision: 0, status: STATUS.PENDING_APPROVAL, createdDay: 0, sentDay: 0,
-        description: 'แบบฟอร์มมาตรฐานสำหรับการยื่นขอเปลี่ยนแปลงเอกสารในระบบคุณภาพ',
-        files: [{ name: 'DAR-RVP-FM-041.pdf', size: 198700, kind: 'dar' }],
-        stakeholders: [sh('SQD'), sh('QC')],
-        history: [{ day: 0, actor: 'A', action: 'create' }, { day: 0, actor: 'A', action: 'send' }]
-      }),
-      mk({
-        id: 'DAR009', docNo: 'RVP-SD-012', type: 'sd', purpose: 'cancel',
-        title: 'เอกสารสนับสนุนภายใน (ยกเลิกการใช้งาน)', titleEn: 'Internal Supporting Document (Withdrawal)',
-        revision: 2, status: STATUS.PENDING_SIGN, createdDay: 0, sentDay: 0, approvedDay: 0,
-        description: 'ยกเลิกการใช้งานเอกสารสนับสนุนฉบับเดิมซึ่งถูกแทนที่ด้วย SD-014',
-        files: [{ name: 'DAR-RVP-SD-012.pdf', size: 187300, kind: 'dar' }],
-        stakeholders: [sh('SQD'), sh('QC'), sh('FIN', true, 0), sh('HR')],
-        signatures: { approver: { by: 'B', day: 0, label: 'ลายเซ็นอิเล็กทรอนิกส์' } },
+        id: 'DAR021', docNo: 'RVP-ED-018', type: 'esd', purpose: 'new',
+        title: 'คู่มือเครื่องจักรจากผู้ผลิต (ฉบับแปลไทย)', titleEn: 'Vendor Machine Manual (Thai Translation)',
+        revision: 0, status: STATUS.REJECTED, createdDay: 0, sentDay: 0, closedDay: 0, relatedDept: 'ฝ่ายผลิต',
+        lastRemark: 'ฉบับแปลยังไม่ผ่านการทวนสอบกับต้นฉบับ ให้ขึ้นทะเบียนต้นฉบับก่อน แล้วค่อยเสนอฉบับแปลเป็นเอกสารแนบ',
+        description: 'ขอขึ้นทะเบียนคู่มือเครื่องจักรฉบับแปลไทยเป็นเอกสารสนับสนุนภายนอก ตามข้อ 7.5.3',
+        files: [{ name: 'DAR-RVP-ED-018.pdf', size: 244300, kind: 'dar' }],
+        stakeholders: [sh('SQD'), sh('QC'), sh('PROD')],
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'approve' }
-        ]
-      }),
-      mk({
-        id: 'DAR010', docNo: 'RVP-WI-030', type: 'wi', purpose: 'new',
-        title: 'วิธีปฏิบัติงานตรวจสอบระบบจ่ายไฟ', titleEn: 'Power Supply Inspection Work Instruction',
-        revision: 0, status: STATUS.PENDING_SIGN, createdDay: 0, sentDay: 0, approvedDay: 0,
-        description: 'ขั้นตอนการตรวจสอบระบบจ่ายไฟฟ้ารางที่สามก่อนเปิดให้บริการประจำวัน',
-        files: [{ name: 'DAR-RVP-WI-030.pdf', size: 241000, kind: 'dar' }],
-        stakeholders: [sh('SQD'), sh('QC'), sh('PROD'), sh('IT')],
-        signatures: { approver: { by: 'B', day: 0, label: 'ลายเซ็นอิเล็กทรอนิกส์' } },
-        history: [
-          { day: 0, actor: 'A', action: 'create' },
-          { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'approve' }
-        ]
-      }),
-      mk({
-        id: 'DAR011', docNo: 'RVP-QM-001', type: 'qm', purpose: 'edit',
-        title: 'คู่มือคุณภาพองค์กร', titleEn: 'Corporate Quality Manual',
-        revision: 6, status: STATUS.REJECTED, createdDay: 0, sentDay: 0, closedDay: 0,
-        lastRemark: 'ขอบเขตการแก้ไขกระทบหลายฝ่าย ให้เปิดคำขอใหม่แยกตามฝ่ายที่เกี่ยวข้อง',
-        description: 'ปรับปรุงคู่มือคุณภาพให้สอดคล้องกับโครงสร้างองค์กรใหม่',
-        files: [{ name: 'DAR-RVP-QM-001.pdf', size: 302400, kind: 'dar' }],
-        stakeholders: [sh('SQD'), sh('QC')],
-        history: [
-          { day: 0, actor: 'A', action: 'create' },
-          { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'reject', note: 'ขอบเขตการแก้ไขกระทบหลายฝ่าย ให้เปิดคำขอใหม่แยกตามฝ่ายที่เกี่ยวข้อง' }
-        ]
-      }),
-      mk({
-        id: 'DAR012', docNo: 'RVP-WI-009', type: 'wi', purpose: 'edit',
-        title: 'วิธีปฏิบัติงานทำความสะอาดขบวนรถ', titleEn: 'Train Cleaning Work Instruction',
-        revision: 5, status: STATUS.REGISTERED, createdDay: 0, sentDay: 0, approvedDay: 0, closedDay: 0,
-        description: 'ปรับรอบการทำความสะอาดขบวนรถให้สอดคล้องกับตารางเดินรถใหม่',
-        files: [{ name: 'DAR-RVP-WI-009.pdf', size: 226000, kind: 'dar' }],
-        stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('PROD', true, 0)],
-        signatures: {
-          approver: { by: 'B', day: 0, label: 'ลายเซ็นอิเล็กทรอนิกส์' },
-          qcStaff:  { by: 'D', day: 0, label: 'ลายเซ็นอิเล็กทรอนิกส์' },
-          qcManager:{ by: 'D', day: 0, label: 'ลายเซ็นอิเล็กทรอนิกส์' }
-        },
-        history: [
-          { day: 0, actor: 'A', action: 'create' },
-          { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'approve' },
-          { day: 0, actor: 'C', action: 'sign' },
-          { day: 0, actor: 'SYSTEM', action: 'toQC' },
-          { day: 0, actor: 'D', action: 'register', note: 'ขึ้นทะเบียนเรียบร้อย · แจกจ่ายฉบับควบคุมแล้ว' }
+          { day: 0, actor: 'B', action: 'reject', note: 'ฉบับแปลยังไม่ผ่านการทวนสอบกับต้นฉบับ ให้ขึ้นทะเบียนต้นฉบับก่อน แล้วค่อยเสนอฉบับแปลเป็นเอกสารแนบ' }
         ]
       })
     ];
 
+    /* รายละเอียดวัตถุประสงค์ (ส่วนที่ 2 ของฟอร์ม) — ให้ทุกคำขอมีข้อมูลครบ ไม่มีช่องว่าง */
+    const PURPOSE_DETAIL = {
+      DAR001: 'แก้ไขข้อ 4.2 เกณฑ์การสุ่มตรวจ และเพิ่มผู้มีอำนาจปล่อยงานกรณีหัวหน้าส่วนไม่อยู่',
+      DAR002: 'จัดทำแบบฟอร์ม NCR ใหม่แทนการบันทึกในสมุดปกแข็ง เพื่อให้สอบกลับและสรุปสถิติได้',
+      DAR003: 'ปรับผังกระบวนการให้ตรงกับโครงสร้างจริงหลังรวมหน่วยงาน และเพิ่มตัวชี้วัดของแต่ละกระบวนการ',
+      DAR004: 'จัดทำขั้นตอนการตรวจติดตามภายในฉบับแรกของบริษัท เพื่อรองรับการตรวจ Surveillance Audit',
+      DAR005: 'เพิ่มช่องวิเคราะห์สาเหตุรากและช่องติดตามประสิทธิผล หลังพบว่าปัญหาเดิมกลับมาซ้ำ',
+      DAR006: 'ขึ้นทะเบียนมาตรฐาน ISO 9001:2015 เป็นเอกสารสนับสนุนภายนอก และควบคุมสำเนาที่แจกจ่าย',
+      DAR007: 'ปรับขั้นตอนให้รองรับการอนุมัติและลงนามผ่านระบบ DAR แทนการเดินเอกสารกระดาษ',
+      DAR008: 'จัดทำทะเบียนกลางของเอกสารควบคุมทั้งหมด เพื่อใช้ตรวจสอบฉบับล่าสุดก่อนนำไปใช้งาน',
+      DAR009: 'ยกเลิกเกณฑ์ประเมินผู้ส่งมอบฉบับเดิม เนื่องจากถูกแทนที่ด้วย FM-063 ตั้งแต่รอบประเมินปีนี้',
+      DAR010: 'จัดทำวิธีปฏิบัติงานสอบเทียบ หลังการตรวจติดตามภายในพบว่าเครื่องมือวัดบางรายการเลยรอบสอบเทียบ',
+      DAR011: 'ปรับขอบเขตและบริบทองค์กรในคู่มือคุณภาพให้ตรงกับโครงสร้างใหม่หลังตั้งฝ่ายปฏิบัติการ',
+      DAR012: 'เพิ่มวาระความเสี่ยง/โอกาส และผลการประเมินผู้ส่งมอบ เข้าในวาระประชุมทบทวนฝ่ายบริหาร',
+      DAR013: 'จัดทำวิธีการชี้บ่งสถานะและหมายเลขล็อต เพื่อให้สอบกลับได้ตลอดสายการผลิต',
+      DAR014: 'ปรับเกณฑ์การให้คะแนนผู้ส่งมอบ และกำหนดเกณฑ์ผ่านขั้นต่ำใหม่เป็น 70 คะแนน',
+      DAR015: 'จัดทำขั้นตอนการจัดการความเสี่ยงและโอกาสประจำปี พร้อมแบบประเมินระดับความเสี่ยง',
+      DAR016: 'ปรับตารางความสามารถให้ครอบคลุมตำแหน่งงานใหม่ และกำหนดหลักสูตรอบรมประจำปี',
+      DAR017: 'จัดทำขั้นตอนควบคุมของเสีย/งานไม่ผ่าน ให้ชัดเจนว่าใครเป็นผู้ตัดสินใจแก้ไข ลดเกรด หรือทำลาย',
+      DAR018: 'ปรับแบบฟอร์มรายงานผลการตรวจติดตามภายในให้บันทึกข้อบกพร่องและวันปิดได้ในฉบับเดียว',
+      DAR019: 'เพิ่มเกณฑ์อุณหภูมิ ความชื้น และรอบการตรวจพื้นที่ปฏิบัติงาน หลังลูกค้าสอบถามเรื่องสภาพจัดเก็บ',
+      DAR020: 'จัดทำทะเบียนกฎหมายที่เกี่ยวข้อง พร้อมผู้รับผิดชอบและรอบทบทวนทุก 6 เดือน',
+      DAR021: 'ขอขึ้นทะเบียนคู่มือเครื่องจักรฉบับแปลไทย เพื่อให้ช่างที่หน้างานใช้อ้างอิงได้โดยตรง'
+    };
+
     /* ทำให้ข้อมูลตัวอย่างดู "มีอายุ" ต่างกัน เพื่อให้เดโมเห็นตัวเลขวันจริง */
-    const ages = { DAR001: 0, DAR002: 2, DAR003: 1, DAR004: 10, DAR005: 9, DAR006: 14, DAR007: 5, DAR008: 12, DAR009: 3, DAR010: 6, DAR011: 4, DAR012: 11 };
+    const ages = {
+      DAR001: 0, DAR002: 2, DAR003: 1, DAR004: 10, DAR005: 9, DAR006: 14, DAR007: 5, DAR008: 12,
+      DAR009: 3, DAR010: 6, DAR011: 4, DAR012: 11, DAR013: 16, DAR014: 21, DAR015: 27, DAR016: 33,
+      DAR017: 0, DAR018: 2, DAR019: 7, DAR020: 15, DAR021: 8
+    };
+    const dayTxt = (n) => 'D' + (n < 0 ? '' : '+') + n;
+
     docs.forEach(d => {
       const age = ages[d.id] || 0;
       d.createdDay = -age;
@@ -360,12 +555,17 @@
       if (d.closedDay !== null) d.closedDay = 0;
       d.history.forEach((h, i) => { h.day = -age + Math.min(i, age); });
       d.stakeholders.forEach(s => { if (s.signed) s.signedDay = -age + 2; });
+
+      /* เติมช่องที่ฟอร์มต้องใช้ให้ครบ — วันที่ยื่น / วันที่มีผลบังคับใช้ / รายละเอียดวัตถุประสงค์ */
+      d.requestDate = dayTxt(d.createdDay);
+      d.effectiveDate = dayTxt(d.createdDay + 30);
+      d.purposeDetail = PURPOSE_DETAIL[d.id] || '';
     });
 
     return {
       version: DB_VERSION,
       day: 0,                 /* วันจำลองปัจจุบัน (0 = วันนี้) */
-      seq: 12,
+      seq: 21,
       docs: docs,
       notifications: seedNotifications(docs)
     };
@@ -395,6 +595,12 @@
     push('qc', 'DAR005', 'n.allSigned', 0);
     push('qc', 'DAR012', 'n.registered', -1);
     push('requester', 'DAR012', 'n.registered', -1);
+    push('qc', 'DAR013', 'n.registered', -6);
+    push('requester', 'DAR014', 'n.registered', -11);
+    push('requester', 'DAR018', 'n.returned', -1);
+    push('qc', 'DAR019', 'n.allSigned', -2);
+    push('requester', 'DAR020', 'n.expired', 0);
+    push('requester', 'DAR021', 'n.rejected', -6);
     return list;
   }
 
@@ -403,13 +609,37 @@
      ══════════════════════════════════════════ */
   let db = null;
 
+  /* ตัวเลขรุ่นข้อมูล — เก็บแยกคีย์เล็ก ๆ เพื่อให้หน้าอื่นเช็คได้ว่ามีอะไรเปลี่ยนไหม
+     โดยไม่ต้องอ่าน/แปลงฐานข้อมูลทั้งก้อน */
+  const REV_KEY = 'rvp_rev';
+  let seenRev = null;
+
+  function rev() {
+    try { return localStorage.getItem(REV_KEY) || ''; } catch (e) { return ''; }
+  }
+
+  function bumpRev() {
+    try { localStorage.setItem(REV_KEY, String(Date.now()) + '.' + Math.random().toString(36).slice(2, 7)); } catch (e) {}
+  }
+
+  /* มีบทบาทอื่นบันทึกข้อมูลใหม่หรือยัง (แท็บอื่น / หน้าต่างอื่น) */
+  function isStale() { return rev() !== seenRev; }
+
+  /* ดึงข้อมูลรุ่นล่าสุดมาใช้ — คืน true ถ้ามีการเปลี่ยนแปลงจริง */
+  function syncIfStale() {
+    if (!isStale()) return false;
+    db = null;
+    load();
+    return true;
+  }
+
   function load() {
     if (db) return db;
     try {
       const raw = localStorage.getItem(DB_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (parsed && parsed.version === DB_VERSION) { db = parsed; return db; }
+        if (parsed && parsed.version === DB_VERSION) { db = parsed; seenRev = rev(); return db; }
       }
     } catch (e) { /* ข้อมูลเสีย → seed ใหม่ */ }
     db = seed();
@@ -430,8 +660,18 @@
         localStorage.setItem(DB_KEY, JSON.stringify(db, (k, v) => (k.charAt(0) === '_' ? undefined : v)));
       } catch (e2) {}
     }
+    bumpRev();
+    seenRev = rev();
     document.dispatchEvent(new CustomEvent('storechange'));
   }
+
+  /* แท็บอื่นบันทึกข้อมูล → ทิ้งของเก่าในหน่วยความจำ แล้วบอกหน้าให้วาดใหม่ */
+  window.addEventListener('storage', function (e) {
+    if (e.key !== DB_KEY && e.key !== REV_KEY) return;
+    db = null;
+    seenRev = rev();
+    document.dispatchEvent(new CustomEvent('storechange'));
+  });
 
   function reset() {
     db = seed();
@@ -512,9 +752,11 @@
         STATUS.PENDING_SIGN, STATUS.SENT_TO_QC, STATUS.REGISTERED].indexOf(d.status) !== -1);
     }
     if (role === 'stakeholder') {
+      /* ผู้มีส่วนเกี่ยวข้องเห็นทุกฉบับที่ผู้อนุมัติส่งมาให้ลงนาม
+         (ช่องที่ตรงกับตัวเอง/แผนกของตัวเองก่อน ถ้าไม่มีจึงรับช่องที่ยังไม่มีใครเซ็น) */
       return list.filter(d =>
         [STATUS.PENDING_SIGN, STATUS.SENT_TO_QC, STATUS.REGISTERED, STATUS.EXPIRED_RETURNED].indexOf(d.status) !== -1 &&
-        (d.stakeholders || []).some(s => s.userId === (userId || 'C') || s.id === 'SQD')
+        !!slotForUser(d, userId)
       );
     }
     if (role === 'qc') {
@@ -525,11 +767,23 @@
     return list;
   }
 
-  /* หา stakeholder record ของผู้ใช้คนนี้ในเอกสาร */
+  /* หาช่องลงนามของผู้ใช้คนนี้ในเอกสาร
+     ① ช่องที่ผูกกับบัญชีของเขาโดยตรง
+     ② ช่องที่เป็นแผนกของเขา
+     ③ ช่องที่ยังไม่มีใครลงนาม — ผู้ร้องขออาจเลือกเฉพาะชื่อแผนก
+        ถ้าไม่มีข้อนี้ เอกสารที่ผู้อนุมัติส่งมาจะไม่ขึ้นให้ลงนามเลย */
+  function slotForUser(doc, userId) {
+    const u = USERS.find(x => x.id === (userId || 'C')) || { id: userId || 'C', dept: '' };
+    const list = doc && doc.stakeholders ? doc.stakeholders : [];
+    return list.find(s => s.userId === u.id) ||
+           list.find(s => s.id === u.dept) ||
+           list.find(s => !s.signed) ||
+           list[0] || null;
+  }
+
   function mySignSlot(doc, user) {
     if (!doc || !user || user.role !== 'stakeholder') return null;
-    return (doc.stakeholders || []).find(s => s.userId === user.id) ||
-           (doc.stakeholders || []).find(s => s.id === user.dept) || null;
+    return slotForUser(doc, user.id);
   }
 
   /* ══════════════════════════════════════════
@@ -630,7 +884,7 @@
       createdDay: d.day, sentDay: null, approvedDay: null, closedDay: null,
       dueDays: 14,
       files: data.files || [],
-      stakeholders: (data.stakeholders || []).map(x => sh(x)),
+      stakeholders: (data.stakeholders || []).map(normSh).filter(Boolean),
       signatures: data.signatures || {},
       lastRemark: '',
       history: []
@@ -653,7 +907,7 @@
     if (data.empId) doc.requesterEmpId = data.empId;
     if (data.requesterName) { doc.requesterName = data.requesterName; doc.requesterNameEn = data.requesterName; }
     if (data.files) doc.files = data.files;
-    if (data.stakeholders) doc.stakeholders = data.stakeholders.map(x => typeof x === 'string' ? sh(x) : x);
+    if (data.stakeholders) doc.stakeholders = data.stakeholders.map(normSh).filter(Boolean);
     if (data.signatures) {
       doc.signatures = Object.assign({}, doc.signatures, data.signatures);
       /* ช่องที่ผู้จัดทำลบลายเซ็นออก ต้องหายไปจากเอกสารด้วย */
@@ -843,13 +1097,13 @@
       const rel = docsForRole('stakeholder', userId);
       const waiting = rel.filter(d => {
         if (d.status !== STATUS.PENDING_SIGN) return false;
-        const s = (d.stakeholders || []).find(x => x.userId === (userId || 'C') || x.id === 'SQD');
+        const s = slotForUser(d, userId);
         return s && !s.signed;
       });
       return {
         waitMe: waiting.length,
         signed: rel.filter(d => {
-          const s = (d.stakeholders || []).find(x => x.userId === (userId || 'C') || x.id === 'SQD');
+          const s = slotForUser(d, userId);
           return s && s.signed;
         }).length,
         near: waiting.filter(d => remainingOf(d) <= 2).length,
@@ -915,8 +1169,9 @@
     today, advanceDay, runExpiryCheck,
     allDocs, getDoc, docsForRole, stats,
     ageOf, remainingOf, signedCount, totalSigners,
+    rev, isStale, syncIfStale,
     docTypeLabel, purposeLabel, docTitle, statusStyle,
-    permissions, mySignSlot,
+    permissions, mySignSlot, slotForUser,
     createDraft, updateDraft, send, approve, returnForEdit, reject, sign, signAs,
     notify, notificationsFor, unreadCount, markAllRead, markRead
   };
