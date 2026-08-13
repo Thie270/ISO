@@ -1,0 +1,8 @@
+services:
+  riverpark:
+    build:
+      context: .
+    container_name: iso-riverpark-web
+    ports:
+      - "5175:80"
+    restart: unless-stopped

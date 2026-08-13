@@ -4,8 +4,8 @@
   "private": true,
   "description": "Riverpark Document Action Request (DAR) — ระบบขอขึ้นทะเบียน/เปลี่ยนแปลงเอกสาร (Mockup)",
   "scripts": {
-    "dev": "serve -l 8080",
-    "start": "serve -l 8080"
+    "dev": "serve -l 5175",
+    "start": "serve -l 5175"
   },
   "devDependencies": {
     "serve": "^14.2.4"
