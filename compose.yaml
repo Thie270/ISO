@@ -7,9 +7,9 @@ services:
       - "5175:80"
     restart: unless-stopped
     networks:
-      - nginx-proxy-manager
+      - vantive-net
 
 networks:
-  nginx-proxy-manager:
+  vantive-net:
     external: true
-    name: ${NPM_NETWORK:-nginx-proxy-manager}
+    name: ${NPM_NETWORK:-vantive-api_vantive-net}
