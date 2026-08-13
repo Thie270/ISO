@@ -9,7 +9,7 @@
 
   const DB_KEY = 'rvp_mock_db';
   const SESSION_KEY = 'rvp_session';
-  const DB_VERSION = 9;
+  const DB_VERSION = 10;
 
   /* เพดานพื้นที่ไฟล์แนบที่ยอมให้เก็บลง localStorage (base64) */
   const FILE_QUOTA = 3.5 * 1024 * 1024;
@@ -29,8 +29,9 @@
       nameEn: 'Mr. A · Somchai Jaidee',
       role: 'requester',
       empId: 'RVP-1041',
-      dept: 'ฝ่ายผลิต',
-      deptEn: 'Production Division',
+      deptId: 'PLAN',
+      dept: 'ส่วนวางแผนการผลิต',
+      deptEn: 'Production Planning Section',
       position: 'ผู้จัดการส่วน',
       positionEn: 'Section Manager',
       color: '#0b4f8c',
@@ -45,6 +46,7 @@
       nameEn: 'Mr. B · Thanakrit Srisuk',
       role: 'owner',
       empId: 'RVP-0532',
+      deptId: 'PROD',
       dept: 'ฝ่ายผลิต',
       deptEn: 'Production Division',
       position: 'ผู้จัดการฝ่ายผลิต',
@@ -61,6 +63,7 @@
       nameEn: 'Mr. C · Prasert Wongthong',
       role: 'approver',
       empId: 'RVP-0207',
+      deptId: 'OPS',
       dept: 'ฝ่ายปฏิบัติการ',
       deptEn: 'Operations Division',
       position: 'ผู้จัดการฝ่าย',
@@ -77,8 +80,9 @@
       nameEn: 'Mr. D · Preecha Sangchan',
       role: 'stakeholder',
       empId: 'RVP-0688',
-      dept: 'SQD',
-      deptEn: 'SQD',
+      deptId: 'SQD',
+      dept: 'แผนกประกันคุณภาพ',
+      deptEn: 'Quality Assurance Department',
       position: 'หัวหน้าแผนก',
       positionEn: 'Department Head',
       color: '#6d28d9',
@@ -93,7 +97,8 @@
       nameEn: 'Mr. E · Wichai Thanakit',
       role: 'qc',
       empId: 'RVP-0115',
-      dept: 'แผนกควบคุมคุณภาพ (QC)',
+      deptId: 'QC',
+      dept: 'แผนกควบคุมคุณภาพ',
       deptEn: 'Quality Control Department',
       position: 'เจ้าหน้าที่ควบคุมคุณภาพ',
       positionEn: 'Quality Control Officer',
@@ -109,7 +114,8 @@
       nameEn: 'Mr. F · Sompong Rungruang',
       role: 'qcManager',
       empId: 'RVP-0098',
-      dept: 'แผนกควบคุมคุณภาพ (QC)',
+      deptId: 'QC',
+      dept: 'แผนกควบคุมคุณภาพ',
       deptEn: 'Quality Control Department',
       position: 'ผู้จัดการแผนกควบคุมคุณภาพ',
       positionEn: 'Quality Control Manager',
@@ -169,15 +175,41 @@
     other:  { th: 'อื่นๆ',                       en: 'Other' }
   };
 
-  /* รายชื่อผู้มีส่วนเกี่ยวข้องที่เลือกได้ (mock) */
-  const STAKEHOLDER_POOL = [
-    { id: 'SQD',  name: 'SQD',          nameEn: 'SQD',                userId: 'D' },
-    { id: 'QC',   name: 'QC',           nameEn: 'QC',                 userId: null },
-    { id: 'PROD', name: 'ฝ่ายผลิต',      nameEn: 'Production',         userId: null },
-    { id: 'HR',   name: 'ฝ่ายบุคคล',     nameEn: 'Human Resources',    userId: null },
-    { id: 'FIN',  name: 'ฝ่ายการเงิน',   nameEn: 'Finance',            userId: null },
-    { id: 'IT',   name: 'ฝ่าย IT',       nameEn: 'IT Division',        userId: null }
+  /* ══════════════════════════════════════════
+     หน่วยงานในองค์กร — แผนก / ส่วน / ฝ่าย
+     ใช้ชุดเดียวกันทั้งช่อง "แผนก/ส่วน/ฝ่าย" ในฟอร์ม
+     และรายชื่อผู้มีส่วนเกี่ยวข้อง
+     ══════════════════════════════════════════ */
+  const ORG_UNITS = [
+    /* ── ฝ่าย ── */
+    { id: 'PROD', level: 'ฝ่าย',  name: 'ฝ่ายผลิต',                    nameEn: 'Production Division',            userId: null },
+    { id: 'OPS',  level: 'ฝ่าย',  name: 'ฝ่ายปฏิบัติการ',               nameEn: 'Operations Division',            userId: null },
+    { id: 'HR',   level: 'ฝ่าย',  name: 'ฝ่ายทรัพยากรบุคคล',            nameEn: 'Human Resources Division',       userId: null },
+    { id: 'FIN',  level: 'ฝ่าย',  name: 'ฝ่ายการเงินและบัญชี',           nameEn: 'Finance & Accounting Division',  userId: null },
+    { id: 'IT',   level: 'ฝ่าย',  name: 'ฝ่ายเทคโนโลยีสารสนเทศ',        nameEn: 'Information Technology Division', userId: null },
+    /* ── ส่วน ── */
+    { id: 'PLAN', level: 'ส่วน',  name: 'ส่วนวางแผนการผลิต',            nameEn: 'Production Planning Section',    userId: null },
+    { id: 'PUR',  level: 'ส่วน',  name: 'ส่วนจัดซื้อ',                  nameEn: 'Purchasing Section',             userId: null },
+    { id: 'WH',   level: 'ส่วน',  name: 'ส่วนคลังสินค้า',                nameEn: 'Warehouse Section',              userId: null },
+    { id: 'ENG',  level: 'ส่วน',  name: 'ส่วนวิศวกรรม',                 nameEn: 'Engineering Section',            userId: null },
+    /* ── แผนก ── */
+    { id: 'SQD',  level: 'แผนก', name: 'แผนกประกันคุณภาพ',             nameEn: 'Quality Assurance Department',   userId: 'D' },
+    { id: 'QC',   level: 'แผนก', name: 'แผนกควบคุมคุณภาพ',             nameEn: 'Quality Control Department',     userId: null },
+    { id: 'MT',   level: 'แผนก', name: 'แผนกซ่อมบำรุง',                nameEn: 'Maintenance Department',         userId: null },
+    { id: 'SHE',  level: 'แผนก', name: 'แผนกความปลอดภัยและสิ่งแวดล้อม', nameEn: 'Safety & Environment Department', userId: null }
   ];
+
+  /* ชื่อหน่วยงานตามภาษาที่เลือก */
+  function unitName(id, lang) {
+    const u = ORG_UNITS.find(x => x.id === id);
+    if (!u) return id;
+    return lang === 'en' ? u.nameEn : u.name;
+  }
+
+  /* รายชื่อผู้มีส่วนเกี่ยวข้องที่เลือกได้ — มาจากหน่วยงานชุดเดียวกัน */
+  const STAKEHOLDER_POOL = ORG_UNITS.map(u => ({
+    id: u.id, name: u.name, nameEn: u.nameEn, userId: u.userId
+  }));
 
   /* ══════════════════════════════════════════
      ข้อมูลตัวอย่างเริ่มต้น
@@ -379,7 +411,7 @@
       mk({
         id: 'DAR007', docNo: 'RVP-QP-002', type: 'qp', purpose: 'edit',
         title: 'ขั้นตอนการควบคุมเอกสารและบันทึกคุณภาพ', titleEn: 'Control of Documented Information Procedure',
-        revision: 4, status: STATUS.PENDING_APPROVAL, createdDay: 0, sentDay: 0, relatedDept: 'ฝ่าย IT',
+        revision: 4, status: STATUS.PENDING_APPROVAL, createdDay: 0, sentDay: 0, relatedDept: 'ฝ่ายเทคโนโลยีสารสนเทศ',
         description: 'ปรับขั้นตอนตามข้อ 7.5 ให้รองรับการขออนุมัติและลงนามอิเล็กทรอนิกส์ผ่านระบบ DAR',
         files: [
           { name: 'DAR-RVP-QP-002.pdf', size: 259000, kind: 'dar' },
@@ -391,7 +423,7 @@
       mk({
         id: 'DAR008', docNo: 'RVP-FM-118', type: 'form', purpose: 'new',
         title: 'แบบฟอร์มทะเบียนรายชื่อเอกสารควบคุม (Master List)', titleEn: 'Master List of Controlled Documents',
-        revision: 0, status: STATUS.PENDING_APPROVAL, createdDay: 0, sentDay: 0, relatedDept: 'ฝ่าย IT',
+        revision: 0, status: STATUS.PENDING_APPROVAL, createdDay: 0, sentDay: 0, relatedDept: 'ฝ่ายเทคโนโลยีสารสนเทศ',
         description: 'แบบฟอร์มทะเบียนกลางสำหรับติดตามเลขที่เอกสาร ฉบับแก้ไข วันที่มีผลบังคับใช้ และจุดแจกจ่าย',
         files: [{ name: 'DAR-RVP-FM-118.pdf', size: 198700, kind: 'dar' }],
         stakeholders: [sh('SQD'), sh('QC')],
@@ -402,7 +434,7 @@
       mk({
         id: 'DAR009', docNo: 'RVP-SD-009', type: 'sd', purpose: 'cancel',
         title: 'เกณฑ์ประเมินผู้ส่งมอบฉบับเดิม (ยกเลิกการใช้งาน)', titleEn: 'Legacy Supplier Evaluation Criteria (Withdrawal)',
-        revision: 2, status: STATUS.PENDING_SIGN, createdDay: 0, sentDay: 0, approvedDay: 0, relatedDept: 'ฝ่ายการเงิน',
+        revision: 2, status: STATUS.PENDING_SIGN, createdDay: 0, sentDay: 0, approvedDay: 0, relatedDept: 'ฝ่ายการเงินและบัญชี',
         description: 'ยกเลิกการใช้งานเกณฑ์ประเมินผู้ส่งมอบฉบับเดิม ซึ่งถูกแทนที่ด้วย FM-063 ตามข้อ 8.4.1',
         files: [{ name: 'DAR-RVP-SD-009.pdf', size: 187300, kind: 'dar' }],
         stakeholders: [sh('SQD'), sh('QC'), sh('FIN', true, 0), sh('HR')],
@@ -482,7 +514,7 @@
       mk({
         id: 'DAR014', docNo: 'RVP-FM-063', type: 'form', purpose: 'edit',
         title: 'แบบฟอร์มประเมินผู้ส่งมอบประจำปี', titleEn: 'Annual Supplier Evaluation Form',
-        revision: 2, status: STATUS.REGISTERED, createdDay: 0, sentDay: 0, approvedDay: 0, closedDay: 0, relatedDept: 'ฝ่ายการเงิน',
+        revision: 2, status: STATUS.REGISTERED, createdDay: 0, sentDay: 0, approvedDay: 0, closedDay: 0, relatedDept: 'ฝ่ายการเงินและบัญชี',
         description: 'เพิ่มเกณฑ์ด้านคุณภาพ การส่งมอบ และการตอบสนอง สำหรับการประเมินผู้ส่งมอบภายนอกตามข้อ 8.4.1',
         files: [{ name: 'DAR-RVP-FM-063.pdf', size: 204800, kind: 'dar' }],
         stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('FIN', true, 0)],
@@ -516,7 +548,7 @@
       mk({
         id: 'DAR016', docNo: 'RVP-SD-031', type: 'sd', purpose: 'edit',
         title: 'แผนฝึกอบรมและตารางความสามารถบุคลากร', titleEn: 'Training Plan & Competency Matrix',
-        revision: 1, status: STATUS.REGISTERED, createdDay: 0, sentDay: 0, approvedDay: 0, closedDay: 0, relatedDept: 'ฝ่ายบุคคล',
+        revision: 1, status: STATUS.REGISTERED, createdDay: 0, sentDay: 0, approvedDay: 0, closedDay: 0, relatedDept: 'ฝ่ายทรัพยากรบุคคล',
         description: 'ปรับตารางความสามารถและแผนฝึกอบรมประจำปีให้ครอบคลุมตำแหน่งงานที่กระทบคุณภาพ ตามข้อ 7.2',
         files: [{ name: 'DAR-RVP-SD-031.pdf', size: 197600, kind: 'dar' }],
         stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('HR', true, 0)],
@@ -574,7 +606,7 @@
       mk({
         id: 'DAR020', docNo: 'RVP-SD-045', type: 'sd', purpose: 'new',
         title: 'ทะเบียนกฎหมายและข้อกำหนดที่เกี่ยวข้อง', titleEn: 'Register of Legal & Other Requirements',
-        revision: 0, status: STATUS.EXPIRED_RETURNED, createdDay: 0, sentDay: 0, approvedDay: 0, relatedDept: 'ฝ่ายบุคคล',
+        revision: 0, status: STATUS.EXPIRED_RETURNED, createdDay: 0, sentDay: 0, approvedDay: 0, relatedDept: 'ฝ่ายทรัพยากรบุคคล',
         lastRemark: 'ผู้มีส่วนเกี่ยวข้องลงนามไม่ครบภายใน 14 วัน ระบบส่งกลับอัตโนมัติ',
         description: 'รวบรวมกฎหมายและข้อกำหนดที่องค์กรต้องปฏิบัติตาม พร้อมผู้รับผิดชอบและรอบทบทวน ตามข้อ 4.2',
         files: [{ name: 'DAR-RVP-SD-045.pdf', size: 212900, kind: 'dar' }],
@@ -657,6 +689,15 @@
        ══════════════════════════════════════════ */
     const OWNER_QUEUE  = ['DAR002', 'DAR008'];   /* ค้างที่หน่วยงานเจ้าของเอกสาร */
     const QC_MGR_QUEUE = ['DAR005'];             /* ค้างที่ผู้จัดการแผนกควบคุมคุณภาพ */
+
+    /* หน่วยงานที่เกี่ยวข้อง — ให้เห็นครบทั้ง แผนก / ส่วน / ฝ่าย */
+    const RELATED_UNIT = {
+      DAR001: 'ส่วนวางแผนการผลิต',  DAR004: 'แผนกควบคุมคุณภาพ',  DAR005: 'แผนกประกันคุณภาพ',
+      DAR006: 'ส่วนคลังสินค้า',      DAR009: 'ส่วนจัดซื้อ',        DAR012: 'แผนกซ่อมบำรุง',
+      DAR015: 'ส่วนวิศวกรรม',        DAR017: 'แผนกความปลอดภัยและสิ่งแวดล้อม',
+      DAR019: 'แผนกประกันคุณภาพ',    DAR020: 'ส่วนคลังสินค้า'
+    };
+    docs.forEach(d => { if (RELATED_UNIT[d.id]) d.relatedDept = RELATED_UNIT[d.id]; });
 
     docs.forEach(d => {
       if (OWNER_QUEUE.indexOf(d.id) !== -1 && d.status === STATUS.PENDING_APPROVAL) d.status = STATUS.PENDING_OWNER;
@@ -910,18 +951,20 @@
     if (role === 'owner') {
       /* เอกสารที่ผู้ร้องขอส่งมาแล้ว — คิวของตัวเองคือที่รอลงนามส่วนที่ 5 */
       return list.filter(d => [STATUS.PENDING_OWNER, STATUS.PENDING_APPROVAL, STATUS.RETURNED,
-        STATUS.REJECTED, STATUS.PENDING_SIGN, STATUS.SENT_TO_QC, STATUS.REGISTERED,
-        STATUS.EXPIRED_RETURNED].indexOf(d.status) !== -1);
+        STATUS.REJECTED, STATUS.PENDING_SIGN, STATUS.SENT_TO_QC, STATUS.PENDING_QC_MANAGER,
+        STATUS.REGISTERED, STATUS.EXPIRED_RETURNED].indexOf(d.status) !== -1);
     }
     if (role === 'approver') {
       return list.filter(d => [STATUS.PENDING_APPROVAL, STATUS.RETURNED, STATUS.REJECTED,
-        STATUS.PENDING_SIGN, STATUS.SENT_TO_QC, STATUS.REGISTERED].indexOf(d.status) !== -1);
+        STATUS.PENDING_SIGN, STATUS.SENT_TO_QC, STATUS.PENDING_QC_MANAGER,
+        STATUS.REGISTERED].indexOf(d.status) !== -1);
     }
     if (role === 'stakeholder') {
       /* ผู้มีส่วนเกี่ยวข้องเห็นทุกฉบับที่ผู้อนุมัติส่งมาให้ลงนาม
          (ช่องที่ตรงกับตัวเอง/แผนกของตัวเองก่อน ถ้าไม่มีจึงรับช่องที่ยังไม่มีใครเซ็น) */
       return list.filter(d =>
-        [STATUS.PENDING_SIGN, STATUS.SENT_TO_QC, STATUS.REGISTERED, STATUS.EXPIRED_RETURNED].indexOf(d.status) !== -1 &&
+        [STATUS.PENDING_SIGN, STATUS.SENT_TO_QC, STATUS.PENDING_QC_MANAGER,
+         STATUS.REGISTERED, STATUS.EXPIRED_RETURNED].indexOf(d.status) !== -1 &&
         !!slotForUser(d, userId)
       );
     }
@@ -949,7 +992,7 @@
     const u = USERS.find(x => x.id === (userId || 'D')) || { id: userId || 'D', dept: '' };
     const list = doc && doc.stakeholders ? doc.stakeholders : [];
     return list.find(s => s.userId === u.id) ||
-           list.find(s => s.id === u.dept) ||
+           list.find(s => s.id === u.deptId || s.name === u.dept) ||
            list.find(s => !s.signed) ||
            list[0] || null;
   }
@@ -1286,79 +1329,72 @@
      สรุปตัวเลขสำหรับการ์ด Dashboard
      ══════════════════════════════════════════ */
   function stats(role, userId) {
-    const list = load().docs;
-    const mine = list.filter(d => d.requesterId === (userId || 'A'));
-    const byStatus = (arr, s) => arr.filter(d => d.status === s).length;
+    /* นับจากรายการเดียวกับที่ตารางของบทบาทนั้นแสดง การ์ดกับแท็บจะได้ตรงกันเสมอ */
+    const list = docsForRole(role, userId);
+    const n = (arr) => list.filter(d => arr.indexOf(d.status) !== -1).length;
+    const S = STATUS;
 
     if (role === 'requester') {
       return {
-        draft: byStatus(mine, STATUS.DRAFT),
-        pending: byStatus(mine, STATUS.PENDING_OWNER) + byStatus(mine, STATUS.PENDING_APPROVAL),
-        returned: byStatus(mine, STATUS.RETURNED) + byStatus(mine, STATUS.REJECTED),
-        signing: byStatus(mine, STATUS.PENDING_SIGN),
-        qc: byStatus(mine, STATUS.SENT_TO_QC) + byStatus(mine, STATUS.PENDING_QC_MANAGER) + byStatus(mine, STATUS.REGISTERED)
+        draft:    n([S.DRAFT]),
+        pending:  n([S.PENDING_OWNER, S.PENDING_APPROVAL]),
+        returned: n([S.RETURNED, S.REJECTED, S.EXPIRED_RETURNED]),
+        signing:  n([S.PENDING_SIGN]),
+        qc:       n([S.SENT_TO_QC, S.PENDING_QC_MANAGER, S.REGISTERED])
       };
     }
     if (role === 'owner') {
       return {
-        queue: byStatus(list, STATUS.PENDING_OWNER),
-        signed: list.filter(d => [STATUS.PENDING_APPROVAL, STATUS.PENDING_SIGN,
-          STATUS.SENT_TO_QC, STATUS.REGISTERED].indexOf(d.status) !== -1).length,
-        returned: byStatus(list, STATUS.RETURNED) + byStatus(list, STATUS.REJECTED),
-        near: list.filter(d => d.status === STATUS.PENDING_OWNER && remainingOf(d) <= 2).length
+        queue:    n([S.PENDING_OWNER]),
+        signed:   n([S.PENDING_APPROVAL, S.PENDING_SIGN, S.SENT_TO_QC, S.PENDING_QC_MANAGER, S.REGISTERED]),
+        returned: n([S.RETURNED, S.REJECTED]),
+        near:     list.filter(d => d.status === S.PENDING_OWNER && remainingOf(d) <= 2).length
       };
     }
     if (role === 'approver') {
       return {
-        queue: byStatus(list, STATUS.PENDING_APPROVAL),
-        approved: list.filter(d => [STATUS.PENDING_SIGN, STATUS.SENT_TO_QC, STATUS.REGISTERED].indexOf(d.status) !== -1).length,
-        returned: byStatus(list, STATUS.RETURNED) + byStatus(list, STATUS.REJECTED),
-        near: list.filter(d => d.status === STATUS.PENDING_APPROVAL && remainingOf(d) <= 2).length
+        queue:    n([S.PENDING_APPROVAL]),
+        approved: n([S.PENDING_SIGN, S.SENT_TO_QC, S.PENDING_QC_MANAGER, S.REGISTERED]),
+        returned: n([S.RETURNED, S.REJECTED]),
+        near:     list.filter(d => d.status === S.PENDING_APPROVAL && remainingOf(d) <= 2).length
       };
     }
     if (role === 'qc') {
       return {
-        queue: byStatus(list, STATUS.SENT_TO_QC),
-        registered: byStatus(list, STATUS.REGISTERED),
-        incoming: byStatus(list, STATUS.PENDING_SIGN),
-        returned: byStatus(list, STATUS.RETURNED)
+        queue:      n([S.SENT_TO_QC]),
+        registered: n([S.REGISTERED]),
+        incoming:   n([S.PENDING_QC_MANAGER]),
+        returned:   n([S.RETURNED])
       };
     }
     if (role === 'qcManager') {
       return {
-        queue: byStatus(list, STATUS.PENDING_QC_MANAGER),
-        registered: byStatus(list, STATUS.REGISTERED),
-        incoming: byStatus(list, STATUS.SENT_TO_QC),
-        returned: byStatus(list, STATUS.RETURNED)
+        queue:      n([S.PENDING_QC_MANAGER]),
+        registered: n([S.REGISTERED]),
+        incoming:   n([S.SENT_TO_QC]),
+        returned:   n([S.RETURNED])
       };
     }
     if (role === 'stakeholder') {
-      const rel = docsForRole('stakeholder', userId);
-      const waiting = rel.filter(d => {
-        if (d.status !== STATUS.PENDING_SIGN) return false;
-        const s = slotForUser(d, userId);
-        return s && !s.signed;
-      });
+      const slotOf = (d) => slotForUser(d, userId);
       return {
-        waitMe: waiting.length,
-        signed: rel.filter(d => {
-          const s = slotForUser(d, userId);
-          return s && s.signed;
-        }).length,
-        near: waiting.filter(d => remainingOf(d) <= 2).length,
-        returned: rel.filter(d => d.status === STATUS.EXPIRED_RETURNED).length
+        waitMe:   list.filter(d => d.status === S.PENDING_SIGN && slotOf(d) && !slotOf(d).signed).length,
+        signed:   list.filter(d => { const x = slotOf(d); return x && x.signed; }).length,
+        near:     list.filter(d => d.status === S.PENDING_SIGN && remainingOf(d) <= 2).length,
+        returned: n([S.EXPIRED_RETURNED])
       };
     }
-    /* ภาพรวมทั้งระบบ */
+
+    /* ภาพรวมทั้งระบบ (หน้าเอกสารขอขึ้นทะเบียน) */
     return {
-      total: list.length,
-      draft: byStatus(list, STATUS.DRAFT),
-      pending: byStatus(list, STATUS.PENDING_OWNER) + byStatus(list, STATUS.PENDING_APPROVAL),
-      signing: byStatus(list, STATUS.PENDING_SIGN),
-      returned: byStatus(list, STATUS.RETURNED) + byStatus(list, STATUS.EXPIRED_RETURNED),
-      rejected: byStatus(list, STATUS.REJECTED),
-      qc: byStatus(list, STATUS.SENT_TO_QC) + byStatus(list, STATUS.PENDING_QC_MANAGER),
-      registered: byStatus(list, STATUS.REGISTERED)
+      total:      list.length,
+      draft:      n([S.DRAFT]),
+      pending:    n([S.PENDING_OWNER, S.PENDING_APPROVAL]),
+      signing:    n([S.PENDING_SIGN]),
+      returned:   n([S.RETURNED, S.EXPIRED_RETURNED]),
+      rejected:   n([S.REJECTED]),
+      qc:         n([S.SENT_TO_QC, S.PENDING_QC_MANAGER]),
+      registered: n([S.REGISTERED])
     };
   }
 
@@ -1401,7 +1437,7 @@
      export
      ══════════════════════════════════════════ */
   global.Store = {
-    STATUS, STATUS_STYLE, DOC_TYPES, PURPOSES, USERS, STAKEHOLDER_POOL, FILE_QUOTA,
+    STATUS, STATUS_STYLE, DOC_TYPES, PURPOSES, USERS, STAKEHOLDER_POOL, ORG_UNITS, unitName, FILE_QUOTA,
     load, save, reset,
     fileURL, fileKind, usedBytes, quotaLeft, register,
     login, loginAs, logout, currentUser,

@@ -167,15 +167,7 @@
             <div class="grid grid-cols-2 gap-4">
               <div class="flex flex-col gap-1.5">
                 <label for="f-dept" class="f-label" data-i18n="cr.dept"></label>
-                <div class="relative">
-                  <select id="f-dept" class="f-input appearance-none cursor-pointer">
-                    <option value="" disabled selected data-i18n="common.fill"></option>
-                    <option>ฝ่ายผลิต</option><option>ฝ่ายบุคคล</option><option>ฝ่ายการเงิน</option><option>ฝ่าย IT</option>
-                  </select>
-                  <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                  </span>
-                </div>
+                <input id="f-dept" type="text" list="org-units" autocomplete="off" data-i18n-ph="common.fill" class="f-input" />
               </div>
               <div class="flex flex-col gap-1.5">
                 <label for="f-date" class="f-label" data-i18n="cr.date"></label>
@@ -268,15 +260,7 @@
               </div>
               <div class="flex flex-col gap-1.5 flex-1">
                 <label for="f-relateddept" class="f-label" data-i18n="cr.relatedDept"></label>
-                <div class="relative">
-                  <select id="f-relateddept" class="f-input appearance-none cursor-pointer">
-                    <option value="" disabled selected data-i18n="common.fill"></option>
-                    <option>ฝ่ายผลิต</option><option>ฝ่ายบุคคล</option><option>ฝ่ายการเงิน</option><option>ฝ่าย IT</option>
-                  </select>
-                  <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                  </span>
-                </div>
+                <input id="f-relateddept" type="text" list="org-units" autocomplete="off" data-i18n-ph="common.fill" class="f-input" />
               </div>
             </div>
 
@@ -341,14 +325,11 @@
             <div class="flex flex-col gap-2 w-full">
               <label for="related-select" class="f-label" data-i18n="cr.pickRelated"></label>
               <div id="related-chips" class="flex flex-wrap gap-2"></div>
-              <div class="relative w-full">
-                <select id="related-select" class="f-input appearance-none cursor-pointer">
-                  <option value="" disabled selected data-i18n="common.selectData"></option>
-                </select>
-                <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </span>
+              <div class="flex items-center gap-2 w-full">
+                <input id="related-select" type="text" list="related-units" autocomplete="off" data-i18n-ph="common.selectData" class="f-input flex-1" />
+                <button id="related-add" type="button" class="flex-shrink-0 rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#2563eb;" data-i18n="cr.addRelated"></button>
               </div>
+              <datalist id="related-units"></datalist>
             </div>
 
             <div id="related-sign-section" class="hidden flex flex-col gap-4 w-full">
@@ -389,6 +370,9 @@
           </div>
 
         </div><!-- /② -->
+
+        <!-- รายการหน่วยงานสำหรับช่อง "แผนก / ส่วน / ฝ่าย" (พิมพ์เองได้ ไม่บังคับเลือกจากรายการ) -->
+        <datalist id="org-units"></datalist>
         </div><!-- /zone -->
 
         <!-- Step nav -->
@@ -998,6 +982,18 @@
       addFiles(e.dataTransfer.files);
     });
 
+    /* รายการหน่วยงาน (แผนก / ส่วน / ฝ่าย) — ผู้ใช้เลือกหรือพิมพ์เองก็ได้ */
+    function paintOrgUnits() {
+      const dl = document.getElementById('org-units');
+      if (!dl) return;
+      const lang = I18N.getLang();
+      dl.innerHTML = Store.ORG_UNITS.map(function (u) {
+        return '<option value="' + esc(lang === 'en' ? u.nameEn : u.name) + '"></option>';
+      }).join('');
+    }
+    paintOrgUnits();
+    document.addEventListener('langchange', paintOrgUnits);
+
     /* ─────────── ผู้มีส่วนเกี่ยวข้อง (ส่วนที่ 5.2) ─────────── */
     const sel = document.getElementById('related-select');
     const chipsEl = document.getElementById('related-chips');
@@ -1006,12 +1002,32 @@
     const signBoxes = document.getElementById('related-sign-boxes');
     let related = editing ? (editing.stakeholders || []).map(s => s.id) : [];
 
+    /* รายการหน่วยงานให้เลือก — แต่พิมพ์ชื่อหน่วยงานอื่นเองก็ได้ */
     function paintOptions() {
       const lang = I18N.getLang();
-      sel.innerHTML = '<option value="" disabled selected>' + esc(T('common.selectData')) + '</option>' +
-        Store.STAKEHOLDER_POOL.map(s =>
-          '<option value="' + esc(s.id) + '"' + (related.indexOf(s.id) !== -1 ? ' disabled' : '') + '>' +
-          esc(lang === 'en' ? s.nameEn : s.name) + '</option>').join('');
+      const dl = document.getElementById('related-units');
+      if (!dl) return;
+      dl.innerHTML = Store.STAKEHOLDER_POOL
+        .filter(s => related.indexOf(s.id) === -1)
+        .map(s => '<option value="' + esc(lang === 'en' ? s.nameEn : s.name) + '"></option>').join('');
+    }
+
+    /* แปลงชื่อที่พิมพ์ → รหัสหน่วยงาน (ถ้าไม่มีในรายการ ใช้ชื่อที่พิมพ์เป็นรหัสเลย) */
+    function toUnitId(text) {
+      const v = String(text || '').trim();
+      if (!v) return '';
+      const hit = Store.STAKEHOLDER_POOL.filter(s =>
+        s.id.toLowerCase() === v.toLowerCase() ||
+        s.name === v || s.nameEn === v)[0];
+      return hit ? hit.id : v;
+    }
+
+    function addRelated() {
+      const id = toUnitId(sel.value);
+      if (!id) return;
+      if (related.indexOf(id) === -1) related.push(id);
+      sel.value = '';
+      paintRelated();
     }
 
     function poolName(id) {
@@ -1088,11 +1104,12 @@
       paintOptions();
     }
 
+    document.getElementById('related-add').addEventListener('click', addRelated);
+    sel.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); addRelated(); } });
+    /* เลือกจากรายการแนะนำ = เพิ่มทันที */
     sel.addEventListener('change', () => {
-      const v = sel.value;
-      if (v && related.indexOf(v) === -1) related.push(v);
-      sel.value = '';
-      paintRelated();
+      const v = sel.value.trim();
+      if (v && Store.STAKEHOLDER_POOL.some(s => s.name === v || s.nameEn === v)) addRelated();
     });
 
     /* ─────────── Sign modal ─────────── */

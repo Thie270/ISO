@@ -522,13 +522,22 @@
       }
 
       /* info */
+      /* แสดงข้อมูลที่ผู้ใช้กรอกมาให้ครบทุกช่อง */
       const rows = [
         [T('th.requester'), lang === 'en' ? doc.requesterNameEn : doc.requesterName],
+        [T('cr.empId'), doc.requesterEmpId],
         [T('cr.dept'), doc.requesterDept],
+        [T('cr.date'), doc.requestDate],
         [T('th.type'), Store.docTypeLabel(doc.type, lang)],
         [T('cr.s2'), Store.purposeLabel(doc.purpose, lang)],
-        [T('holder.' + doc.status).length ? T('th.currentStep') : '', T('holder.' + doc.status)]
-      ].filter(r => r[0]);
+        [T('cr.detail'), doc.purposeDetail],
+        [T('cr.docNo'), doc.docNo],
+        [T('cr.revision'), String(doc.revision)],
+        [T('cr.relatedDept'), doc.relatedDept],
+        [T('cr.effective'), doc.effectiveDate],
+        [T('th.files'), String((doc.files || []).length)],
+        [T('th.currentStep'), T('holder.' + doc.status)]
+      ].filter(r => r[0] && r[1]);
 
       h += '<div class="px-6 pt-6">' +
         '<p class="text-[11px] font-semibold uppercase tracking-widest text-slate-300 mb-3">' + esc(T('dv.info')) + '</p>' +
@@ -539,6 +548,14 @@
               '<dd class="flex-1 text-[12.5px] font-medium text-slate-700 text-right">' + esc(r[1]) + '</dd>' +
             '</div>').join('') +
         '</dl></div>';
+
+      /* รายละเอียดที่ผู้ใช้กรอกในส่วนที่ 4 */
+      if (doc.description) {
+        h += '<div class="px-6 pt-6">' +
+          '<p class="text-[11px] font-semibold uppercase tracking-widest text-slate-300 mb-2">' + esc(T('cr.desc')) + '</p>' +
+          '<p class="rounded-xl bg-slate-50 px-3.5 py-3 text-[12.5px] text-slate-600 leading-relaxed whitespace-pre-wrap">' +
+            esc(doc.description) + '</p></div>';
+      }
 
       /* stakeholders */
       if (total) {
