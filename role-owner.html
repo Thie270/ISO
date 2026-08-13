@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ผู้อนุมัติ — Riverpark Document System</title>
+  <title>หน่วยงานเจ้าของเอกสาร — Riverpark Document System</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -38,7 +38,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
         <span class="nav-text" data-i18n="nav.registry"></span>
       </a>
-      <a href="role-approver.html" class="nav-link active">
+      <a href="role-owner.html" class="nav-link active">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
         <span class="nav-text" data-i18n="nav.myWork"></span>
       </a>
@@ -77,7 +77,7 @@
       <div class="flex items-center gap-2 text-[13px] font-medium">
         <a href="index.html" class="text-slate-400 no-underline hover:text-blue-600 transition-colors" data-i18n="common.dashboard"></a>
         <span class="text-slate-300">/</span>
-        <span class="text-slate-900 font-semibold" data-i18n="ap.title"></span>
+        <span class="text-slate-900 font-semibold" data-i18n="ow.title"></span>
       </div>
       <div class="flex items-center gap-3">
         <span data-role-badge class="hidden lg:inline-flex items-center gap-2 rounded-xl bg-blue-50 px-3 py-2 text-[12.5px] font-semibold text-blue-600"></span>
@@ -100,38 +100,38 @@
       <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <div class="rounded-2xl bg-white p-5 border border-slate-100 shadow-[0_2px_14px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
           <div class="flex items-start justify-between gap-3">
-            <p class="text-[15px] font-semibold text-slate-500" data-i18n="ap.c1"></p>
+            <p class="text-[15px] font-semibold text-slate-500" data-i18n="ow.c1"></p>
             <span class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg></span>
           </div>
           <p id="c-queue" class="mt-3 text-[32px] font-bold text-slate-900 leading-none">0</p>
-          <p class="mt-3 text-[12.5px] text-slate-400" data-i18n="ap.c1s"></p>
+          <p class="mt-3 text-[12.5px] text-slate-400" data-i18n="ow.c1s"></p>
         </div>
 
         <div class="rounded-2xl bg-white p-5 border border-slate-100 shadow-[0_2px_14px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
           <div class="flex items-start justify-between gap-3">
-            <p class="text-[15px] font-semibold text-slate-500" data-i18n="ap.c2"></p>
+            <p class="text-[15px] font-semibold text-slate-500" data-i18n="ow.c2"></p>
             <span class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 11 15 16 9"></polyline></svg></span>
           </div>
           <p id="c-approved" class="mt-3 text-[32px] font-bold text-slate-900 leading-none">0</p>
-          <p class="mt-3 text-[12.5px] text-slate-400" data-i18n="ap.c2s"></p>
+          <p class="mt-3 text-[12.5px] text-slate-400" data-i18n="ow.c2s"></p>
         </div>
 
         <div class="rounded-2xl bg-white p-5 border border-slate-100 shadow-[0_2px_14px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
           <div class="flex items-start justify-between gap-3">
-            <p class="text-[15px] font-semibold text-slate-500" data-i18n="ap.c3"></p>
+            <p class="text-[15px] font-semibold text-slate-500" data-i18n="ow.c3"></p>
             <span class="w-9 h-9 rounded-xl bg-red-50 text-red-500 flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg></span>
           </div>
           <p id="c-returned" class="mt-3 text-[32px] font-bold text-slate-900 leading-none">0</p>
-          <p class="mt-3 text-[12.5px] text-slate-400" data-i18n="ap.c3s"></p>
+          <p class="mt-3 text-[12.5px] text-slate-400" data-i18n="ow.c3s"></p>
         </div>
 
         <div class="rounded-2xl bg-white p-5 border border-slate-100 shadow-[0_2px_14px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
           <div class="flex items-start justify-between gap-3">
-            <p class="text-[15px] font-semibold text-slate-500" data-i18n="ap.c4"></p>
+            <p class="text-[15px] font-semibold text-slate-500" data-i18n="ow.c4"></p>
             <span class="w-9 h-9 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span>
           </div>
           <p id="c-near" class="mt-3 text-[32px] font-bold text-slate-900 leading-none">0</p>
-          <p class="mt-3 text-[12.5px] text-slate-400" data-i18n="ap.c4s"></p>
+          <p class="mt-3 text-[12.5px] text-slate-400" data-i18n="ow.c4s"></p>
         </div>
       </div>
 
@@ -140,9 +140,9 @@
 
         <div class="flex flex-col flex-wrap gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
           <div class="inline-flex flex-wrap items-center gap-1 rounded-2xl border border-slate-200 p-1">
-            <button data-filter="PENDING_APPROVAL" class="filter-tab active rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="ap.c1"></button>
-            <button data-filter="PENDING_SIGN,SENT_TO_QC,PENDING_QC_MANAGER,REGISTERED" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="ap.c2"></button>
-            <button data-filter="RETURNED,REJECTED" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="ap.c3"></button>
+            <button data-filter="PENDING_OWNER" class="filter-tab active rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="ow.c1"></button>
+            <button data-filter="PENDING_APPROVAL,PENDING_SIGN,SENT_TO_QC,PENDING_QC_MANAGER,REGISTERED" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="ow.c2"></button>
+            <button data-filter="RETURNED,REJECTED" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="ow.c3"></button>
             <button data-filter="" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="common.all"></button>
           </div>
           <div class="flex flex-wrap items-center gap-3">
@@ -175,7 +175,7 @@
 
         <div class="border-t border-slate-100 px-5 py-3.5 text-[12.5px] text-slate-400 flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 text-amber-400"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-          <span data-i18n="ap.foot"></span>
+          <span data-i18n="ow.foot"></span>
         </div>
 
       </div>
@@ -195,14 +195,14 @@
     const esc = App.esc, T = k => I18N.t(k);
     const user = App.initChrome();
     if (!user) return;
-    if (user.role !== 'approver') { location.replace(user.home); return; }
+    if (user.role !== 'owner') { location.replace(user.home); return; }
 
-    let filter = 'PENDING_APPROVAL', term = '';
+    let filter = 'PENDING_OWNER', term = '';
 
     function paintCards() {
-      const s = Store.stats('approver');
+      const s = Store.stats('owner');
       document.getElementById('c-queue').textContent    = s.queue;
-      document.getElementById('c-approved').textContent = s.approved;
+      document.getElementById('c-approved').textContent = s.signed;
       document.getElementById('c-returned').textContent = s.returned;
       document.getElementById('c-near').textContent     = s.near;
     }
@@ -213,7 +213,7 @@
     function paintRows() {
       const lang = I18N.getLang();
       const allow = filter ? filter.split(',') : null;
-      const list = Store.docsForRole('approver').filter(d => {
+      const list = Store.docsForRole('owner').filter(d => {
         if (allow && allow.indexOf(d.status) === -1) return false;
         if (!term) return true;
         const hay = (d.id + ' ' + d.docNo + ' ' + d.title + ' ' + (d.titleEn || '') + ' ' + d.requesterName).toLowerCase();
@@ -221,9 +221,9 @@
       });
 
       function reviewLink(d) {
-        /* ผู้อนุมัติ "ตรวจสอบ" → เปิดหน้าเอกสารยาวแบบเดียวกับผู้ร้องขอ (create.html) */
-        if (d.status === Store.STATUS.PENDING_APPROVAL) {
-          return '<a href="create.html?id=' + encodeURIComponent(d.id) + '" class="row-btn inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-blue-600 px-4 py-2 text-[13px] font-semibold text-white no-underline shadow-[0_4px_10px_rgba(37,99,235,0.25)] hover:bg-blue-700 transition-colors">' + esc(T('act.review')) + '</a>';
+        /* หน่วยงานเจ้าของเอกสาร "ลงนาม" → เปิดเอกสารยาวแบบเดียวกับผู้ร้องขอ (create.html) */
+        if (d.status === Store.STATUS.PENDING_OWNER) {
+          return '<a href="create.html?id=' + encodeURIComponent(d.id) + '" class="row-btn inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-blue-600 px-4 py-2 text-[13px] font-semibold text-white no-underline shadow-[0_4px_10px_rgba(37,99,235,0.25)] hover:bg-blue-700 transition-colors">' + esc(T('act.sign')) + '</a>';
         }
         return App.docLink(d, T('act.detail'), false);
       }
@@ -233,7 +233,7 @@
       const pageRows = info.rows;
 
       const tb = document.getElementById('rows');
-      if (!list.length) { tb.innerHTML = App.emptyRow(7, T('ap.noQueue')); return; }
+      if (!list.length) { tb.innerHTML = App.emptyRow(7, T('ow.noQueue')); return; }
 
       tb.innerHTML = pageRows.map((d, i) =>
         '<tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">' +

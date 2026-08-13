@@ -238,6 +238,12 @@
       const reqName = lang === 'en' ? doc.requesterNameEn : doc.requesterName;
       const reqUser = Store.USERS.find(u => u.id === doc.requesterId) || Store.USERS[0];
       const stk = doc.stakeholders || [];
+      /* ชื่อผู้ลงนามประจำบทบาท — ใช้เมื่อยังไม่มีชื่อที่กรอกไว้ในลายเซ็น */
+      const byRole = (role) => {
+        const u = Store.USERS.filter(x => x.role === role)[0];
+        return u ? (lang === 'en' ? u.nameEn : u.name) : '';
+      };
+      const ownerName = byRole('owner') || doc.requesterDept;
       const sg = doc.signatures || {};
 
       const p1 =
@@ -311,7 +317,8 @@
           '<div class="sec">' + esc(T('cr.s6')) + '</div>' +
           '<div style="margin-top:10px;display:flex;gap:22px">' +
             signCell(T('th.requester'), sg.requester || { day: doc.createdDay }, reqName) +
-            signCell(T('cr.owner'), sg.owner || { day: doc.createdDay }, doc.requesterDept) +
+            /* ช่องหน่วยงานเจ้าของเอกสาร — ลงนามโดยบทบาท "หน่วยงานเจ้าของเอกสาร" */
+            signCell(T('cr.owner'), sg.owner || null, ownerName) +
           '</div>' +
 
           '<div class="sec">' + esc(T('cr.s7')) + '</div>' +
@@ -326,14 +333,14 @@
 
           '<div class="sec">' + esc(T('cr.s8')) + '</div>' +
           '<div style="margin-top:10px;display:flex;gap:22px">' +
-            signCell(T('cr.approver'), sg.approver || null, lang === 'en' ? Store.USERS[1].nameEn : Store.USERS[1].name) +
+            signCell(T('cr.approver'), sg.approver || null, byRole('approver')) +
             '<div style="flex:1"></div>' +
           '</div>' +
 
           '<div class="sec">' + esc(T('cr.s9')) + '</div>' +
           '<div style="margin-top:10px;display:flex;gap:22px">' +
-            signCell(T('cr.qcStaff'), sg.qcStaff || null, lang === 'en' ? Store.USERS[3].nameEn : Store.USERS[3].name) +
-            signCell(T('cr.qcManager'), sg.qcManager || null, lang === 'en' ? Store.USERS[3].nameEn : Store.USERS[3].name) +
+            signCell(T('cr.qcStaff'), sg.qcStaff || null, byRole('qc')) +
+            signCell(T('cr.qcManager'), sg.qcManager || null, byRole('qcManager')) +
           '</div>' +
 
           '<div style="margin-top:22px;display:flex;justify-content:space-between;font-size:10.5px;color:#94a3b8;border-top:1px solid #e2e8f0;padding-top:7px">' +
@@ -448,19 +455,21 @@
     /* ══════════════ INFO PANEL ══════════════ */
     const ACTION_LABEL = {
       create: { th: 'สร้างเอกสาร', en: 'Created' },
-      send:   { th: 'ส่งให้ผู้อนุมัติตรวจสอบ', en: 'Submitted for review' },
+      send:   { th: 'ส่งให้หน่วยงานเจ้าของเอกสารลงนาม', en: 'Submitted to document owner' },
+      ownerSign: { th: 'หน่วยงานเจ้าของเอกสารลงนาม · ส่งต่อผู้อนุมัติ', en: 'Owner signed · forwarded to approver' },
       approve:{ th: 'อนุมัติ', en: 'Approved · forwarded' },
       return: { th: 'ส่งกลับให้แก้ไข', en: 'Returned for edit' },
       reject: { th: 'ไม่อนุมัติ · ปิดคำขอ', en: 'Rejected · closed' },
       sign:   { th: 'ลงนาม', en: 'Signed' },
       toQC:   { th: 'ลงนามครบ · ส่งแผนก QC', en: 'All signed · sent to QC' },
-      register: { th: 'ขึ้นทะเบียนเอกสาร', en: 'Document registered' },
+      qcStaffSign: { th: 'เจ้าหน้าที่ควบคุมคุณภาพลงนาม · ส่งต่อผู้จัดการแผนก', en: 'QC officer signed · forwarded to manager' },
+      register: { th: 'ผู้จัดการแผนกลงนาม · ขึ้นทะเบียนเอกสาร', en: 'QC manager signed · document registered' },
       expire: { th: 'หมดอายุ · ระบบส่งกลับ', en: 'Expired · auto returned' }
     };
     const ACTION_TONE = {
-      create: 'bg-slate-300', send: 'bg-blue-500', approve: 'bg-emerald-500',
+      create: 'bg-slate-300', send: 'bg-blue-500', ownerSign: 'bg-blue-600', approve: 'bg-emerald-500',
       return: 'bg-red-500', reject: 'bg-rose-600', sign: 'bg-violet-500',
-      toQC: 'bg-emerald-500', register: 'bg-teal-600', expire: 'bg-amber-500'
+      toQC: 'bg-emerald-500', qcStaffSign: 'bg-teal-500', register: 'bg-teal-600', expire: 'bg-amber-500'
     };
 
     function actorName(id) {
@@ -605,15 +614,21 @@
 
       if (p.edit)    btns.push('<a href="create.html?id=' + encodeURIComponent(doc.id) + '" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-orange-500 px-4 py-3 text-[13.5px] font-semibold text-white no-underline shadow-[0_4px_10px_rgba(249,115,22,0.28)] hover:bg-orange-600 transition-colors">' + esc(T('act.edit')) + '</a>');
       if (p.send)    btns.push(B('a-send', T('act.send'), 'background:linear-gradient(90deg,#2563eb 0%,#1d4ed8 100%);box-shadow:0 6px 16px rgba(37,99,235,.28)', 'text-white'));
+      /* หน่วยงานเจ้าของเอกสาร — ลงนามส่วนที่ 5 ต้องทำในหน้าเอกสาร (create.html) เพราะต้องเซ็นจริง */
+      if (p.ownerSign) btns.push('<a href="create.html?id=' + encodeURIComponent(doc.id) + '" class="w-full inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-[13.5px] font-semibold text-white no-underline transition-all" style="background:#16a34a;box-shadow:0 6px 16px rgba(22,163,74,.25)">' + esc(T('act.ownerSign')) + '</a>');
       if (p.approve) btns.push(B('a-approve', T('act.approve'), 'background:#16a34a;box-shadow:0 6px 16px rgba(22,163,74,.25)', 'text-white'));
       if (p.return)  btns.push(B('a-return', T('act.return'), '', 'border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100'));
       if (p.reject)  btns.push(B('a-reject', T('act.reject'), '', 'border border-slate-200 bg-white text-red-500 hover:bg-red-50'));
       if (p.sign)    btns.push(B('a-sign', T('act.sign'), 'background:#6d28d9;box-shadow:0 6px 16px rgba(109,40,217,.25)', 'text-white'));
+      /* เจ้าหน้าที่ควบคุมคุณภาพ — ลงนามส่วนที่ 6 ต้องทำในหน้าเอกสาร (create.html) */
+      if (p.qcSign) btns.push('<a href="create.html?id=' + encodeURIComponent(doc.id) + '" class="w-full inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-[13.5px] font-semibold text-white no-underline transition-all" style="background:#0d9488;box-shadow:0 6px 16px rgba(13,148,136,.25)">' + esc(T('act.qcStaffSign')) + '</a>');
       if (p.register) btns.push(B('a-register', T('act.register'), 'background:#0d9488;box-shadow:0 6px 16px rgba(13,148,136,.25)', 'text-white'));
 
       if (!btns.length) {
         let msg = T('dv.noAccess');
         if (user.role === 'stakeholder' && doc.status === st.PENDING_SIGN) msg = T('dv.waitOther');
+        if (doc.status === st.PENDING_OWNER && user.role !== 'owner') msg = T('ow.waiting');
+        if (doc.status === st.PENDING_QC_MANAGER && user.role !== 'qcManager') msg = T('qm.waiting');
         if ([st.REJECTED, st.REGISTERED].indexOf(doc.status) !== -1) msg = T('dv.closed');
         bar.innerHTML = '<p class="rounded-xl bg-slate-50 px-4 py-3.5 text-center text-[12.5px] text-slate-400 leading-relaxed">' + esc(msg) + '</p>';
         return;

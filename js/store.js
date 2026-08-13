@@ -9,13 +9,15 @@
 
   const DB_KEY = 'rvp_mock_db';
   const SESSION_KEY = 'rvp_session';
-  const DB_VERSION = 6;
+  const DB_VERSION = 9;
 
   /* เพดานพื้นที่ไฟล์แนบที่ยอมให้เก็บลง localStorage (base64) */
   const FILE_QUOTA = 3.5 * 1024 * 1024;
 
   /* ══════════════════════════════════════════
-     ผู้ใช้งานตัวอย่าง 4 บัญชี (4 บทบาท)
+     ผู้ใช้งานตัวอย่าง 6 บัญชี (6 บทบาท ตามลำดับการเดินงาน)
+     A ผู้ร้องขอ → B หน่วยงานเจ้าของเอกสาร → C ผู้อนุมัติ → D ผู้มีส่วนเกี่ยวข้อง
+     → E เจ้าหน้าที่ควบคุมคุณภาพ → F ผู้จัดการแผนกควบคุมคุณภาพ
      ══════════════════════════════════════════ */
   const USERS = [
     {
@@ -39,8 +41,24 @@
       username: 'userB',
       password: '1234',
       initials: 'B',
-      name: 'นาย B · ประเสริฐ วงศ์ทอง',
-      nameEn: 'Mr. B · Prasert Wongthong',
+      name: 'นาย B · ธนกฤต ศรีสุข',
+      nameEn: 'Mr. B · Thanakrit Srisuk',
+      role: 'owner',
+      empId: 'RVP-0532',
+      dept: 'ฝ่ายผลิต',
+      deptEn: 'Production Division',
+      position: 'ผู้จัดการฝ่ายผลิต',
+      positionEn: 'Production Division Manager',
+      color: '#1d4ed8',
+      home: 'role-owner.html'
+    },
+    {
+      id: 'C',
+      username: 'userC',
+      password: '1234',
+      initials: 'C',
+      name: 'นาย C · ประเสริฐ วงศ์ทอง',
+      nameEn: 'Mr. C · Prasert Wongthong',
       role: 'approver',
       empId: 'RVP-0207',
       dept: 'ฝ่ายปฏิบัติการ',
@@ -51,12 +69,12 @@
       home: 'role-approver.html'
     },
     {
-      id: 'C',
-      username: 'userC',
+      id: 'D',
+      username: 'userD',
       password: '1234',
-      initials: 'C',
-      name: 'นาย C · ปรีชา แสงจันทร์',
-      nameEn: 'Mr. C · Preecha Sangchan',
+      initials: 'D',
+      name: 'นาย D · ปรีชา แสงจันทร์',
+      nameEn: 'Mr. D · Preecha Sangchan',
       role: 'stakeholder',
       empId: 'RVP-0688',
       dept: 'SQD',
@@ -67,20 +85,36 @@
       home: 'role-stakeholder.html'
     },
     {
-      id: 'D',
-      username: 'userD',
+      id: 'E',
+      username: 'userE',
       password: '1234',
-      initials: 'D',
-      name: 'นาย D · วิชัย ธนกิจ',
-      nameEn: 'Mr. D · Wichai Thanakit',
+      initials: 'E',
+      name: 'นาย E · วิชัย ธนกิจ',
+      nameEn: 'Mr. E · Wichai Thanakit',
       role: 'qc',
       empId: 'RVP-0115',
       dept: 'แผนกควบคุมคุณภาพ (QC)',
       deptEn: 'Quality Control Department',
-      position: 'ผู้จัดการแผนกควบคุมคุณภาพ',
-      positionEn: 'Quality Control Manager',
+      position: 'เจ้าหน้าที่ควบคุมคุณภาพ',
+      positionEn: 'Quality Control Officer',
       color: '#b45309',
       home: 'role-qc.html'
+    },
+    {
+      id: 'F',
+      username: 'userF',
+      password: '1234',
+      initials: 'F',
+      name: 'นาย F · สมพงษ์ รุ่งเรือง',
+      nameEn: 'Mr. F · Sompong Rungruang',
+      role: 'qcManager',
+      empId: 'RVP-0098',
+      dept: 'แผนกควบคุมคุณภาพ (QC)',
+      deptEn: 'Quality Control Department',
+      position: 'ผู้จัดการแผนกควบคุมคุณภาพ',
+      positionEn: 'Quality Control Manager',
+      color: '#9d174d',
+      home: 'role-qc-manager.html'
     }
   ];
 
@@ -89,11 +123,15 @@
      ══════════════════════════════════════════ */
   const STATUS = {
     DRAFT: 'DRAFT',
+    /* ผู้ร้องขอส่งแล้ว → รอหน่วยงานเจ้าของเอกสารลงนามในส่วนที่ 5 ก่อนถึงผู้อนุมัติ */
+    PENDING_OWNER: 'PENDING_OWNER',
     PENDING_APPROVAL: 'PENDING_APPROVAL',
     RETURNED: 'RETURNED',
     REJECTED: 'REJECTED',
     PENDING_SIGN: 'PENDING_SIGN',
     SENT_TO_QC: 'SENT_TO_QC',
+    /* เจ้าหน้าที่ควบคุมคุณภาพลงนามส่วนที่ 6 แล้ว → รอผู้จัดการแผนกลงนามและขึ้นทะเบียน */
+    PENDING_QC_MANAGER: 'PENDING_QC_MANAGER',
     REGISTERED: 'REGISTERED',
     EXPIRED_RETURNED: 'EXPIRED_RETURNED'
   };
@@ -102,9 +140,11 @@
   const STATUS_STYLE = {
     DRAFT:            { pill: 'bg-slate-100 text-slate-500',   dot: 'bg-slate-400'   },
     /* ระหว่างที่ flow ยังเดินอยู่ (รออนุมัติ / รอเซ็น / รอ QC) ใช้ป้าย "In process" สีม่วงเหมือนกันหมด */
+    PENDING_OWNER:    { pill: 'bg-violet-50 text-violet-600',  dot: 'bg-violet-500'  },
     PENDING_APPROVAL: { pill: 'bg-violet-50 text-violet-600',  dot: 'bg-violet-500'  },
     PENDING_SIGN:     { pill: 'bg-violet-50 text-violet-600',  dot: 'bg-violet-500'  },
     SENT_TO_QC:       { pill: 'bg-violet-50 text-violet-600',  dot: 'bg-violet-500'  },
+    PENDING_QC_MANAGER: { pill: 'bg-violet-50 text-violet-600', dot: 'bg-violet-500'  },
     RETURNED:         { pill: 'bg-orange-50 text-orange-600',  dot: 'bg-orange-500'  },
     REJECTED:         { pill: 'bg-rose-100 text-rose-700',     dot: 'bg-rose-600'    },
     REGISTERED:       { pill: 'bg-teal-50 text-teal-700',      dot: 'bg-teal-600'    },
@@ -131,7 +171,7 @@
 
   /* รายชื่อผู้มีส่วนเกี่ยวข้องที่เลือกได้ (mock) */
   const STAKEHOLDER_POOL = [
-    { id: 'SQD',  name: 'SQD',          nameEn: 'SQD',                userId: 'C' },
+    { id: 'SQD',  name: 'SQD',          nameEn: 'SQD',                userId: 'D' },
     { id: 'QC',   name: 'QC',           nameEn: 'QC',                 userId: null },
     { id: 'PROD', name: 'ฝ่ายผลิต',      nameEn: 'Production',         userId: null },
     { id: 'HR',   name: 'ฝ่ายบุคคล',     nameEn: 'Human Resources',    userId: null },
@@ -153,6 +193,42 @@
   function sh(id, signed, day) {
     const base = STAKEHOLDER_POOL.find(s => s.id === id) || { id, name: id, nameEn: id, userId: null };
     return { id: base.id, name: base.name, nameEn: base.nameEn, userId: base.userId, signed: !!signed, signedDay: signed ? (day || 0) : null };
+  }
+
+  /* ── เครื่องมือสร้างข้อมูลตัวอย่างให้ "กรอกครบ" เหมือนใช้งานจริง ── */
+
+  /* ตัดคำนำหน้า/รหัสออก เหลือชื่อ-นามสกุลสำหรับเขียนเป็นลายเซ็น */
+  function shortName(name) {
+    const parts = String(name || '').split('·');
+    return (parts.length > 1 ? parts[1] : parts[0]).trim();
+  }
+
+  /* วันที่จริงในรูปแบบ วว/ดด/ปปปป (offset = จำนวนวันจากวันนี้) */
+  function dateStr(offset) {
+    const d = new Date();
+    d.setDate(d.getDate() + (Number(offset) || 0));
+    return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear();
+  }
+
+  /* ภาพลายเซ็นลายมือแบบย่อ (SVG) — ให้ข้อมูลตัวอย่างมีลายเซ็นจริงให้ดู */
+  function sigImage(name, color) {
+    const c = color || '#1e293b';
+    const svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" width="280" height="96" viewBox="0 0 280 96">' +
+        '<g transform="rotate(-5 24 60)">' +
+          '<text x="18" y="58" font-family="Segoe Script, Bradley Hand, Brush Script MT, cursive" ' +
+          'font-size="30" fill="' + c + '">' + esc(name) + '</text>' +
+        '</g>' +
+        '<path d="M16 74 C 70 62, 150 88, 262 66" stroke="' + c + '" stroke-width="2" ' +
+        'fill="none" opacity="0.5" stroke-linecap="round"/>' +
+      '</svg>';
+    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  }
+
+  function esc(v) {
+    return String(v === null || v === undefined ? '' : v)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
   function seed() {
@@ -187,8 +263,21 @@
       history: []
     }, o);
 
-    /* ลายเซ็นอิเล็กทรอนิกส์ (ย่อ) */
-    const SIG = (by) => ({ by: by, day: 0, label: 'ลายเซ็นอิเล็กทรอนิกส์' });
+    /* ลายเซ็นอิเล็กทรอนิกส์ — ข้อมูลครบเหมือนที่ผู้ใช้เซ็นเองในฟอร์ม
+       (ภาพลายเซ็น + ชื่อผู้ลงนาม + ตำแหน่ง + วันที่) */
+    const SIG = (by, dayOffset) => {
+      const u = USERS.find(x => x.id === by);
+      const nm = shortName(u ? u.name : by);
+      return {
+        by: by,
+        day: dayOffset || 0,
+        label: 'ลายเซ็นอิเล็กทรอนิกส์',
+        img: sigImage(nm, u ? u.color : '#1e293b'),
+        name: u ? u.name : by,
+        position: u ? u.position : '',
+        at: dateStr(dayOffset || 0)
+      };
+    };
 
     const docs = [
       /* ── ① ร่าง — ยังไม่ส่ง ───────────────────────────────── */
@@ -228,7 +317,7 @@
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'return', note: 'กรุณาแนบผังฉบับเดิมที่จะถูกแทนที่ และระบุเหตุผลการแก้ไขในส่วนที่ 4 ให้ครบตามข้อ 7.5.3' }
+          { day: 0, actor: 'C', action: 'return', note: 'กรุณาแนบผังฉบับเดิมที่จะถูกแทนที่ และระบุเหตุผลการแก้ไขในส่วนที่ 4 ให้ครบตามข้อ 7.5.3' }
         ]
       }),
 
@@ -243,11 +332,11 @@
           { name: 'QP-009-internal-audit-r0.pdf', size: 512000, kind: 'change' }
         ],
         stakeholders: [sh('SQD'), sh('QC', true, 0), sh('PROD', true, 0), sh('HR'), sh('IT', true, 0)],
-        signatures: { approver: SIG('B') },
+        signatures: { approver: SIG('C') },
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'approve' }
+          { day: 0, actor: 'C', action: 'approve' }
         ]
       }),
 
@@ -259,12 +348,12 @@
         description: 'เพิ่มช่องวิเคราะห์สาเหตุราก (Root Cause) และช่องติดตามผลประสิทธิผลการแก้ไขตามข้อ 10.2.1',
         files: [{ name: 'DAR-RVP-FM-047.pdf', size: 233000, kind: 'dar' }],
         stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('PROD', true, 0), sh('HR', true, 0), sh('FIN', true, 0)],
-        signatures: { approver: SIG('B'), qcStaff: SIG('QC') },
+        signatures: { approver: SIG('C'), qcStaff: SIG('QC') },
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'approve' },
-          { day: 0, actor: 'C', action: 'sign' },
+          { day: 0, actor: 'C', action: 'approve' },
+          { day: 0, actor: 'D', action: 'sign' },
           { day: 0, actor: 'SYSTEM', action: 'toQC' }
         ]
       }),
@@ -281,7 +370,7 @@
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'approve' },
+          { day: 0, actor: 'C', action: 'approve' },
           { day: 0, actor: 'SYSTEM', action: 'expire' }
         ]
       }),
@@ -317,11 +406,11 @@
         description: 'ยกเลิกการใช้งานเกณฑ์ประเมินผู้ส่งมอบฉบับเดิม ซึ่งถูกแทนที่ด้วย FM-063 ตามข้อ 8.4.1',
         files: [{ name: 'DAR-RVP-SD-009.pdf', size: 187300, kind: 'dar' }],
         stakeholders: [sh('SQD'), sh('QC'), sh('FIN', true, 0), sh('HR')],
-        signatures: { approver: SIG('B') },
+        signatures: { approver: SIG('C') },
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'approve' }
+          { day: 0, actor: 'C', action: 'approve' }
         ]
       }),
       mk({
@@ -331,11 +420,11 @@
         description: 'กำหนดรอบสอบเทียบ ผู้รับผิดชอบ และการชี้บ่งสถานะเครื่องมือวัด ตามข้อ 7.1.5 ทรัพยากรสำหรับการติดตามและวัดผล',
         files: [{ name: 'DAR-RVP-WI-041.pdf', size: 241000, kind: 'dar' }],
         stakeholders: [sh('SQD'), sh('QC'), sh('PROD'), sh('IT')],
-        signatures: { approver: SIG('B') },
+        signatures: { approver: SIG('C') },
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'approve' }
+          { day: 0, actor: 'C', action: 'approve' }
         ]
       }),
 
@@ -351,7 +440,7 @@
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'reject', note: 'การแก้ไขขอบเขตและบริบทองค์กรกระทบหลายกระบวนการ ให้เสนอผ่านการทบทวนของฝ่ายบริหารก่อนยื่นใหม่' }
+          { day: 0, actor: 'C', action: 'reject', note: 'การแก้ไขขอบเขตและบริบทองค์กรกระทบหลายกระบวนการ ให้เสนอผ่านการทบทวนของฝ่ายบริหารก่อนยื่นใหม่' }
         ]
       }),
 
@@ -363,14 +452,14 @@
         description: 'ปรับวาระการประชุมทบทวนฝ่ายบริหารให้ครบตามปัจจัยนำเข้า/ผลลัพธ์ในข้อ 9.3.2 และ 9.3.3',
         files: [{ name: 'DAR-RVP-QP-011.pdf', size: 226000, kind: 'dar' }],
         stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('PROD', true, 0)],
-        signatures: { approver: SIG('B'), qcStaff: SIG('D'), qcManager: SIG('D') },
+        signatures: { approver: SIG('C'), qcStaff: SIG('E'), qcManager: SIG('F') },
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'approve' },
-          { day: 0, actor: 'C', action: 'sign' },
+          { day: 0, actor: 'C', action: 'approve' },
+          { day: 0, actor: 'D', action: 'sign' },
           { day: 0, actor: 'SYSTEM', action: 'toQC' },
-          { day: 0, actor: 'D', action: 'register', note: 'ขึ้นทะเบียนเรียบร้อย · แจกจ่ายฉบับควบคุมแล้ว' }
+          { day: 0, actor: 'E', action: 'register', note: 'ขึ้นทะเบียนเรียบร้อย · แจกจ่ายฉบับควบคุมแล้ว' }
         ]
       }),
       mk({
@@ -380,14 +469,14 @@
         description: 'กำหนดวิธีชี้บ่งสถานะและการสอบกลับตลอดสายการผลิต ตามข้อ 8.5.2 การชี้บ่งและสอบกลับได้',
         files: [{ name: 'DAR-RVP-WI-052.pdf', size: 219400, kind: 'dar' }],
         stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('PROD', true, 0)],
-        signatures: { approver: SIG('B'), qcStaff: SIG('D'), qcManager: SIG('D') },
+        signatures: { approver: SIG('C'), qcStaff: SIG('E'), qcManager: SIG('F') },
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'approve' },
-          { day: 0, actor: 'C', action: 'sign' },
+          { day: 0, actor: 'C', action: 'approve' },
+          { day: 0, actor: 'D', action: 'sign' },
           { day: 0, actor: 'SYSTEM', action: 'toQC' },
-          { day: 0, actor: 'D', action: 'register', note: 'ขึ้นทะเบียนเรียบร้อย · แจกจ่ายฉบับควบคุมแล้ว' }
+          { day: 0, actor: 'E', action: 'register', note: 'ขึ้นทะเบียนเรียบร้อย · แจกจ่ายฉบับควบคุมแล้ว' }
         ]
       }),
       mk({
@@ -397,14 +486,14 @@
         description: 'เพิ่มเกณฑ์ด้านคุณภาพ การส่งมอบ และการตอบสนอง สำหรับการประเมินผู้ส่งมอบภายนอกตามข้อ 8.4.1',
         files: [{ name: 'DAR-RVP-FM-063.pdf', size: 204800, kind: 'dar' }],
         stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('FIN', true, 0)],
-        signatures: { approver: SIG('B'), qcStaff: SIG('D'), qcManager: SIG('D') },
+        signatures: { approver: SIG('C'), qcStaff: SIG('E'), qcManager: SIG('F') },
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'approve' },
-          { day: 0, actor: 'C', action: 'sign' },
+          { day: 0, actor: 'C', action: 'approve' },
+          { day: 0, actor: 'D', action: 'sign' },
           { day: 0, actor: 'SYSTEM', action: 'toQC' },
-          { day: 0, actor: 'D', action: 'register', note: 'ขึ้นทะเบียนเรียบร้อย · แจกจ่ายฉบับควบคุมแล้ว' }
+          { day: 0, actor: 'E', action: 'register', note: 'ขึ้นทะเบียนเรียบร้อย · แจกจ่ายฉบับควบคุมแล้ว' }
         ]
       }),
       mk({
@@ -414,14 +503,14 @@
         description: 'กำหนดวิธีชี้บ่ง ประเมิน และจัดการความเสี่ยง/โอกาสของแต่ละกระบวนการ ตามข้อ 6.1',
         files: [{ name: 'DAR-RVP-QP-014.pdf', size: 251900, kind: 'dar' }],
         stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('PROD', true, 0), sh('IT', true, 0)],
-        signatures: { approver: SIG('B'), qcStaff: SIG('D'), qcManager: SIG('D') },
+        signatures: { approver: SIG('C'), qcStaff: SIG('E'), qcManager: SIG('F') },
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'approve' },
-          { day: 0, actor: 'C', action: 'sign' },
+          { day: 0, actor: 'C', action: 'approve' },
+          { day: 0, actor: 'D', action: 'sign' },
           { day: 0, actor: 'SYSTEM', action: 'toQC' },
-          { day: 0, actor: 'D', action: 'register', note: 'ขึ้นทะเบียนเรียบร้อย · แจกจ่ายฉบับควบคุมแล้ว' }
+          { day: 0, actor: 'E', action: 'register', note: 'ขึ้นทะเบียนเรียบร้อย · แจกจ่ายฉบับควบคุมแล้ว' }
         ]
       }),
       mk({
@@ -431,14 +520,14 @@
         description: 'ปรับตารางความสามารถและแผนฝึกอบรมประจำปีให้ครอบคลุมตำแหน่งงานที่กระทบคุณภาพ ตามข้อ 7.2',
         files: [{ name: 'DAR-RVP-SD-031.pdf', size: 197600, kind: 'dar' }],
         stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('HR', true, 0)],
-        signatures: { approver: SIG('B'), qcStaff: SIG('D'), qcManager: SIG('D') },
+        signatures: { approver: SIG('C'), qcStaff: SIG('E'), qcManager: SIG('F') },
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'approve' },
-          { day: 0, actor: 'C', action: 'sign' },
+          { day: 0, actor: 'C', action: 'approve' },
+          { day: 0, actor: 'D', action: 'sign' },
           { day: 0, actor: 'SYSTEM', action: 'toQC' },
-          { day: 0, actor: 'D', action: 'register', note: 'ขึ้นทะเบียนเรียบร้อย · แจกจ่ายฉบับควบคุมแล้ว' }
+          { day: 0, actor: 'E', action: 'register', note: 'ขึ้นทะเบียนเรียบร้อย · แจกจ่ายฉบับควบคุมแล้ว' }
         ]
       }),
 
@@ -463,7 +552,7 @@
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'return', note: 'ยังไม่ได้แนบ Checklist ที่ใช้ตรวจจริง และช่องสรุปผลควรแยกข้อบกพร่องหลัก/รอง ตามข้อ 9.2.2' }
+          { day: 0, actor: 'C', action: 'return', note: 'ยังไม่ได้แนบ Checklist ที่ใช้ตรวจจริง และช่องสรุปผลควรแยกข้อบกพร่องหลัก/รอง ตามข้อ 9.2.2' }
         ]
       }),
       mk({
@@ -473,12 +562,12 @@
         description: 'เพิ่มเกณฑ์อุณหภูมิ ความชื้น และความสะอาดของพื้นที่ปฏิบัติงาน พร้อมรอบการตรวจ ตามข้อ 7.1.4',
         files: [{ name: 'DAR-RVP-WI-027.pdf', size: 228700, kind: 'dar' }],
         stakeholders: [sh('SQD', true, 0), sh('QC', true, 0), sh('PROD', true, 0), sh('HR', true, 0)],
-        signatures: { approver: SIG('B'), qcStaff: SIG('QC') },
+        signatures: { approver: SIG('C'), qcStaff: SIG('QC') },
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'approve' },
-          { day: 0, actor: 'C', action: 'sign' },
+          { day: 0, actor: 'C', action: 'approve' },
+          { day: 0, actor: 'D', action: 'sign' },
           { day: 0, actor: 'SYSTEM', action: 'toQC' }
         ]
       }),
@@ -490,11 +579,11 @@
         description: 'รวบรวมกฎหมายและข้อกำหนดที่องค์กรต้องปฏิบัติตาม พร้อมผู้รับผิดชอบและรอบทบทวน ตามข้อ 4.2',
         files: [{ name: 'DAR-RVP-SD-045.pdf', size: 212900, kind: 'dar' }],
         stakeholders: [sh('SQD', true, 0), sh('HR', true, 0), sh('QC'), sh('FIN'), sh('IT')],
-        signatures: { approver: SIG('B') },
+        signatures: { approver: SIG('C') },
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'approve' },
+          { day: 0, actor: 'C', action: 'approve' },
           { day: 0, actor: 'SYSTEM', action: 'expire' }
         ]
       }),
@@ -509,7 +598,7 @@
         history: [
           { day: 0, actor: 'A', action: 'create' },
           { day: 0, actor: 'A', action: 'send' },
-          { day: 0, actor: 'B', action: 'reject', note: 'ฉบับแปลยังไม่ผ่านการทวนสอบกับต้นฉบับ ให้ขึ้นทะเบียนต้นฉบับก่อน แล้วค่อยเสนอฉบับแปลเป็นเอกสารแนบ' }
+          { day: 0, actor: 'C', action: 'reject', note: 'ฉบับแปลยังไม่ผ่านการทวนสอบกับต้นฉบับ ให้ขึ้นทะเบียนต้นฉบับก่อน แล้วค่อยเสนอฉบับแปลเป็นเอกสารแนบ' }
         ]
       })
     ];
@@ -557,9 +646,76 @@
       d.stakeholders.forEach(s => { if (s.signed) s.signedDay = -age + 2; });
 
       /* เติมช่องที่ฟอร์มต้องใช้ให้ครบ — วันที่ยื่น / วันที่มีผลบังคับใช้ / รายละเอียดวัตถุประสงค์ */
-      d.requestDate = dayTxt(d.createdDay);
-      d.effectiveDate = dayTxt(d.createdDay + 30);
+      d.requestDate = dateStr(d.createdDay);
+      d.effectiveDate = dateStr(d.createdDay + 30);
       d.purposeDetail = PURPOSE_DETAIL[d.id] || '';
+    });
+
+    /* ══════════════════════════════════════════
+       เติมงานของทุกบทบาทให้ "ครบตามขั้นที่เดินมาถึง"
+       — เอกสารอยู่ขั้นไหน ลายเซ็น/ชื่อ/ตำแหน่ง/วันที่ ของขั้นก่อนหน้าต้องมีครบ
+       ══════════════════════════════════════════ */
+    const OWNER_QUEUE  = ['DAR002', 'DAR008'];   /* ค้างที่หน่วยงานเจ้าของเอกสาร */
+    const QC_MGR_QUEUE = ['DAR005'];             /* ค้างที่ผู้จัดการแผนกควบคุมคุณภาพ */
+
+    docs.forEach(d => {
+      if (OWNER_QUEUE.indexOf(d.id) !== -1 && d.status === STATUS.PENDING_APPROVAL) d.status = STATUS.PENDING_OWNER;
+      if (QC_MGR_QUEUE.indexOf(d.id) !== -1 && d.status === STATUS.SENT_TO_QC) d.status = STATUS.PENDING_QC_MANAGER;
+    });
+
+    /* ขั้นที่เอกสารเดินผ่านมาแล้ว (ตามสถานะปัจจุบัน) */
+    const PASSED = {
+      DRAFT:              ['requester'],
+      RETURNED:           ['requester'],
+      EXPIRED_RETURNED:   ['requester', 'owner', 'approver'],
+      PENDING_OWNER:      ['requester'],
+      PENDING_APPROVAL:   ['requester', 'owner'],
+      REJECTED:           ['requester', 'owner'],
+      PENDING_SIGN:       ['requester', 'owner', 'approver'],
+      SENT_TO_QC:         ['requester', 'owner', 'approver'],
+      PENDING_QC_MANAGER: ['requester', 'owner', 'approver', 'qcStaff'],
+      REGISTERED:         ['requester', 'owner', 'approver', 'qcStaff', 'qcManager']
+    };
+    const SIGNER = { requester: 'A', owner: 'B', approver: 'C', qcStaff: 'E', qcManager: 'F' };
+
+    docs.forEach(d => {
+      const age = ages[d.id] || 0;
+      d.signatures = d.signatures || {};
+
+      /* ① ลายเซ็นตามขั้นที่ผ่านมา — เติมภาพ/ชื่อ/ตำแหน่ง/วันที่ให้ครบทุกช่อง */
+      const passed = PASSED[d.status] || ['requester'];
+      const step = { requester: 0, owner: 1, approver: 2, qcStaff: age - 1, qcManager: age };
+      passed.forEach(k => {
+        const dayOffset = -age + Math.min(step[k] || 0, age);
+        d.signatures[k] = SIG(SIGNER[k], dayOffset);
+      });
+      /* ช่องของขั้นที่ยังไม่ถึง ต้องว่างไว้ */
+      Object.keys(SIGNER).forEach(k => { if (passed.indexOf(k) === -1) delete d.signatures[k]; });
+
+      /* ② ผู้มีส่วนเกี่ยวข้องที่ลงนามแล้ว — ใส่ลายเซ็น ชื่อ ตำแหน่ง วันที่ ให้ครบ */
+      (d.stakeholders || []).forEach(sk => {
+        if (!sk.signed) { delete sk.sigImg; delete sk.signName; delete sk.signAt; delete sk.signPosition; return; }
+        const u = USERS.find(x => x.role === 'stakeholder');
+        sk.sigImg = sk.sigImg || sigImage(sk.name, u ? u.color : '#6d28d9');
+        sk.signName = sk.signName || (u ? u.name : sk.name);
+        sk.signPosition = sk.signPosition || (u ? u.position : 'หัวหน้าแผนก');
+        sk.signAt = sk.signAt || dateStr(sk.signedDay || 0);
+      });
+
+      /* ③ ประวัติการทำงานให้ตรงกับขั้นที่ผ่านมา */
+      const addHist = (after, actor, action) => {
+        if (d.history.some(h => h.action === action)) return;
+        const at = d.history.findIndex(h => h.action === after);
+        if (at === -1) return;
+        d.history.splice(at + 1, 0, { day: d.history[at].day, actor: actor, action: action, note: '' });
+      };
+      if (passed.indexOf('owner') !== -1) addHist('send', 'B', 'ownerSign');
+      if (passed.indexOf('qcStaff') !== -1) {
+        if (d.history.some(h => h.action === 'toQC')) addHist('toQC', 'E', 'qcStaffSign');
+        else if (!d.history.some(h => h.action === 'qcStaffSign')) {
+          d.history.push({ day: 0, actor: 'E', action: 'qcStaffSign', note: '' });
+        }
+      }
     });
 
     return {
@@ -582,9 +738,11 @@
         key: key, day: day, read: false
       });
     };
-    push('approver', 'DAR002', 'n.sent', -2);
+    push('owner', 'DAR002', 'n.sent', -2);
+    push('owner', 'DAR008', 'n.sent', -12);
     push('approver', 'DAR007', 'n.sent', -5);
-    push('approver', 'DAR008', 'n.sent', -12);
+    push('approver', 'DAR004', 'n.sent', -9);
+    push('requester', 'DAR007', 'n.ownerSigned', -5);
     push('requester', 'DAR003', 'n.returned', -1);
     push('requester', 'DAR011', 'n.rejected', -4);
     push('stakeholder', 'DAR004', 'n.approved', -9);
@@ -593,12 +751,14 @@
     push('requester', 'DAR006', 'n.expired', 0);
     push('requester', 'DAR005', 'n.allSigned', 0);
     push('qc', 'DAR005', 'n.allSigned', 0);
+    push('qcManager', 'DAR005', 'n.qcStaffSigned', 0);
     push('qc', 'DAR012', 'n.registered', -1);
     push('requester', 'DAR012', 'n.registered', -1);
     push('qc', 'DAR013', 'n.registered', -6);
     push('requester', 'DAR014', 'n.registered', -11);
     push('requester', 'DAR018', 'n.returned', -1);
     push('qc', 'DAR019', 'n.allSigned', -2);
+    push('qcManager', 'DAR012', 'n.registered', -1);
     push('requester', 'DAR020', 'n.expired', 0);
     push('requester', 'DAR021', 'n.rejected', -6);
     return list;
@@ -747,6 +907,12 @@
     if (role === 'requester') {
       return list.filter(d => d.requesterId === (userId || 'A'));
     }
+    if (role === 'owner') {
+      /* เอกสารที่ผู้ร้องขอส่งมาแล้ว — คิวของตัวเองคือที่รอลงนามส่วนที่ 5 */
+      return list.filter(d => [STATUS.PENDING_OWNER, STATUS.PENDING_APPROVAL, STATUS.RETURNED,
+        STATUS.REJECTED, STATUS.PENDING_SIGN, STATUS.SENT_TO_QC, STATUS.REGISTERED,
+        STATUS.EXPIRED_RETURNED].indexOf(d.status) !== -1);
+    }
     if (role === 'approver') {
       return list.filter(d => [STATUS.PENDING_APPROVAL, STATUS.RETURNED, STATUS.REJECTED,
         STATUS.PENDING_SIGN, STATUS.SENT_TO_QC, STATUS.REGISTERED].indexOf(d.status) !== -1);
@@ -760,9 +926,16 @@
       );
     }
     if (role === 'qc') {
-      /* QC เห็นเฉพาะเอกสารที่เดินมาถึงแผนกแล้ว */
+      /* เจ้าหน้าที่ควบคุมคุณภาพเห็นเฉพาะเอกสารที่เดินมาถึงแผนกแล้ว */
       return list.filter(d =>
-        [STATUS.SENT_TO_QC, STATUS.REGISTERED, STATUS.PENDING_SIGN, STATUS.RETURNED].indexOf(d.status) !== -1);
+        [STATUS.SENT_TO_QC, STATUS.PENDING_QC_MANAGER, STATUS.REGISTERED,
+         STATUS.PENDING_SIGN, STATUS.RETURNED].indexOf(d.status) !== -1);
+    }
+    if (role === 'qcManager') {
+      /* ผู้จัดการแผนก — คิวคือเอกสารที่เจ้าหน้าที่ลงนามแล้ว รอขึ้นทะเบียน */
+      return list.filter(d =>
+        [STATUS.PENDING_QC_MANAGER, STATUS.REGISTERED, STATUS.SENT_TO_QC,
+         STATUS.PENDING_SIGN, STATUS.RETURNED].indexOf(d.status) !== -1);
     }
     return list;
   }
@@ -773,7 +946,7 @@
      ③ ช่องที่ยังไม่มีใครลงนาม — ผู้ร้องขออาจเลือกเฉพาะชื่อแผนก
         ถ้าไม่มีข้อนี้ เอกสารที่ผู้อนุมัติส่งมาจะไม่ขึ้นให้ลงนามเลย */
   function slotForUser(doc, userId) {
-    const u = USERS.find(x => x.id === (userId || 'C')) || { id: userId || 'C', dept: '' };
+    const u = USERS.find(x => x.id === (userId || 'D')) || { id: userId || 'D', dept: '' };
     const list = doc && doc.stakeholders ? doc.stakeholders : [];
     return list.find(s => s.userId === u.id) ||
            list.find(s => s.id === u.dept) ||
@@ -791,7 +964,8 @@
      ══════════════════════════════════════════ */
   function permissions(doc, user) {
     const p = { view: false, edit: false, draft: false, send: false, preview: false,
-                approve: false, reject: false, return: false, sign: false, register: false };
+                approve: false, reject: false, return: false, sign: false, register: false,
+                ownerSign: false, qcSign: false };
     if (!doc || !user) return p;
     p.view = true;
     p.preview = true;
@@ -799,6 +973,10 @@
     if (user.role === 'requester' && doc.requesterId === user.id) {
       if (doc.status === STATUS.DRAFT) { p.edit = true; p.draft = true; p.send = true; }
       if (doc.status === STATUS.RETURNED || doc.status === STATUS.EXPIRED_RETURNED) { p.edit = true; p.draft = true; p.send = true; }
+    }
+
+    if (user.role === 'owner' && doc.status === STATUS.PENDING_OWNER) {
+      p.ownerSign = true; p.return = true;
     }
 
     if (user.role === 'approver' && doc.status === STATUS.PENDING_APPROVAL) {
@@ -810,8 +988,13 @@
       if (slot && !slot.signed) p.sign = true;
     }
 
-    /* ⑧ แผนกควบคุมคุณภาพ — ขั้นสุดท้ายของ flow */
+    /* ⑧ เจ้าหน้าที่ควบคุมคุณภาพ — ลงนามส่วนที่ 6 ช่องเจ้าหน้าที่ */
     if (user.role === 'qc' && doc.status === STATUS.SENT_TO_QC) {
+      p.qcSign = true; p.return = true;
+    }
+
+    /* ⑨ ผู้จัดการแผนกควบคุมคุณภาพ — ลงนามแล้วขึ้นทะเบียน (ขั้นสุดท้ายของ flow) */
+    if (user.role === 'qcManager' && doc.status === STATUS.PENDING_QC_MANAGER) {
       p.register = true; p.return = true;
     }
     return p;
@@ -910,8 +1093,9 @@
     if (data.stakeholders) doc.stakeholders = data.stakeholders.map(normSh).filter(Boolean);
     if (data.signatures) {
       doc.signatures = Object.assign({}, doc.signatures, data.signatures);
-      /* ช่องที่ผู้จัดทำลบลายเซ็นออก ต้องหายไปจากเอกสารด้วย */
-      ['requester', 'owner'].forEach(k => {
+      /* ช่องที่ผู้จัดทำลบลายเซ็นออก ต้องหายไปจากเอกสารด้วย
+         (เฉพาะช่องของผู้จัดทำเอง — ช่องหน่วยงานเจ้าของเอกสารเป็นของบทบาทอื่น) */
+      ['requester'].forEach(k => {
         if (!data.signatures[k]) delete doc.signatures[k];
       });
     }
@@ -923,11 +1107,12 @@
   function send(id, user, remark) {
     const doc = getDoc(id);
     if (!doc) return null;
-    doc.status = STATUS.PENDING_APPROVAL;
+    /* ผู้ร้องขอส่ง → หน่วยงานเจ้าของเอกสารลงนามส่วนที่ 5 ก่อน แล้วจึงถึงผู้อนุมัติ */
+    doc.status = STATUS.PENDING_OWNER;
     doc.sentDay = load().day;
     doc.lastRemark = remark || '';
     pushHistory(doc, user ? user.id : 'A', 'send', remark);
-    notify('approver', doc, 'n.sent');
+    notify('owner', doc, 'n.sent');
     save();
     return doc;
   }
@@ -940,10 +1125,28 @@
     doc.approvedDay = load().day;
     doc.lastRemark = remark || '';
     doc.signatures = doc.signatures || {};
-    doc.signatures.approver = { by: user ? user.id : 'B', day: load().day, label: 'ลายเซ็นอิเล็กทรอนิกส์' };
-    pushHistory(doc, user ? user.id : 'B', 'approve', remark);
+    doc.signatures.approver = { by: user ? user.id : 'C', day: load().day, label: 'ลายเซ็นอิเล็กทรอนิกส์' };
+    pushHistory(doc, user ? user.id : 'C', 'approve', remark);
     notify('stakeholder', doc, 'n.approved');
     notify('requester', doc, 'n.approved');
+    save();
+    return doc;
+  }
+
+  /* ⑤ หน่วยงานเจ้าของเอกสารลงนามส่วนที่ 5 → ส่งต่อผู้อนุมัติ */
+  function ownerSign(id, user, remark) {
+    const doc = getDoc(id);
+    if (!doc) return null;
+    doc.status = STATUS.PENDING_APPROVAL;
+    doc.lastRemark = remark || '';
+    doc.signatures = doc.signatures || {};
+    doc.signatures.owner = Object.assign(
+      { by: user ? user.id : 'B', day: load().day, label: 'ลายเซ็นอิเล็กทรอนิกส์' },
+      doc.signatures.owner
+    );
+    pushHistory(doc, user ? user.id : 'B', 'ownerSign', remark);
+    notify('approver', doc, 'n.sent');
+    notify('requester', doc, 'n.ownerSigned');
     save();
     return doc;
   }
@@ -954,7 +1157,7 @@
     if (!doc) return null;
     doc.status = STATUS.RETURNED;
     doc.lastRemark = remark || '';
-    pushHistory(doc, user ? user.id : 'B', 'return', remark);
+    pushHistory(doc, user ? user.id : 'C', 'return', remark);
     notify('requester', doc, 'n.returned');
     save();
     return doc;
@@ -967,7 +1170,7 @@
     doc.status = STATUS.REJECTED;
     doc.closedDay = load().day;
     doc.lastRemark = remark || '';
-    pushHistory(doc, user ? user.id : 'B', 'reject', remark);
+    pushHistory(doc, user ? user.id : 'C', 'reject', remark);
     notify('requester', doc, 'n.rejected');
     save();
     return doc;
@@ -979,7 +1182,7 @@
     if (!doc) return null;
     const slot = mySignSlot(doc, user);
     if (slot) { slot.signed = true; slot.signedDay = load().day; }
-    pushHistory(doc, user ? user.id : 'C', 'sign', remark);
+    pushHistory(doc, user ? user.id : 'D', 'sign', remark);
 
     if (signedCount(doc) >= totalSigners(doc) && totalSigners(doc) > 0) {
       doc.status = STATUS.SENT_TO_QC;
@@ -1014,7 +1217,25 @@
     return doc;
   }
 
-  /* ⑧ QC ขึ้นทะเบียนเอกสาร → จบ flow */
+  /* ⑧ เจ้าหน้าที่ควบคุมคุณภาพลงนามส่วนที่ 6 → ส่งต่อผู้จัดการแผนก */
+  function qcStaffSign(id, user, remark) {
+    const doc = getDoc(id);
+    if (!doc) return null;
+    const day = load().day;
+    doc.status = STATUS.PENDING_QC_MANAGER;
+    doc.lastRemark = remark || '';
+    doc.signatures = doc.signatures || {};
+    doc.signatures.qcStaff = Object.assign(
+      { by: user ? user.id : 'E', day: day, label: 'ลายเซ็นอิเล็กทรอนิกส์' },
+      doc.signatures.qcStaff
+    );
+    pushHistory(doc, user ? user.id : 'E', 'qcStaffSign', remark);
+    notify('qcManager', doc, 'n.qcStaffSigned');
+    save();
+    return doc;
+  }
+
+  /* ⑨ ผู้จัดการแผนกควบคุมคุณภาพขึ้นทะเบียนเอกสาร → จบ flow */
   function register(id, user, remark) {
     const doc = getDoc(id);
     if (!doc) return null;
@@ -1023,12 +1244,13 @@
     doc.closedDay = day;
     doc.lastRemark = remark || '';
     doc.signatures = doc.signatures || {};
-    doc.signatures.qcStaff   = doc.signatures.qcStaff   || { by: user ? user.id : 'D', day: day, label: 'ลายเซ็นอิเล็กทรอนิกส์' };
-    doc.signatures.qcManager = { by: user ? user.id : 'D', day: day, label: 'ลายเซ็นอิเล็กทรอนิกส์' };
-    pushHistory(doc, user ? user.id : 'D', 'register', remark);
+    doc.signatures.qcStaff   = doc.signatures.qcStaff   || { by: 'E', day: day, label: 'ลายเซ็นอิเล็กทรอนิกส์' };
+    doc.signatures.qcManager = doc.signatures.qcManager || { by: user ? user.id : 'F', day: day, label: 'ลายเซ็นอิเล็กทรอนิกส์' };
+    pushHistory(doc, user ? user.id : 'F', 'register', remark);
     notify('requester', doc, 'n.registered');
     notify('approver', doc, 'n.registered');
     notify('stakeholder', doc, 'n.registered');
+    notify('qc', doc, 'n.registered');
     save();
     return doc;
   }
@@ -1071,10 +1293,19 @@
     if (role === 'requester') {
       return {
         draft: byStatus(mine, STATUS.DRAFT),
-        pending: byStatus(mine, STATUS.PENDING_APPROVAL),
+        pending: byStatus(mine, STATUS.PENDING_OWNER) + byStatus(mine, STATUS.PENDING_APPROVAL),
         returned: byStatus(mine, STATUS.RETURNED) + byStatus(mine, STATUS.REJECTED),
         signing: byStatus(mine, STATUS.PENDING_SIGN),
-        qc: byStatus(mine, STATUS.SENT_TO_QC) + byStatus(mine, STATUS.REGISTERED)
+        qc: byStatus(mine, STATUS.SENT_TO_QC) + byStatus(mine, STATUS.PENDING_QC_MANAGER) + byStatus(mine, STATUS.REGISTERED)
+      };
+    }
+    if (role === 'owner') {
+      return {
+        queue: byStatus(list, STATUS.PENDING_OWNER),
+        signed: list.filter(d => [STATUS.PENDING_APPROVAL, STATUS.PENDING_SIGN,
+          STATUS.SENT_TO_QC, STATUS.REGISTERED].indexOf(d.status) !== -1).length,
+        returned: byStatus(list, STATUS.RETURNED) + byStatus(list, STATUS.REJECTED),
+        near: list.filter(d => d.status === STATUS.PENDING_OWNER && remainingOf(d) <= 2).length
       };
     }
     if (role === 'approver') {
@@ -1090,6 +1321,14 @@
         queue: byStatus(list, STATUS.SENT_TO_QC),
         registered: byStatus(list, STATUS.REGISTERED),
         incoming: byStatus(list, STATUS.PENDING_SIGN),
+        returned: byStatus(list, STATUS.RETURNED)
+      };
+    }
+    if (role === 'qcManager') {
+      return {
+        queue: byStatus(list, STATUS.PENDING_QC_MANAGER),
+        registered: byStatus(list, STATUS.REGISTERED),
+        incoming: byStatus(list, STATUS.SENT_TO_QC),
         returned: byStatus(list, STATUS.RETURNED)
       };
     }
@@ -1114,11 +1353,11 @@
     return {
       total: list.length,
       draft: byStatus(list, STATUS.DRAFT),
-      pending: byStatus(list, STATUS.PENDING_APPROVAL),
+      pending: byStatus(list, STATUS.PENDING_OWNER) + byStatus(list, STATUS.PENDING_APPROVAL),
       signing: byStatus(list, STATUS.PENDING_SIGN),
       returned: byStatus(list, STATUS.RETURNED) + byStatus(list, STATUS.EXPIRED_RETURNED),
       rejected: byStatus(list, STATUS.REJECTED),
-      qc: byStatus(list, STATUS.SENT_TO_QC),
+      qc: byStatus(list, STATUS.SENT_TO_QC) + byStatus(list, STATUS.PENDING_QC_MANAGER),
       registered: byStatus(list, STATUS.REGISTERED)
     };
   }
@@ -1172,7 +1411,7 @@
     rev, isStale, syncIfStale,
     docTypeLabel, purposeLabel, docTitle, statusStyle,
     permissions, mySignSlot, slotForUser,
-    createDraft, updateDraft, send, approve, returnForEdit, reject, sign, signAs,
+    createDraft, updateDraft, send, ownerSign, approve, returnForEdit, reject, sign, signAs, qcStaffSign,
     notify, notificationsFor, unreadCount, markAllRead, markRead
   };
 })(window);

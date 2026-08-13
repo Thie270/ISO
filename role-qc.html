@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>แผนกควบคุมคุณภาพ — Riverpark Document System</title>
+  <title>เจ้าหน้าที่ควบคุมคุณภาพ — Riverpark Document System</title>
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -142,7 +142,7 @@
           <div class="inline-flex flex-wrap items-center gap-1 rounded-2xl border border-slate-200 p-1">
             <button data-filter="SENT_TO_QC" class="filter-tab active rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="qc.c1"></button>
             <button data-filter="REGISTERED" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="qc.c2"></button>
-            <button data-filter="PENDING_SIGN" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="qc.c3"></button>
+            <button data-filter="PENDING_QC_MANAGER" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="qc.c3"></button>
             <button data-filter="" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="common.all"></button>
           </div>
           <div class="flex flex-wrap items-center gap-3">
@@ -238,7 +238,7 @@
           '<td class="px-5 py-4 bg-slate-50/60">' + App.ageText(d) + '</td>' +
           '<td class="px-5 py-4 bg-slate-50/60"><div class="flex items-center justify-end gap-2">' +
             (d.status === Store.STATUS.SENT_TO_QC
-              ? '<a href="create.html?id=' + encodeURIComponent(d.id) + '" class="row-btn inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-4 py-2 text-[13px] font-semibold text-white no-underline transition-colors" style="background:#0d9488;box-shadow:0 4px 10px rgba(13,148,136,.25)">' + esc(T('act.register')) + '</a>'
+              ? '<a href="create.html?id=' + encodeURIComponent(d.id) + '" class="row-btn inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-4 py-2 text-[13px] font-semibold text-white no-underline transition-colors" style="background:#0d9488;box-shadow:0 4px 10px rgba(13,148,136,.25)">' + esc(T('act.sign')) + '</a>'
               : App.docLink(d, T('act.detail'), false)) +
             '<a href="document.html?id=' + encodeURIComponent(d.id) + '" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-3 py-2 text-[13px] font-semibold text-slate-600 no-underline hover:bg-slate-50 transition-colors" title="' + esc(T('dv.pdf')) + '">' + App.IC.eye + '</a>' +
             '<button class="row-action" data-i18n-aria="act.options">' + App.IC.dots + '</button>' +

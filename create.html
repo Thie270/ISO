@@ -551,6 +551,9 @@
     const editId = new URLSearchParams(location.search).get('id');
     let editing = editId ? Store.getDoc(editId) : null;
 
+    /* หน่วยงานเจ้าของเอกสารเปิดหน้าเดียวกัน เพื่อลงนามในช่องของตัวเองในส่วนที่ 5 */
+    const ownerMode = !!(editing && user.role === 'owner');
+
     /* ผู้อนุมัติเปิดหน้าเดียวกับผู้ร้องขอเพื่อ "ตรวจสอบ" แล้วเซ็นในส่วนที่ 5.3 */
     const reviewMode = !!(editing && user.role === 'approver');
 
@@ -561,8 +564,11 @@
     /* แผนกควบคุมคุณภาพเปิดหน้าเดียวกันเพื่อเซ็นในส่วนที่ 6 แล้วขึ้นทะเบียน */
     const qcMode = !!(editing && user.role === 'qc');
 
-    if (user.role !== 'requester' && !reviewMode && !signMode && !qcMode) { App.toast(T('dv.noAccess'), 'red'); location.replace(user.home); return; }
-    if (!reviewMode && !signMode && !qcMode && editing && editing.requesterId !== user.id) editing = null;
+    /* ผู้จัดการแผนกควบคุมคุณภาพ — ลงนามช่องขวาในส่วนที่ 6 แล้วขึ้นทะเบียน */
+    const qcMgrMode = !!(editing && user.role === 'qcManager');
+
+    if (user.role !== 'requester' && !ownerMode && !reviewMode && !signMode && !qcMode && !qcMgrMode) { App.toast(T('dv.noAccess'), 'red'); location.replace(user.home); return; }
+    if (!ownerMode && !reviewMode && !signMode && !qcMode && !qcMgrMode && editing && editing.requesterId !== user.id) editing = null;
 
     /* เปิดคำขอของคนอื่น (หรือไม่มีคำขอนี้) → ส่งไปดูหน้ากระดาษแทน ไม่ใช่ฟอร์มเปล่า */
     if (editId && !editing) { location.replace('document.html?id=' + encodeURIComponent(editId)); return; }
@@ -570,7 +576,7 @@
     /* ผู้ร้องขอเปิดคำขอที่ส่งออกไปแล้ว → เห็น "งานที่ทำ" ทั้งฉบับแบบอ่านอย่างเดียว (ติดตามสถานะ)
        ยังแก้ไขได้เฉพาะฉบับร่าง / ที่ถูกส่งกลับ / ที่หมดเวลาลงนาม */
     const EDITABLE = [Store.STATUS.DRAFT, Store.STATUS.RETURNED, Store.STATUS.EXPIRED_RETURNED];
-    const trackMode = !!(editing && !reviewMode && !signMode && !qcMode &&
+    const trackMode = !!(editing && !ownerMode && !reviewMode && !signMode && !qcMode && !qcMgrMode &&
                          EDITABLE.indexOf(editing.status) === -1);
 
     /* ═══════════════════════════════════════════════════════════
@@ -1283,7 +1289,7 @@
          — ช่องของบทบาทอื่น (5.3 / ส่วนที่ 6) ต้องคงค่าเดิมไว้ ไม่ให้หายตอนบันทึก */
       const prevSig = (editing && editing.signatures) || {};
       const sig = {};
-      ['requester', 'owner'].forEach(k => {
+      ['requester'].forEach(k => {
         if (SignModal.data[k]) sig[k] = Object.assign({}, prevSig[k], {
           by: (prevSig[k] && prevSig[k].by) || user.id,
           day: prevSig[k] && prevSig[k].day !== undefined ? prevSig[k].day : Store.today(),
@@ -1293,7 +1299,7 @@
           position: getSignMeta(k).position
         });
       });
-      ['approver', 'qcStaff', 'qcManager'].forEach(k => {
+      ['owner', 'approver', 'qcStaff', 'qcManager'].forEach(k => {
         const meta = getSignMeta(k);
         const img = SignModal.data[k] || (prevSig[k] && prevSig[k].img);
         if (!img && !meta.name && !meta.at && !prevSig[k]) return;
@@ -1454,9 +1460,7 @@
       { step: 6, id: 'step-6',       key: 'th.requester',  ok: function () { return !!SignModal.data.requester; } },
       { step: 6, id: 's5-name-requester', key: 'cr.name',  ok: function () { return !!fval('s5-name-requester'); } },
       { step: 6, id: 's5-date-requester', key: 'cr.signDate', ok: function () { return !!fval('s5-date-requester'); } },
-      { step: 6, id: 'step-6',       key: 'cr.owner',      ok: function () { return !!SignModal.data.owner; } },
-      { step: 6, id: 's5-name-owner', key: 'cr.name',      ok: function () { return !!fval('s5-name-owner'); } },
-      { step: 6, id: 's5-date-owner', key: 'cr.signDate',  ok: function () { return !!fval('s5-date-owner'); } },
+      /* ช่อง "หน่วยงานเจ้าของเอกสาร" เป็นของบทบาทหน่วยงานเจ้าของเอกสาร (ลงนามหลังผู้จัดทำส่ง) */
       { step: 7, id: 'related-select', key: 'cr.pickRelated', ok: function () { return related.length > 0; } }
     ];
 
@@ -1491,7 +1495,7 @@
     }
 
     function paintReady() {
-      if (reviewMode || signMode || qcMode || trackMode) return;
+      if (ownerMode || reviewMode || signMode || qcMode || qcMgrMode || trackMode) return;
       const miss = missingItems();
       const ok = miss.length === 0;
       paintStepMarks();
@@ -1539,7 +1543,7 @@
     document.addEventListener('change', paintReady);
     document.addEventListener('langchange', paintReady);
     document.getElementById('sign-modal-confirm').addEventListener('click', function () {
-      setTimeout(function () { paintReady(); paintSignBtn(); paintQcBtn(); clearSignWarn(); }, 0);
+      setTimeout(function () { paintReady(); paintSignBtn(); paintQcBtn(); paintOwnerBtn(); clearSignWarn(); }, 0);
     });
 
     /* ═══════════════════════════════════════════════════════════
@@ -1580,7 +1584,27 @@
        ผู้จัดทำ (requester) — ส่วนที่ 5.3 ผู้อนุมัติ และส่วนที่ 6 QC
        เป็นของบทบาทอื่น จึงล็อกไว้ กรอก/เซ็นไม่ได้
        ═══════════════════════════════════════════════════════════ */
+    /* ล็อกกล่องเซ็นเฉพาะช่อง — ใช้กับช่องที่เป็นของบทบาทอื่นแต่อยู่ในส่วนเดียวกัน */
+    function lockSignBox(key, noteKey) {
+      const box = document.querySelector('.sign-box[data-sign-key="' + key + '"]');
+      if (!box) return;
+      box.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+      box.querySelectorAll('.change-sig, .del-sig').forEach(function (b) { b.remove(); });
+      lockSignMeta(key, true);
+      if (box.querySelector('img')) return;
+      box.classList.add('bg-slate-50');
+      if (!box.querySelector('.lock-note')) {
+        const p = document.createElement('p');
+        p.className = 'lock-note text-[12.5px] text-slate-400';
+        p.setAttribute('data-lock-key', noteKey);
+        p.textContent = T(noteKey);
+        box.appendChild(p);
+      }
+    }
+
     function lockOtherRoleSections() {
+      /* ช่องหน่วยงานเจ้าของเอกสารในส่วนที่ 5 — บทบาทอื่นลงนามให้ไม่ได้ */
+      lockSignBox('owner', 'ow.lockOwner');
       [['step-8', 'rv.lockApprover'], ['step-9', 'rv.lockQc']].forEach(function (pair) {
         const sec = document.getElementById(pair[0]);
         if (!sec) return;
@@ -1664,31 +1688,40 @@
     });
 
     /* ═══════════════════════════════════════════════════════════
-       โหมดแผนกควบคุมคุณภาพ (QC) — เห็นเอกสารยาวเหมือนบทบาทอื่น
-       เซ็นได้เฉพาะส่วนที่ 6 แล้วจึงขึ้นทะเบียนเอกสารได้
+       โหมดแผนกควบคุมคุณภาพ — ส่วนที่ 6 แยกเป็น 2 ช่อง 2 บทบาท
+       ① เจ้าหน้าที่ควบคุมคุณภาพ ลงนามช่องซ้าย → ส่งต่อผู้จัดการแผนก
+       ② ผู้จัดการแผนกควบคุมคุณภาพ ลงนามช่องขวา → ขึ้นทะเบียน
        ═══════════════════════════════════════════════════════════ */
-    function qcSignedBoth() {
-      return !!(SignModal.data.qcStaff && SignModal.data.qcManager);
-    }
+    /* คีย์ช่องเซ็นของบทบาทที่กำลังเปิดหน้าอยู่ */
+    const QC_KEY = qcMgrMode ? 'qcManager' : 'qcStaff';
 
     function paintQcBtn() {
-      if (!qcMode) return;
+      if (!qcMode && !qcMgrMode) return;
       const btn = document.getElementById('qc-register');
       if (!btn) return;
-      const ok = qcSignedBoth();
-      const canRegister = (Store.getDoc(editing.id) || editing).status === Store.STATUS.SENT_TO_QC;
-      btn.disabled = !ok || !canRegister;
+      const meta = getSignMeta(QC_KEY);
+      const ok = !!SignModal.data[QC_KEY] && !!meta.name && !!meta.at;
+      const live = Store.getDoc(editing.id) || editing;
+      const canAct = live.status === (qcMgrMode ? Store.STATUS.PENDING_QC_MANAGER : Store.STATUS.SENT_TO_QC);
+      btn.disabled = !ok || !canAct;
       btn.classList.toggle('opacity-40', btn.disabled);
       btn.classList.toggle('cursor-not-allowed', btn.disabled);
-      btn.textContent = !canRegister ? T('qc.btnDone') : (ok ? T('qc.btnReady') : T('qc.btnWait'));
+      btn.textContent = !canAct
+        ? T('qc.btnDone')
+        : (ok ? (qcMgrMode ? T('act.register') : T('act.qcStaffSign'))
+              : (qcMgrMode ? T('qm.btnWait') : T('qc.btnStaffWait')));
     }
 
     function initQcMode() {
       const doc = editing;
+      const homeUrl = qcMgrMode ? 'role-qc-manager.html' : 'role-qc.html';
+      const titleKey = qcMgrMode ? 'act.register' : 'act.sign';
+
       const bc = document.getElementById('bc-title');
       bc.removeAttribute('data-i18n');
-      bc.textContent = doc.id + ' · ' + T('act.register');
-      document.addEventListener('langchange', function () { bc.textContent = doc.id + ' · ' + T('act.register'); });
+      const paintBc = function () { bc.textContent = doc.id + ' · ' + T(titleKey); };
+      paintBc();
+      document.addEventListener('langchange', paintBc);
 
       document.querySelectorAll('#sidebar .nav-link').forEach(function (a) {
         a.classList.toggle('active', a.hasAttribute('data-my-work'));
@@ -1698,8 +1731,8 @@
       viewAllBtn.click();
       viewAllBtn.style.display = 'none';
 
-      /* อ่านอย่างเดียวทุกส่วน ยกเว้นกล่องเซ็นในส่วนที่ 6 */
-      ['step-1', 'step-2', 'step-3', 'step-4', 'step-5', 'step-6', 'step-7', 'step-8'].forEach(function (id) {
+      /* อ่านอย่างเดียวทุกส่วน ยกเว้นช่องของตัวเองในส่วนที่ 6 */
+      ['step-1', 'step-2', 'step-3', 'step-4', 'step-5', 'step-6', 'step-7', 'step-8', 'step-9'].forEach(function (id) {
         const sec = document.getElementById(id);
         if (!sec) return;
         sec.querySelectorAll('input, select, textarea').forEach(function (el) {
@@ -1714,14 +1747,28 @@
         if (drop) drop.classList.add('opacity-60', 'pointer-events-none');
       });
 
-      const s9 = document.getElementById('step-9');
-      s9.querySelectorAll('.sign-box').forEach(function (b) { b.classList.add('ring-2', 'ring-teal-300'); });
-      const hint = document.createElement('div');
-      hint.className = 'rounded-xl border border-teal-100 bg-teal-50 px-4 py-3 text-[12.5px] text-teal-700';
-      hint.textContent = T('qc.hint');
-      s9.insertBefore(hint, s9.firstChild);
+      /* ช่องของอีกบทบาทหนึ่งในส่วนที่ 6 — ล็อกไว้พร้อมบอกว่าใครเป็นผู้ลงนาม */
+      lockSignBox(qcMgrMode ? 'qcStaff' : 'qcManager', qcMgrMode ? 'qc.lockStaff' : 'qc.lockManager');
 
-      /* แถบล่าง: Preview PDF + ปุ่มขึ้นทะเบียน */
+      /* เปิดช่องของตัวเอง */
+      const box = document.querySelector('.sign-box[data-sign-key="' + QC_KEY + '"]');
+      if (box) {
+        box.classList.add('ring-2', 'ring-teal-300');
+        box.classList.remove('bg-slate-50');
+        box.querySelectorAll('.lock-note').forEach(function (n) { n.remove(); });
+        box.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = ''; });
+        lockSignMeta(QC_KEY, false);
+      }
+
+      const s9 = document.getElementById('step-9');
+      const hintKey = qcMgrMode ? 'qm.hint' : 'qc.hintStaff';
+      const hint = document.createElement('div');
+      hint.className = 'rounded-xl border border-teal-100 bg-teal-50 px-4 py-3 text-[12.5px] text-teal-700 w-full';
+      hint.textContent = T(hintKey);
+      s9.insertBefore(hint, s9.firstChild);
+      document.addEventListener('langchange', function () { hint.textContent = T(hintKey); });
+
+      /* แถบล่าง: Preview PDF + ปุ่มของบทบาทนั้น */
       const oldPreview = document.getElementById('preview-btn');
       const preview = oldPreview.cloneNode(true);
       oldPreview.parentNode.replaceChild(preview, oldPreview);
@@ -1736,35 +1783,44 @@
         'style="background:linear-gradient(90deg,#34d399 0%,#16a34a 100%);box-shadow:0 4px 10px rgba(22,163,74,.28)"></button>';
       paintQcBtn();
       document.addEventListener('langchange', paintQcBtn);
+      document.addEventListener('input', paintQcBtn);
+      document.addEventListener('change', paintQcBtn);
 
       document.getElementById('qc-register').addEventListener('click', async function () {
-        if (!qcSignedBoth()) {
-          if (!SignModal.data.qcStaff)   markSignWarn('qcStaff', 'qc.needSign');
-          if (!SignModal.data.qcManager) markSignWarn('qcManager', 'qc.needSign');
-          App.toast(T('qc.needSign'), 'red');
+        const needKey = qcMgrMode ? 'qm.needSign' : 'qc.needStaffSign';
+        if (!SignModal.data[QC_KEY]) {
+          markSignWarn(QC_KEY, needKey);
+          App.toast(T(needKey), 'red');
           document.getElementById('step-9').scrollIntoView({ behavior: 'smooth', block: 'center' });
           return;
         }
-        const metaStaff = getSignMeta('qcStaff'), metaMgr = getSignMeta('qcManager');
-        if (!metaStaff.name || !metaStaff.at || !metaMgr.name || !metaMgr.at) {
+        const meta = getSignMeta(QC_KEY);
+        if (!meta.name || !meta.at) {
           App.toast(T('cr.missingHint') + ' — ' + T('cr.name') + ' / ' + T('cr.signDate'), 'red');
           document.getElementById('step-9').scrollIntoView({ behavior: 'smooth', block: 'center' });
           return;
         }
         clearSignWarn();
-        const r = await App.confirmDialog({ title: T('act.register'), sub: T('qc.confirmRegister'), tone: 'green', needNote: true });
+
+        const r = await App.confirmDialog({
+          title: qcMgrMode ? T('act.register') : T('act.qcStaffSign'),
+          sub: qcMgrMode ? T('qc.confirmRegister') : T('qc.confirmStaffSign'),
+          tone: 'green', needNote: true });
         if (!r) return;
 
-        Store.register(doc.id, user, r.note);
+        if (qcMgrMode) Store.register(doc.id, user, r.note);
+        else Store.qcStaffSign(doc.id, user, r.note);
+
         const live = Store.getDoc(doc.id);
-        live.signatures = Object.assign({}, live.signatures, {
-          qcStaff: Object.assign({}, live.signatures.qcStaff, { img: SignModal.data.qcStaff, name: metaStaff.name, at: metaStaff.at, position: metaStaff.position }),
-          qcManager: Object.assign({}, live.signatures.qcManager, { img: SignModal.data.qcManager, name: metaMgr.name, at: metaMgr.at, position: metaMgr.position })
+        const patch = {};
+        patch[QC_KEY] = Object.assign({}, live.signatures[QC_KEY], {
+          img: SignModal.data[QC_KEY], name: meta.name, at: meta.at, position: meta.position
         });
+        live.signatures = Object.assign({}, live.signatures, patch);
         Store.save();
 
-        App.toast(T('n.registered'));
-        setTimeout(function () { location.href = 'role-qc.html'; }, 700);
+        App.toast(qcMgrMode ? T('n.registered') : T('n.qcStaffSigned'));
+        setTimeout(function () { location.href = homeUrl; }, 700);
       });
 
       document.getElementById('qc-return').addEventListener('click', async function () {
@@ -1772,7 +1828,7 @@
         if (!r) return;
         Store.returnForEdit(doc.id, user, r.note);
         App.toast(T('n.returned'));
-        setTimeout(function () { location.href = 'role-qc.html'; }, 700);
+        setTimeout(function () { location.href = homeUrl; }, 700);
       });
     }
 
@@ -2041,6 +2097,128 @@
     }
 
     /* ═══════════════════════════════════════════════════════════
+       โหมดหน่วยงานเจ้าของเอกสาร — เปิดเอกสารยาวแบบเดียวกับผู้ร้องขอ
+       อ่านอย่างเดียวทุกส่วน ลงนามได้เฉพาะช่องของตัวเองในส่วนที่ 5
+       ═══════════════════════════════════════════════════════════ */
+    function paintOwnerBtn() {
+      if (!ownerMode) return;
+      const btn = document.getElementById('ow-sign');
+      if (!btn) return;
+      const meta = getSignMeta('owner');
+      const ok = !!SignModal.data.owner && !!meta.name && !!meta.at;
+      const canSign = (Store.getDoc(editing.id) || editing).status === Store.STATUS.PENDING_OWNER;
+      btn.disabled = !ok || !canSign;
+      btn.classList.toggle('opacity-40', btn.disabled);
+      btn.classList.toggle('cursor-not-allowed', btn.disabled);
+      btn.textContent = !canSign ? T('sg.alreadySigned') : (ok ? T('act.ownerSign') : T('ow.btnWait'));
+    }
+
+    function initOwnerMode() {
+      const doc = editing;
+      const bc = document.getElementById('bc-title');
+      bc.removeAttribute('data-i18n');
+      const paintBc = function () { bc.textContent = doc.id + ' · ' + T('act.sign'); };
+      paintBc();
+      document.addEventListener('langchange', paintBc);
+
+      document.querySelectorAll('#sidebar .nav-link').forEach(function (a) {
+        a.classList.toggle('active', a.hasAttribute('data-my-work'));
+      });
+
+      const viewAllBtn = document.getElementById('view-all-btn');
+      viewAllBtn.click();
+      viewAllBtn.style.display = 'none';
+
+      /* อ่านอย่างเดียวทุกส่วน — ส่วนที่ 5 จะเปิดเฉพาะช่องของตัวเองทีหลัง */
+      ['step-1', 'step-2', 'step-3', 'step-4', 'step-5', 'step-6', 'step-7', 'step-8', 'step-9'].forEach(function (id) {
+        const sec = document.getElementById(id);
+        if (!sec) return;
+        sec.querySelectorAll('input, select, textarea').forEach(function (el) {
+          el.disabled = true;
+          el.classList.add('is-locked', 'cursor-not-allowed');
+        });
+        sec.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = 'none'; });
+        /* ลายเซ็นของบทบาทอื่น: ดูได้อย่างเดียว แก้/ลบไม่ได้ */
+        sec.querySelectorAll('.change-sig, .del-sig').forEach(function (b) { b.remove(); });
+        sec.querySelectorAll('#related-chips button').forEach(function (x) { x.style.display = 'none'; });
+      });
+
+      /* เปิดเฉพาะช่อง "หน่วยงานเจ้าของเอกสาร" ในส่วนที่ 5 */
+      const box = document.querySelector('.sign-box[data-sign-key="owner"]');
+      if (box) {
+        box.classList.add('ring-2', 'ring-blue-300');
+        box.classList.remove('bg-slate-50');
+        box.querySelectorAll('.lock-note').forEach(function (n) { n.remove(); });
+        box.querySelectorAll('[data-sign-btn]').forEach(function (b) { b.style.display = ''; });
+        lockSignMeta('owner', false);
+      }
+
+      const s6 = document.getElementById('step-6');
+      const hint = document.createElement('div');
+      hint.className = 'rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-[12.5px] text-blue-700 w-full';
+      hint.setAttribute('data-hint-key', 'ow.hint');
+      hint.textContent = T('ow.hint');
+      s6.insertBefore(hint, s6.firstChild);
+      document.addEventListener('langchange', function () { hint.textContent = T('ow.hint'); });
+
+      /* แถบล่าง: Preview PDF + ส่งกลับ + ลงนามส่งต่อผู้อนุมัติ */
+      const oldPreview = document.getElementById('preview-btn');
+      const preview = oldPreview.cloneNode(true);
+      oldPreview.parentNode.replaceChild(preview, oldPreview);
+      preview.addEventListener('click', function () {
+        location.href = 'document.html?id=' + encodeURIComponent(doc.id);
+      });
+
+      const bar = document.getElementById('draft-btn').parentNode;
+      bar.innerHTML =
+        '<button id="ow-return" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-amber-200 bg-amber-50 px-5 py-2.5 text-sm font-semibold text-amber-700 hover:bg-amber-100 transition-colors">' + esc(T('act.return')) + '</button>' +
+        '<button id="ow-sign" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-colors" ' +
+        'style="background:linear-gradient(90deg,#34d399 0%,#16a34a 100%);box-shadow:0 4px 10px rgba(22,163,74,.28)"></button>';
+      paintOwnerBtn();
+      document.addEventListener('langchange', paintOwnerBtn);
+      document.addEventListener('input', paintOwnerBtn);
+      document.addEventListener('change', paintOwnerBtn);
+
+      document.getElementById('ow-sign').addEventListener('click', async function () {
+        const meta = getSignMeta('owner');
+        if (!SignModal.data.owner) {
+          markSignWarn('owner', 'ow.needSign');
+          App.toast(T('ow.needSign'), 'red');
+          document.getElementById('step-6').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+        if (!meta.name || !meta.at) {
+          App.toast(T('cr.missingHint') + ' — ' + T('cr.name') + ' / ' + T('cr.signDate'), 'red');
+          document.getElementById('step-6').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+        clearSignWarn();
+        const r = await App.confirmDialog({ title: T('act.ownerSign'), sub: T('ow.confirmSign'), tone: 'green', needNote: true });
+        if (!r) return;
+
+        Store.ownerSign(doc.id, user, r.note);
+        const live = Store.getDoc(doc.id);
+        live.signatures = Object.assign({}, live.signatures, {
+          owner: Object.assign({}, live.signatures.owner, {
+            img: SignModal.data.owner, name: meta.name, at: meta.at, position: meta.position
+          })
+        });
+        Store.save();
+
+        App.toast(T('n.ownerSigned'));
+        setTimeout(function () { location.href = 'role-owner.html'; }, 700);
+      });
+
+      document.getElementById('ow-return').addEventListener('click', async function () {
+        const r = await App.confirmDialog({ title: T('act.return'), sub: T('dv.confirmReturn'), tone: 'amber', needNote: true, noteRequired: true });
+        if (!r) return;
+        Store.returnForEdit(doc.id, user, r.note);
+        App.toast(T('n.returned'));
+        setTimeout(function () { location.href = 'role-owner.html'; }, 700);
+      });
+    }
+
+    /* ═══════════════════════════════════════════════════════════
        โหมดผู้อนุมัติ "ตรวจสอบ" — เห็นเอกสารยาวเหมือนหน้าผู้ร้องขอ
        อ่านอย่างเดียวทุกส่วน ยกเว้น 5.2 (เลือกผู้เกี่ยวข้อง) และ 5.3 (เซ็น)
        ═══════════════════════════════════════════════════════════ */
@@ -2188,9 +2366,10 @@
 
     fill();
     goToStep(1);
-    if (reviewMode) initReviewMode();
+    if (ownerMode) initOwnerMode();
+    else if (reviewMode) initReviewMode();
     else if (signMode) initSignMode();
-    else if (qcMode) initQcMode();
+    else if (qcMode || qcMgrMode) initQcMode();
     else if (trackMode) { lockOtherRoleSections(); initTrackMode(); }
     else { lockOtherRoleSections(); paintReady(); }
   })();

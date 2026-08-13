@@ -13,7 +13,8 @@
       "Bash(cd /Users/cs/Desktop/ISO; sed -n '/const IC = {/,/};/p' js/app.js | head -30)",
       "Bash(python3 -)",
       "Bash(git diff *)",
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "Bash(\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless=new --disable-gpu --no-sandbox --virtual-time-budget=8000 --dump-dom \"http://localhost:8899/_o7.html\")"
     ],
     "additionalDirectories": [
       "/Users/cs/Desktop/ISO/js"

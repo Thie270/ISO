@@ -402,8 +402,10 @@
   function myTurnLink(doc, user) {
     const p = S().permissions(doc, user);
     let key = null, tone = 'blue';
-    if (p.approve)       { key = 'act.review';   tone = 'blue';   }
+    if (p.ownerSign)     { key = 'act.sign';     tone = 'blue';   }
+    else if (p.approve)  { key = 'act.review';   tone = 'blue';   }
     else if (p.sign)     { key = 'act.sign';     tone = 'violet'; }
+    else if (p.qcSign)   { key = 'act.sign';     tone = 'teal';   }
     else if (p.register) { key = 'act.register'; tone = 'teal';   }
     if (!key) return null;
     return docLink(doc, t().t(key), true, 'create.html', tone);
@@ -578,7 +580,7 @@
   /* ============================================================
      ตารางงาน — เรียงลำดับ + แบ่งหน้า (ค่าเริ่มต้น 10 แถว/หน้า)
      ============================================================ */
-  const STATUS_ORDER = ['DRAFT','RETURNED','EXPIRED_RETURNED','PENDING_APPROVAL','PENDING_SIGN','SENT_TO_QC','REGISTERED','REJECTED'];
+  const STATUS_ORDER = ['DRAFT','RETURNED','EXPIRED_RETURNED','PENDING_OWNER','PENDING_APPROVAL','PENDING_SIGN','SENT_TO_QC','PENDING_QC_MANAGER','REGISTERED','REJECTED'];
 
   function newTableState(key, dir, per) {
     return { page: 1, per: per || 10, key: key || 'age', dir: dir || 'desc' };
