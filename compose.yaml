@@ -6,3 +6,10 @@ services:
     ports:
       - "5175:80"
     restart: unless-stopped
+    networks:
+      - nginx-proxy-manager
+
+networks:
+  nginx-proxy-manager:
+    external: true
+    name: ${NPM_NETWORK:-nginx-proxy-manager}
