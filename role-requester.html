@@ -186,6 +186,7 @@
                 <th data-sort="status" class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700" data-i18n="th.status"></th>
                 <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60" data-i18n="th.currentStep"></th>
                 <th data-sort="age" class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60" data-i18n="th.age"></th>
+                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60" data-i18n="common.remark"></th>
                 <th class="px-5 py-4 text-right text-[13.5px] font-semibold text-slate-700 bg-slate-50/60"></th>
               </tr>
             </thead>
@@ -264,7 +265,7 @@
       const pageRows = info.rows;
 
       const tb = document.getElementById('rows');
-      if (!list.length) { tb.innerHTML = App.emptyRow(8); App.paintPager(document.getElementById('pager'), tableState, { total: 0 }, paintRows); return; }
+      if (!list.length) { tb.innerHTML = App.emptyRow(9); App.paintPager(document.getElementById('pager'), tableState, { total: 0 }, paintRows); return; }
 
       tb.innerHTML = pageRows.map((d, i) =>
         '<tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">' +
@@ -277,6 +278,7 @@
             (d.status === Store.STATUS.PENDING_SIGN ? App.progressBar(d)
               : '<span class="text-slate-500">' + esc(T('holder.' + d.status)) + '</span>') + '</td>' +
           '<td class="px-5 py-4 bg-slate-50/60">' + App.ageText(d) + '</td>' +
+          App.remarkCell(d) +
           '<td class="px-5 py-4 bg-slate-50/60"><div class="flex items-center justify-end gap-2">' +
             actionFor(d) +
             '<button class="row-action" data-i18n-aria="act.options">' + App.IC.dots + '</button>' +

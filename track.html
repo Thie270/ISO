@@ -293,6 +293,14 @@
           '</div>' +
         '</div>' +
 
+        (d.lastRemark
+          ? '<div class="flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-2.5">' +
+              '<span class="text-amber-500 flex-shrink-0 mt-0.5">' + App.IC.warn + '</span>' +
+              '<p class="text-[12.5px] text-amber-700 leading-relaxed">' +
+                '<span class="font-bold text-amber-800">' + esc(T('tk.remark')) + ': </span>' +
+                esc(d.lastRemark) + '</p></div>'
+          : '') +
+
         '<div class="overflow-x-auto pt-1 pb-1">' + stepper(d) + '</div>' +
 
         '<div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-3.5">' +

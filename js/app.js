@@ -20,6 +20,7 @@
     dots: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>',
     eye: '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle></svg>',
     xCircle: '<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>',
+    warn: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>',
     sync: '<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 5 21 10 16 10"></polyline><polyline points="3 19 3 14 8 14"></polyline><path d="M19.4 9a7.5 7.5 0 0 0-12.6-2.8L3 10"></path><path d="M4.6 15a7.5 7.5 0 0 0 12.6 2.8L21 14"></path></svg>'
   };
 
@@ -424,6 +425,23 @@
   /* คำขออยู่ที่คนอื่น — รอผลอยู่ ยังทำอะไรไม่ได้ */
   function waitAction(title) { return idleBox(IC.sync, title); }
 
+  /* ── ช่อง "หมายเหตุ" ในตารางงาน — เหตุผลที่ถูกส่งกลับ / ไม่อนุมัติ ──
+     ผู้ใช้ต้องเห็นได้จากตารางเลย ไม่ต้องเปิดเอกสารก่อน */
+  function remarkCell(doc) {
+    const S = S_STATUS();
+    const txt = String((doc && doc.lastRemark) || '').trim();
+    if (!txt) return '<td class="px-5 py-4 text-slate-300">' + esc(t().t('common.none')) + '</td>';
+
+    const warn = [S.RETURNED, S.REJECTED, S.EXPIRED_RETURNED].indexOf(doc.status) !== -1;
+    return '<td class="px-5 py-4">' +
+      '<span title="' + esc(txt) + '" class="block max-w-[190px] truncate text-[12.5px] ' +
+        (warn ? 'text-amber-700' : 'text-slate-500') + '">' +
+        (warn ? '<span class="mr-1">⚠</span>' : '') + esc(txt) +
+      '</span></td>';
+  }
+
+  function S_STATUS() { return S().STATUS; }
+
   function emptyRow(cols, msg) {
     return '<tr><td colspan="' + cols + '" class="px-5 py-14 text-center text-[13px] text-slate-400">' +
       esc(msg || t().t('common.empty')) + '</td></tr>';
@@ -689,7 +707,7 @@
 
   global.App = {
     esc, initChrome, requireLogin, initSidebar, initLang, initFilterTabs,
-    statusPill, progressBar, ageText, docLink, myTurnLink, noAction, waitAction, emptyRow,
+    statusPill, progressBar, ageText, docLink, myTurnLink, noAction, waitAction, emptyRow, remarkCell,
     confirmDialog, toast, relDay, dayLabel, IC,
     newTableState, sortDocs, pageOf, paintPager, bindSortHeaders,
     liveRefresh

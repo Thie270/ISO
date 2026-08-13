@@ -166,6 +166,7 @@
                 <th data-sort="progress" class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700" data-i18n="th.signProgress"></th>
                 <th data-sort="status" class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60" data-i18n="th.status"></th>
                 <th data-sort="age" class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60" data-i18n="th.age"></th>
+                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60" data-i18n="common.remark"></th>
                 <th class="px-5 py-4 text-right text-[13.5px] font-semibold text-slate-700 bg-slate-50/60"></th>
               </tr>
             </thead>
@@ -225,7 +226,7 @@
       const pageRows = info.rows;
 
       const tb = document.getElementById('rows');
-      if (!list.length) { tb.innerHTML = App.emptyRow(8, T('qc.noQueue')); return; }
+      if (!list.length) { tb.innerHTML = App.emptyRow(9, T('qc.noQueue')); return; }
 
       tb.innerHTML = pageRows.map((d, i) =>
         '<tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">' +
@@ -236,6 +237,7 @@
           '<td class="px-5 py-4">' + App.progressBar(d) + '</td>' +
           '<td class="px-5 py-4 bg-slate-50/60">' + App.statusPill(d.status) + '</td>' +
           '<td class="px-5 py-4 bg-slate-50/60">' + App.ageText(d) + '</td>' +
+          App.remarkCell(d) +
           '<td class="px-5 py-4 bg-slate-50/60"><div class="flex items-center justify-end gap-2">' +
             (d.status === Store.STATUS.SENT_TO_QC
               ? '<a href="create.html?id=' + encodeURIComponent(d.id) + '" class="row-btn inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-4 py-2 text-[13px] font-semibold text-white no-underline transition-colors" style="background:#0d9488;box-shadow:0 4px 10px rgba(13,148,136,.25)">' + esc(T('act.sign')) + '</a>'

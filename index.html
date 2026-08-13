@@ -249,6 +249,7 @@
                 <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700" data-i18n="th.type"></th>
                 <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700" data-i18n="th.status"></th>
                 <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60" data-i18n="th.currentStep"></th>
+                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60" data-i18n="common.remark"></th>
                 <th class="px-5 py-4 text-right text-[13.5px] font-semibold text-slate-700 bg-slate-50/60"></th>
               </tr>
             </thead>
@@ -363,7 +364,7 @@
       const slice = list.slice((page - 1) * size, page * size);
 
       const tb = document.getElementById('rows');
-      if (!slice.length) { tb.innerHTML = App.emptyRow(8); }
+      if (!slice.length) { tb.innerHTML = App.emptyRow(9); }
       else {
         tb.innerHTML = slice.map((d, i) =>
           '<tr class="border-b border-slate-50 hover:bg-slate-50/70 transition-colors duration-150">' +
@@ -376,6 +377,7 @@
             '<td class="px-5 py-4 bg-slate-50/60">' +
               (d.status === Store.STATUS.PENDING_SIGN ? App.progressBar(d)
                 : '<span class="text-slate-500">' + esc(T('holder.' + d.status)) + '</span>') + '</td>' +
+            App.remarkCell(d) +
             '<td class="px-5 py-4 bg-slate-50/60"><div class="flex items-center justify-end gap-2">' +
               rowAction(d) +
               '<button class="row-action" data-i18n-aria="act.options">' + App.IC.dots + '</button>' +

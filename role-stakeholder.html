@@ -167,6 +167,7 @@
                 <th data-sort="progress" class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700" data-i18n="th.signProgress"></th>
                 <th data-sort="status" class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60" data-i18n="th.status"></th>
                 <th data-sort="due" class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60" data-i18n="th.dueDate"></th>
+                <th class="px-5 py-4 text-left text-[13.5px] font-semibold text-slate-700 bg-slate-50/60" data-i18n="common.remark"></th>
                 <th class="px-5 py-4 text-right text-[13.5px] font-semibold text-slate-700 bg-slate-50/60"></th>
               </tr>
             </thead>
@@ -245,7 +246,7 @@
       const pageRows = info.rows;
 
       const tb = document.getElementById('rows');
-      if (!list.length) { tb.innerHTML = App.emptyRow(8); App.paintPager(document.getElementById('pager'), tableState, { total: 0 }, paintRows); return; }
+      if (!list.length) { tb.innerHTML = App.emptyRow(9); App.paintPager(document.getElementById('pager'), tableState, { total: 0 }, paintRows); return; }
 
       tb.innerHTML = pageRows.map((d, i) => {
         const slot = mine(d);
@@ -261,6 +262,7 @@
               ? '<span class="status-pill bg-violet-50 text-violet-600"><span class="dot bg-violet-500"></span>' + esc(T('sh.c1')) + '</span>'
               : App.statusPill(d.status)) + '</td>' +
           '<td class="px-5 py-4 bg-slate-50/60">' + dueCell(d) + '</td>' +
+          App.remarkCell(d) +
           '<td class="px-5 py-4 bg-slate-50/60"><div class="flex items-center justify-end gap-2">' +
             (canSign
               ? '<a href="create.html?id=' + encodeURIComponent(d.id) + '" class="row-btn inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-4 py-2 text-[13px] font-semibold text-white no-underline transition-colors" style="background:#6d28d9;box-shadow:0 4px 10px rgba(109,40,217,.25)">' +

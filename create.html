@@ -167,7 +167,7 @@
             <div class="grid grid-cols-2 gap-4">
               <div class="flex flex-col gap-1.5">
                 <label for="f-dept" class="f-label" data-i18n="cr.dept"></label>
-                <input id="f-dept" type="text" list="org-units" autocomplete="off" data-i18n-ph="common.fill" class="f-input" />
+                <input id="f-dept" type="text" autocomplete="off" data-i18n-ph="common.fill" class="f-input" />
               </div>
               <div class="flex flex-col gap-1.5">
                 <label for="f-date" class="f-label" data-i18n="cr.date"></label>
@@ -242,7 +242,7 @@
 
           <!-- Step 4 -->
           <div id="step-4" class="step-content hidden flex flex-col gap-4 w-full h-full">
-            <div class="grid grid-cols-2 gap-4 w-full">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
               <div class="flex flex-col gap-1.5">
                 <label for="f-docname" class="f-label" data-i18n="cr.docName"></label>
                 <input id="f-docname" type="text" data-i18n-ph="common.fill" class="f-input" />
@@ -253,14 +253,14 @@
               </div>
             </div>
 
-            <div class="flex items-end gap-4 w-full">
-              <div class="flex flex-col gap-1.5 w-[160px] flex-shrink-0">
+            <div class="flex flex-col sm:flex-row sm:items-end gap-4 w-full">
+              <div class="flex flex-col gap-1.5 w-full sm:w-[160px] sm:flex-shrink-0">
                 <label for="f-revision" class="f-label" data-i18n="cr.revision"></label>
                 <input id="f-revision" type="number" placeholder="0" min="0" class="f-input" />
               </div>
-              <div class="flex flex-col gap-1.5 flex-1">
+              <div class="flex flex-col gap-1.5 w-full sm:flex-1">
                 <label for="f-relateddept" class="f-label" data-i18n="cr.relatedDept"></label>
-                <input id="f-relateddept" type="text" list="org-units" autocomplete="off" data-i18n-ph="common.fill" class="f-input" />
+                <input id="f-relateddept" type="text" autocomplete="off" data-i18n-ph="common.fill" class="f-input" />
               </div>
             </div>
 
@@ -272,7 +272,7 @@
 
             <div class="flex flex-col gap-1.5 w-full">
               <label for="f-effective" class="f-label" data-i18n="cr.effective"></label>
-              <div class="w-[280px] flex-shrink-0">
+              <div class="w-full sm:w-[280px] sm:flex-shrink-0">
                 <input id="f-effective" type="text" data-datefield placeholder="DD/MM/YYYY" class="f-input" />
               </div>
             </div>
@@ -325,11 +325,9 @@
             <div class="flex flex-col gap-2 w-full">
               <label for="related-select" class="f-label" data-i18n="cr.pickRelated"></label>
               <div id="related-chips" class="flex flex-wrap gap-2"></div>
-              <div class="flex items-center gap-2 w-full">
-                <input id="related-select" type="text" list="related-units" autocomplete="off" data-i18n-ph="common.selectData" class="f-input flex-1" />
-                <button id="related-add" type="button" class="flex-shrink-0 rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#2563eb;" data-i18n="cr.addRelated"></button>
+              <div class="w-full">
+                <input id="related-select" type="text" autocomplete="off" data-i18n-ph="cr.relatedPh" class="f-input" />
               </div>
-              <datalist id="related-units"></datalist>
             </div>
 
             <div id="related-sign-section" class="hidden flex flex-col gap-4 w-full">
@@ -371,8 +369,6 @@
 
         </div><!-- /② -->
 
-        <!-- รายการหน่วยงานสำหรับช่อง "แผนก / ส่วน / ฝ่าย" (พิมพ์เองได้ ไม่บังคับเลือกจากรายการ) -->
-        <datalist id="org-units"></datalist>
         </div><!-- /zone -->
 
         <!-- Step nav -->
@@ -808,6 +804,7 @@
         el.classList.toggle('cursor-not-allowed', !!locked);
       });
       DateField.syncAll();
+      syncCombos();
     }
 
     paintSignMeta();
@@ -982,17 +979,112 @@
       addFiles(e.dataTransfer.files);
     });
 
-    /* รายการหน่วยงาน (แผนก / ส่วน / ฝ่าย) — ผู้ใช้เลือกหรือพิมพ์เองก็ได้ */
-    function paintOrgUnits() {
-      const dl = document.getElementById('org-units');
-      if (!dl) return;
-      const lang = I18N.getLang();
-      dl.innerHTML = Store.ORG_UNITS.map(function (u) {
-        return '<option value="' + esc(lang === 'en' ? u.nameEn : u.name) + '"></option>';
-      }).join('');
+    /* ═══════════════════════════════════════════════════════════
+       ช่องเลือกหน่วยงาน — พิมพ์เองได้ และกดลูกศรเพื่อเลือกจากรายการ
+       (เลือกทับค่าเดิมได้เลย ไม่ต้องลบข้อความก่อน)
+       ═══════════════════════════════════════════════════════════ */
+    const CARET = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+
+    function attachCombo(input, opts) {
+      if (!input || input._combo) return null;
+      const o = opts || {};
+
+      const wrap = document.createElement('div');
+      wrap.className = 'combo';
+      input.parentNode.insertBefore(wrap, input);
+      wrap.appendChild(input);
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'combo-btn';
+      btn.tabIndex = -1;
+      btn.setAttribute('aria-hidden', 'true');
+      btn.innerHTML = CARET;
+      wrap.appendChild(btn);
+
+      const panel = document.createElement('div');
+      panel.className = 'combo-panel';
+      wrap.appendChild(panel);
+
+      let picking = false;
+
+      /* filter = true → กรองตามข้อความที่พิมพ์ · false → แสดงทั้งรายการ */
+      function paint(filter) {
+        const list = o.options() || [];
+        const q = filter ? String(input.value || '').trim().toLowerCase() : '';
+        const shown = q ? list.filter(x => String(x.label).toLowerCase().indexOf(q) !== -1) : list;
+        if (!shown.length) {
+          panel.innerHTML = '<p class="combo-empty">' + esc(T('common.empty')) + '</p>';
+          return;
+        }
+        let html = '', group = '';
+        shown.forEach(function (x, i) {
+          if (x.group && x.group !== group) {
+            group = x.group;
+            html += '<p class="combo-group">' + esc(group) + '</p>';
+          }
+          html += '<button type="button" class="combo-item' + (x.chosen ? ' chosen' : '') +
+                  '" data-i="' + i + '">' + esc(x.label) + '</button>';
+        });
+        panel.innerHTML = html;
+        panel.querySelectorAll('.combo-item').forEach(function (b) {
+          b.addEventListener('mousedown', function (e) {
+            e.preventDefault();                       /* กันช่องกรอกเสีย focus ก่อนเลือก */
+            const item = shown[Number(b.getAttribute('data-i'))];
+            close();
+            if (o.onPick) { o.onPick(item); return; }
+            /* ตั้งค่าจากรายการ — อย่าให้ event ที่ยิงออกไปเปิดรายการซ้ำ */
+            picking = true;
+            input.value = item.label;
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+            picking = false;
+            close();
+          });
+        });
+      }
+
+      function open(filter) {
+        if (input.disabled) return;
+        paint(!!filter);
+        wrap.classList.add('open');
+      }
+      function close() { wrap.classList.remove('open'); }
+      function toggle() { wrap.classList.contains('open') ? close() : open(false); }
+
+      btn.addEventListener('click', function () { toggle(); input.focus(); });
+      input.addEventListener('focus', function () { if (!picking) open(false); });
+      input.addEventListener('input', function () { if (!picking) open(true); });
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') close();
+        if (e.key === 'ArrowDown') { e.preventDefault(); open(false); }
+      });
+      document.addEventListener('click', function (e) { if (!wrap.contains(e.target)) close(); });
+
+      input._combo = { open: open, close: close, refresh: function () { if (wrap.classList.contains('open')) paint(false); } };
+      /* ปุ่มลูกศรต้องปิดตามช่องกรอกเมื่ออยู่ในโหมดอ่านอย่างเดียว */
+      const sync = function () { btn.disabled = input.disabled; if (input.disabled) close(); };
+      sync();
+      input._combo.sync = sync;
+      return input._combo;
     }
-    paintOrgUnits();
-    document.addEventListener('langchange', paintOrgUnits);
+
+    function syncCombos() {
+      document.querySelectorAll('.combo .f-input').forEach(function (el) {
+        if (el._combo && el._combo.sync) el._combo.sync();
+      });
+    }
+
+    /* รายการหน่วยงาน (แผนก / ส่วน / ฝ่าย) — ผู้ใช้เลือกหรือพิมพ์เองก็ได้ */
+    function orgOptions() {
+      const lang = I18N.getLang();
+      return Store.ORG_UNITS.map(function (u) {
+        return { id: u.id, label: lang === 'en' ? u.nameEn : u.name, group: u.level };
+      });
+    }
+    ['f-dept', 'f-relateddept'].forEach(function (id) {
+      attachCombo(document.getElementById(id), { options: orgOptions });
+    });
 
     /* ─────────── ผู้มีส่วนเกี่ยวข้อง (ส่วนที่ 5.2) ─────────── */
     const sel = document.getElementById('related-select');
@@ -1003,13 +1095,20 @@
     let related = editing ? (editing.stakeholders || []).map(s => s.id) : [];
 
     /* รายการหน่วยงานให้เลือก — แต่พิมพ์ชื่อหน่วยงานอื่นเองก็ได้ */
-    function paintOptions() {
+    function relatedOptions() {
       const lang = I18N.getLang();
-      const dl = document.getElementById('related-units');
-      if (!dl) return;
-      dl.innerHTML = Store.STAKEHOLDER_POOL
-        .filter(s => related.indexOf(s.id) === -1)
-        .map(s => '<option value="' + esc(lang === 'en' ? s.nameEn : s.name) + '"></option>').join('');
+      return Store.ORG_UNITS.map(function (u) {
+        return {
+          id: u.id,
+          label: lang === 'en' ? u.nameEn : u.name,
+          group: u.level,
+          chosen: related.indexOf(u.id) !== -1
+        };
+      });
+    }
+
+    function paintOptions() {
+      if (sel._combo) sel._combo.refresh();
     }
 
     /* แปลงชื่อที่พิมพ์ → รหัสหน่วยงาน (ถ้าไม่มีในรายการ ใช้ชื่อที่พิมพ์เป็นรหัสเลย) */
@@ -1104,13 +1203,17 @@
       paintOptions();
     }
 
-    document.getElementById('related-add').addEventListener('click', addRelated);
-    sel.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); addRelated(); } });
-    /* เลือกจากรายการแนะนำ = เพิ่มทันที */
-    sel.addEventListener('change', () => {
-      const v = sel.value.trim();
-      if (v && Store.STAKEHOLDER_POOL.some(s => s.name === v || s.nameEn === v)) addRelated();
+    /* เลือกจากรายการ = เพิ่มเข้ารายชื่อทันที (ไม่ต้องกดปุ่มเพิ่มอีกครั้ง) */
+    attachCombo(sel, {
+      options: relatedOptions,
+      onPick: function (item) {
+        if (related.indexOf(item.id) === -1) related.push(item.id);
+        sel.value = '';
+        paintRelated();
+      }
     });
+    /* เลือกจากรายการ หรือพิมพ์ชื่อเองแล้วกด Enter */
+    sel.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); addRelated(); } });
 
     /* ─────────── Sign modal ─────────── */
     const SignModal = (function () {
@@ -2381,8 +2484,49 @@
       if (signMode) paintSignSlots();
     };
 
+    /* ═══════════════════════════════════════════════════════════
+       เอกสารที่ถูกส่งกลับ / ไม่อนุมัติ — ต้องเห็นเหตุผลทันทีที่เปิด
+       (เดิมหมายเหตุอยู่แค่ในหน้ารายละเอียด ผู้จัดทำจึงไม่รู้ว่าติดอะไร)
+       ═══════════════════════════════════════════════════════════ */
+    function showRemarkBanner() {
+      if (!editing || !editing.lastRemark) return;
+      const st = Store.STATUS;
+      if ([st.RETURNED, st.REJECTED, st.EXPIRED_RETURNED].indexOf(editing.status) === -1) return;
+
+      const zone = document.getElementById('doc-zone');
+      const tabs = document.getElementById('doc-tabs');
+      if (!zone || !tabs || document.getElementById('remark-banner')) return;
+
+      const who = (editing.history || []).slice().reverse()
+        .filter(h => ['return', 'reject'].indexOf(h.action) !== -1)[0];
+      const actor = who ? (Store.USERS.filter(u => u.id === who.actor)[0] || null) : null;
+
+      const box = document.createElement('div');
+      box.id = 'remark-banner';
+      box.className = 'flex-shrink-0 flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3';
+      box.innerHTML =
+        '<span class="mt-0.5 text-amber-500 flex-shrink-0">' + WARN_ICON + '</span>' +
+        '<div class="min-w-0">' +
+          '<p class="text-[12.5px] font-bold text-amber-800"><span data-remark-title></span>' +
+            (actor ? ' · <span class="font-semibold">' + esc(I18N.getLang() === 'en' ? actor.nameEn : actor.name) + '</span>' : '') +
+          '</p>' +
+          '<p class="mt-0.5 text-[12.5px] text-amber-700 leading-relaxed whitespace-pre-wrap">' + esc(editing.lastRemark) + '</p>' +
+        '</div>';
+      zone.insertBefore(box, tabs);
+
+      const paintTitle = function () {
+        box.querySelector('[data-remark-title]').textContent = T('tk.remark');
+      };
+      paintTitle();
+      document.addEventListener('langchange', paintTitle);
+    }
+
     fill();
     goToStep(1);
+    showRemarkBanner();
+    /* ปุ่มลูกศรของช่องหน่วยงาน ต้องปิดตามโหมดอ่านอย่างเดียวของแต่ละบทบาท */
+    document.addEventListener('langchange', function () { setTimeout(syncCombos, 0); });
+    setTimeout(syncCombos, 0);
     if (ownerMode) initOwnerMode();
     else if (reviewMode) initReviewMode();
     else if (signMode) initSignMode();
