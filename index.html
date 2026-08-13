@@ -141,7 +141,7 @@
     <div class="flex-1 px-6 py-6 flex flex-col gap-5">
 
       <!-- ── Summary Cards ── -->
-      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
 
         <div class="group rounded-2xl bg-white p-5 border border-slate-100 shadow-[0_2px_14px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
           <div class="flex items-start justify-between gap-3">
@@ -173,7 +173,18 @@
             </span>
           </div>
           <p id="k-signing" class="mt-3 text-[32px] font-bold text-slate-900 leading-none">0</p>
-          <button data-jump="PENDING_SIGN" class="mt-3 inline-block text-[13px] text-slate-400 underline underline-offset-2 hover:text-blue-600 transition-colors" data-i18n="dash.more"></button>
+          <button data-jump="PENDING_OWNER,PENDING_APPROVAL,PENDING_SIGN,SENT_TO_QC,PENDING_QC_MANAGER" class="mt-3 inline-block text-[13px] text-slate-400 underline underline-offset-2 hover:text-blue-600 transition-colors" data-i18n="dash.more"></button>
+        </div>
+
+        <div class="group rounded-2xl bg-white p-5 border border-slate-100 shadow-[0_2px_14px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
+          <div class="flex items-start justify-between gap-3">
+            <p class="text-[15px] font-semibold text-slate-500" data-i18n="dash.approved"></p>
+            <span class="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center flex-shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            </span>
+          </div>
+          <p id="k-registered" class="mt-3 text-[32px] font-bold text-slate-900 leading-none">0</p>
+          <button data-jump="REGISTERED" class="mt-3 inline-block text-[13px] text-slate-400 underline underline-offset-2 hover:text-blue-600 transition-colors" data-i18n="dash.more"></button>
         </div>
 
         <div class="group rounded-2xl bg-white p-5 border border-slate-100 shadow-[0_2px_14px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(15,23,42,0.08)]">
@@ -206,10 +217,11 @@
         <div class="flex flex-col flex-wrap gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
           <div class="inline-flex flex-wrap items-center gap-1 rounded-2xl border border-slate-200 p-1">
             <button data-filter="" class="filter-tab active rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="common.all"></button>
-            <button data-filter="PENDING_OWNER,PENDING_APPROVAL" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="status.PENDING_APPROVAL"></button>
-            <button data-filter="PENDING_SIGN,SENT_TO_QC,PENDING_QC_MANAGER,REGISTERED" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="dash.approved"></button>
-            <button data-filter="REJECTED" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="dash.rejected"></button>
+            <button data-filter="DRAFT" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="status.DRAFT"></button>
+            <button data-filter="PENDING_OWNER,PENDING_APPROVAL,PENDING_SIGN,SENT_TO_QC,PENDING_QC_MANAGER" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="status.PENDING_APPROVAL"></button>
+            <button data-filter="REGISTERED" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="dash.approved"></button>
             <button data-filter="RETURNED,EXPIRED_RETURNED" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="ap.c3"></button>
+            <button data-filter="REJECTED" class="filter-tab rounded-xl px-5 py-2 text-sm font-semibold transition-all duration-200" data-i18n="dash.rejected"></button>
           </div>
 
           <div class="flex flex-wrap items-center gap-3">
@@ -303,10 +315,12 @@
     function paintKpi() {
       const s = Store.stats();
       document.getElementById('hero-total').textContent    = s.total;
-      document.getElementById('hero-approved').textContent = s.signing + s.qc + s.registered;
+      document.getElementById('hero-approved').textContent = s.registered;
       document.getElementById('k-total').textContent    = s.total;
       document.getElementById('k-draft').textContent    = s.draft;
-      document.getElementById('k-signing').textContent  = s.signing;
+      /* In process = ทุกสถานะที่ flow ยังเดินอยู่ (รอเจ้าของเอกสาร → รอ QC ขึ้นทะเบียน) */
+      document.getElementById('k-signing').textContent    = s.pending + s.signing + s.qc;
+      document.getElementById('k-registered').textContent = s.registered;
       document.getElementById('k-returned').textContent = s.returned;
       document.getElementById('k-rejected').textContent = s.rejected;
     }
