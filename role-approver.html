@@ -223,6 +223,10 @@
 
       function reviewLink(d) {
         /* ผู้อนุมัติ "ตรวจสอบ" → เปิดหน้าเอกสารยาวแบบเดียวกับผู้ร้องขอ (create.html) */
+        /* เอกสารที่ถูกส่งกลับมาแก้ไข — แก้ไขเนื้อหาแล้วส่งต่อได้จากจุดของตัวเอง */
+        if (Store.permissions(d, user).edit) {
+          return '<a href="create.html?id=' + encodeURIComponent(d.id) + '" class="row-btn inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-orange-500 px-4 py-2 text-[13px] font-semibold text-white no-underline shadow-[0_4px_10px_rgba(249,115,22,0.25)] hover:bg-orange-600 transition-colors">' + esc(T('act.edit')) + '</a>';
+        }
         if (d.status === Store.STATUS.PENDING_APPROVAL) {
           return '<a href="create.html?id=' + encodeURIComponent(d.id) + '" class="row-btn inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl bg-blue-600 px-4 py-2 text-[13px] font-semibold text-white no-underline shadow-[0_4px_10px_rgba(37,99,235,0.25)] hover:bg-blue-700 transition-colors">' + esc(T('act.review')) + '</a>';
         }

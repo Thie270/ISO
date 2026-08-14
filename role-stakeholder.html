@@ -200,6 +200,14 @@
 
     let filter = 'waitme', term = '';
 
+    /* ถ้ายังไม่มีเอกสารที่ต้องเซ็น ให้เปิดที่แท็บ "ทั้งหมด" จะได้เห็นงานที่เกี่ยวข้องทั้งหมด */
+    if (!Store.stats('stakeholder', user.id).waitMe) {
+      filter = '';
+      document.querySelectorAll('.filter-tab').forEach(function (b) {
+        b.classList.toggle('active', (b.getAttribute('data-filter') || '') === '');
+      });
+    }
+
     function paintCards() {
       const s = Store.stats('stakeholder', user.id);
       document.getElementById('c-wait').textContent     = s.waitMe;
@@ -215,7 +223,7 @@
       if (!filter) return true;
       if (filter === 'waitme')  return d.status === st.PENDING_SIGN && slot && !slot.signed;
       if (filter === 'signed')  return slot && slot.signed;
-      if (filter === 'near')    return d.status === st.PENDING_SIGN && Store.remainingOf(d) <= 2;
+      if (filter === 'near')    return d.status === st.PENDING_SIGN && slot && !slot.signed && Store.remainingOf(d) <= 2;
       return d.status === filter;
     }
 
@@ -246,7 +254,11 @@
       const pageRows = info.rows;
 
       const tb = document.getElementById('rows');
-      if (!list.length) { tb.innerHTML = App.emptyRow(9); App.paintPager(document.getElementById('pager'), tableState, { total: 0 }, paintRows); return; }
+      if (!list.length) {
+        tb.innerHTML = App.emptyRow(9, filter === 'waitme' ? T('sh.noMine') : T('common.empty'));
+        App.paintPager(document.getElementById('pager'), tableState, { total: 0 }, paintRows);
+        return;
+      }
 
       tb.innerHTML = pageRows.map((d, i) => {
         const slot = mine(d);

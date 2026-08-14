@@ -964,8 +964,7 @@
          (ช่องที่ตรงกับตัวเอง/แผนกของตัวเองก่อน ถ้าไม่มีจึงรับช่องที่ยังไม่มีใครเซ็น) */
       return list.filter(d =>
         [STATUS.PENDING_SIGN, STATUS.SENT_TO_QC, STATUS.PENDING_QC_MANAGER,
-         STATUS.REGISTERED, STATUS.EXPIRED_RETURNED].indexOf(d.status) !== -1 &&
-        !!slotForUser(d, userId)
+         STATUS.REGISTERED, STATUS.EXPIRED_RETURNED].indexOf(d.status) !== -1
       );
     }
     if (role === 'qc') {
@@ -985,16 +984,22 @@
 
   /* หาช่องลงนามของผู้ใช้คนนี้ในเอกสาร
      ① ช่องที่ผูกกับบัญชีของเขาโดยตรง
-     ② ช่องที่เป็นแผนกของเขา
-     ③ ช่องที่ยังไม่มีใครลงนาม — ผู้ร้องขออาจเลือกเฉพาะชื่อแผนก
-        ถ้าไม่มีข้อนี้ เอกสารที่ผู้อนุมัติส่งมาจะไม่ขึ้นให้ลงนามเลย */
+     ② ช่องที่เป็นหน่วยงานของเขา
+     ③ ช่องอื่นที่ยังไม่มีใครลงนาม — ผู้ร้องขอเลือกไว้แค่ชื่อหน่วยงาน
+        (ระบบสาธิตมีผู้ใช้ฝ่ายผู้เกี่ยวข้องบัญชีเดียว จึงลงนามแทนหน่วยงานที่ถูกเลือกไว้ได้)
+
+     ถ้าผู้ร้องขอ "ไม่ได้เพิ่มใครเลย" ในส่วนที่ 5.2 → ไม่มีช่องลงนาม
+     เปิดดูรายละเอียดได้ แต่เซ็นและส่งต่อไม่ได้ */
   function slotForUser(doc, userId) {
-    const u = USERS.find(x => x.id === (userId || 'D')) || { id: userId || 'D', dept: '' };
+    const u = USERS.find(x => x.id === (userId || 'D')) || { id: userId || 'D', dept: '', deptId: '' };
     const list = doc && doc.stakeholders ? doc.stakeholders : [];
-    return list.find(s => s.userId === u.id) ||
-           list.find(s => s.id === u.deptId || s.name === u.dept) ||
-           list.find(s => !s.signed) ||
-           list[0] || null;
+    if (!list.length) return null;
+    const own = list.find(s => s.userId === u.id) ||
+                list.find(s => (u.deptId && s.id === u.deptId) || (u.dept && s.name === u.dept));
+    /* ช่องของตัวเองก่อน ถ้าเซ็นไปแล้วจึงรับช่องอื่นที่ยังว่างอยู่ต่อ
+       (ระบบสาธิตมีผู้ใช้ฝ่ายผู้เกี่ยวข้องบัญชีเดียว งานจึงเดินต่อจนครบได้) */
+    if (own && !own.signed) return own;
+    return list.find(s => !s.signed) || own || list[0];
   }
 
   function mySignSlot(doc, user) {
@@ -1018,12 +1023,18 @@
       if (doc.status === STATUS.RETURNED || doc.status === STATUS.EXPIRED_RETURNED) { p.edit = true; p.draft = true; p.send = true; }
     }
 
-    if (user.role === 'owner' && doc.status === STATUS.PENDING_OWNER) {
-      p.ownerSign = true; p.return = true;
+    /* เอกสารที่ถูกส่งกลับมาแก้ไข — แก้ไขและส่งต่อจากจุดของตัวเองได้เลย
+       (ผู้มีส่วนเกี่ยวข้องแก้ไม่ได้ และส่งต่อไม่ได้) */
+    const fixable = [STATUS.RETURNED, STATUS.EXPIRED_RETURNED].indexOf(doc.status) !== -1;
+
+    if (user.role === 'owner' && (doc.status === STATUS.PENDING_OWNER || fixable)) {
+      p.ownerSign = true; p.return = !fixable;
+      if (fixable) { p.edit = true; p.draft = true; }
     }
 
-    if (user.role === 'approver' && doc.status === STATUS.PENDING_APPROVAL) {
-      p.approve = true; p.reject = true; p.return = true;
+    if (user.role === 'approver' && (doc.status === STATUS.PENDING_APPROVAL || fixable)) {
+      p.approve = true; p.reject = !fixable; p.return = !fixable;
+      if (fixable) { p.edit = true; p.draft = true; }
     }
 
     if (user.role === 'stakeholder' && doc.status === STATUS.PENDING_SIGN) {
@@ -1194,14 +1205,33 @@
     return doc;
   }
 
+  /* เอกสารถูกส่งกลับไปแก้ไข → ล้างลายเซ็นทุกช่อง
+     ทุกบทบาทต้องกลับเข้ามาลงนามรับทราบใหม่ตั้งแต่ต้นจนจบ flow */
+  function clearSignatures(doc) {
+    doc.signatures = {};
+    (doc.stakeholders || []).forEach(s => {
+      s.signed = false;
+      s.signedDay = null;
+      delete s.sigImg;
+      delete s.signName;
+      delete s.signAt;
+      delete s.signPosition;
+    });
+  }
+
   /* ⑥ ส่งกลับไปแก้ไข */
   function returnForEdit(id, user, remark) {
     const doc = getDoc(id);
     if (!doc) return null;
     doc.status = STATUS.RETURNED;
     doc.lastRemark = remark || '';
+    clearSignatures(doc);
+    doc.approvedDay = null;
     pushHistory(doc, user ? user.id : 'C', 'return', remark);
     notify('requester', doc, 'n.returned');
+    notify('owner', doc, 'n.returned');
+    notify('approver', doc, 'n.returned');
+    notify('stakeholder', doc, 'n.returned');
     save();
     return doc;
   }
@@ -1224,7 +1254,9 @@
     const doc = getDoc(id);
     if (!doc) return null;
     const slot = mySignSlot(doc, user);
-    if (slot) { slot.signed = true; slot.signedDay = load().day; }
+    /* ไม่ได้ถูกเพิ่มไว้ในส่วนที่ 5.2 → ลงนามและส่งต่อไม่ได้ */
+    if (!slot) return doc;
+    slot.signed = true; slot.signedDay = load().day;
     pushHistory(doc, user ? user.id : 'D', 'sign', remark);
 
     if (signedCount(doc) >= totalSigners(doc) && totalSigners(doc) > 0) {
@@ -1306,6 +1338,8 @@
       if (doc.status === STATUS.PENDING_SIGN && ageOf(doc) >= doc.dueDays) {
         doc.status = STATUS.EXPIRED_RETURNED;
         doc.lastRemark = 'ผู้มีส่วนเกี่ยวข้องลงนามไม่ครบภายในกำหนด ระบบส่งกลับอัตโนมัติ';
+        clearSignatures(doc);
+        doc.approvedDay = null;
         pushHistory(doc, 'SYSTEM', 'expire');
         notify('requester', doc, 'n.expired');
         notify('stakeholder', doc, 'n.expired');
@@ -1380,7 +1414,10 @@
       return {
         waitMe:   list.filter(d => d.status === S.PENDING_SIGN && slotOf(d) && !slotOf(d).signed).length,
         signed:   list.filter(d => { const x = slotOf(d); return x && x.signed; }).length,
-        near:     list.filter(d => d.status === S.PENDING_SIGN && remainingOf(d) <= 2).length,
+        near:     list.filter(d => {
+                    const x = slotOf(d);
+                    return d.status === S.PENDING_SIGN && x && !x.signed && remainingOf(d) <= 2;
+                  }).length,
         returned: n([S.EXPIRED_RETURNED])
       };
     }

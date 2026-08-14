@@ -331,7 +331,6 @@
             </div>
 
             <div id="related-sign-section" class="hidden flex flex-col gap-4 w-full">
-              <div id="related-chips-mirror" class="flex flex-wrap gap-2"></div>
               <div id="related-sign-boxes" class="grid grid-cols-2 gap-6 w-full"></div>
             </div>
           </div>
@@ -537,9 +536,15 @@
     /* ผู้อนุมัติเปิดหน้าเดียวกับผู้ร้องขอเพื่อ "ตรวจสอบ" แล้วเซ็นในส่วนที่ 5.3 */
     const reviewMode = !!(editing && user.role === 'approver');
 
-    /* ผู้มีส่วนเกี่ยวข้องเปิดหน้าเดียวกันเพื่อเซ็นช่องของตัวเองในส่วนที่ 5.2 */
+    /* เอกสารที่ถูกส่งกลับมาแก้ไข — เจ้าของเอกสาร / ผู้อนุมัติ แก้ไขเนื้อหาแล้วส่งต่อได้เลย */
+    const FIXABLE = [Store.STATUS.RETURNED, Store.STATUS.EXPIRED_RETURNED];
+    const fixMode = !!(editing && FIXABLE.indexOf(editing.status) !== -1 &&
+                       (user.role === 'owner' || user.role === 'approver'));
+
+    /* ผู้มีส่วนเกี่ยวข้องเปิดหน้าเดียวกันเพื่อเซ็นช่องของตัวเองในส่วนที่ 5.2
+       (ต้องถูกเพิ่มไว้ในส่วนที่ 5.2 จริง และเอกสารต้องเดินมาถึงขั้นลงนามแล้ว) */
     const mySlot = (editing && user.role === 'stakeholder') ? Store.mySignSlot(editing, user) : null;
-    const signMode = !!mySlot;
+    const signMode = !!mySlot && editing.status === Store.STATUS.PENDING_SIGN;
 
     /* แผนกควบคุมคุณภาพเปิดหน้าเดียวกันเพื่อเซ็นในส่วนที่ 6 แล้วขึ้นทะเบียน */
     const qcMode = !!(editing && user.role === 'qc');
@@ -547,7 +552,10 @@
     /* ผู้จัดการแผนกควบคุมคุณภาพ — ลงนามช่องขวาในส่วนที่ 6 แล้วขึ้นทะเบียน */
     const qcMgrMode = !!(editing && user.role === 'qcManager');
 
-    if (user.role !== 'requester' && !ownerMode && !reviewMode && !signMode && !qcMode && !qcMgrMode) { App.toast(T('dv.noAccess'), 'red'); location.replace(user.home); return; }
+    if (user.role !== 'requester' && !ownerMode && !reviewMode && !signMode && !qcMode && !qcMgrMode) {
+      location.replace(editId ? ('document.html?id=' + encodeURIComponent(editId)) : user.home);
+      return;
+    }
     if (!ownerMode && !reviewMode && !signMode && !qcMode && !qcMgrMode && editing && editing.requesterId !== user.id) editing = null;
 
     /* เปิดคำขอของคนอื่น (หรือไม่มีคำขอนี้) → ส่งไปดูหน้ากระดาษแทน ไม่ใช่ฟอร์มเปล่า */
@@ -1089,7 +1097,6 @@
     /* ─────────── ผู้มีส่วนเกี่ยวข้อง (ส่วนที่ 5.2) ─────────── */
     const sel = document.getElementById('related-select');
     const chipsEl = document.getElementById('related-chips');
-    const mirror = document.getElementById('related-chips-mirror');
     const signSection = document.getElementById('related-sign-section');
     const signBoxes = document.getElementById('related-sign-boxes');
     let related = editing ? (editing.stakeholders || []).map(s => s.id) : [];
@@ -1136,7 +1143,7 @@
     }
 
     function paintRelated() {
-      chipsEl.innerHTML = ''; mirror.innerHTML = ''; signBoxes.innerHTML = '';
+      chipsEl.innerHTML = ''; signBoxes.innerHTML = '';
       if (!related.length) { signSection.classList.add('hidden'); paintOptions(); return; }
       signSection.classList.remove('hidden');
 
@@ -1155,12 +1162,6 @@
         x.addEventListener('click', () => { related = related.filter(v => v !== id); paintRelated(); });
         chip.appendChild(x);
         chipsEl.appendChild(chip);
-
-        const m = document.createElement('span');
-        m.className = 'inline-flex items-center rounded-full px-3 py-1 text-[12px] font-semibold';
-        m.style.cssText = 'background:#EFF6FF; color:#2563EB;';
-        m.textContent = label;
-        mirror.appendChild(m);
 
         const col = document.createElement('div');
         col.className = 'flex flex-col gap-3';
@@ -2226,7 +2227,8 @@
       if (!btn) return;
       const meta = getSignMeta('owner');
       const ok = !!SignModal.data.owner && !!meta.name && !!meta.at;
-      const canSign = (Store.getDoc(editing.id) || editing).status === Store.STATUS.PENDING_OWNER;
+      const st = (Store.getDoc(editing.id) || editing).status;
+      const canSign = st === Store.STATUS.PENDING_OWNER || FIXABLE.indexOf(st) !== -1;
       btn.disabled = !ok || !canSign;
       btn.classList.toggle('opacity-40', btn.disabled);
       btn.classList.toggle('cursor-not-allowed', btn.disabled);
@@ -2249,8 +2251,12 @@
       viewAllBtn.click();
       viewAllBtn.style.display = 'none';
 
-      /* อ่านอย่างเดียวทุกส่วน — ส่วนที่ 5 จะเปิดเฉพาะช่องของตัวเองทีหลัง */
-      ['step-1', 'step-2', 'step-3', 'step-4', 'step-5', 'step-6', 'step-7', 'step-8', 'step-9'].forEach(function (id) {
+      /* อ่านอย่างเดียวทุกส่วน — ส่วนที่ 5 จะเปิดเฉพาะช่องของตัวเองทีหลัง
+         ยกเว้นเอกสารที่ถูกส่งกลับ: เนื้อหา (ส่วนที่ 1–4, 5.2) แก้ไขได้ */
+      const LOCK = fixMode
+        ? ['step-6', 'step-8', 'step-9']
+        : ['step-1', 'step-2', 'step-3', 'step-4', 'step-5', 'step-6', 'step-7', 'step-8', 'step-9'];
+      LOCK.forEach(function (id) {
         const sec = document.getElementById(id);
         if (!sec) return;
         sec.querySelectorAll('input, select, textarea').forEach(function (el) {
@@ -2291,7 +2297,8 @@
 
       const bar = document.getElementById('draft-btn').parentNode;
       bar.innerHTML =
-        '<button id="ow-return" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-amber-200 bg-amber-50 px-5 py-2.5 text-sm font-semibold text-amber-700 hover:bg-amber-100 transition-colors">' + esc(T('act.return')) + '</button>' +
+        (fixMode ? '' :
+        '<button id="ow-return" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-amber-200 bg-amber-50 px-5 py-2.5 text-sm font-semibold text-amber-700 hover:bg-amber-100 transition-colors">' + esc(T('act.return')) + '</button>') +
         '<button id="ow-sign" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-colors" ' +
         'style="background:linear-gradient(90deg,#34d399 0%,#16a34a 100%);box-shadow:0 4px 10px rgba(22,163,74,.28)"></button>';
       paintOwnerBtn();
@@ -2316,6 +2323,7 @@
         const r = await App.confirmDialog({ title: T('act.ownerSign'), sub: T('ow.confirmSign'), tone: 'green', needNote: true });
         if (!r) return;
 
+        if (fixMode) persist();                    /* เก็บเนื้อหาที่แก้ไขไว้ก่อนส่งต่อ */
         Store.ownerSign(doc.id, user, r.note);
         const live = Store.getDoc(doc.id);
         live.signatures = Object.assign({}, live.signatures, {
@@ -2329,7 +2337,8 @@
         setTimeout(function () { location.href = 'role-owner.html'; }, 700);
       });
 
-      document.getElementById('ow-return').addEventListener('click', async function () {
+      const owReturn = document.getElementById('ow-return');
+      if (owReturn) owReturn.addEventListener('click', async function () {
         const r = await App.confirmDialog({ title: T('act.return'), sub: T('dv.confirmReturn'), tone: 'amber', needNote: true, noteRequired: true });
         if (!r) return;
         Store.returnForEdit(doc.id, user, r.note);
@@ -2359,8 +2368,9 @@
       viewAllBtn.click();
       viewAllBtn.style.display = 'none';
 
-      /* อ่านอย่างเดียวทุกส่วน (รวม 5.2 ที่ผู้ร้องขอเลือกมาแล้ว) เหลือทำงานได้เฉพาะ 5.3 */
-      ['step-1', 'step-2', 'step-3', 'step-4', 'step-5', 'step-6', 'step-7', 'step-9'].forEach(function (id) {
+      /* อ่านอย่างเดียวทุกส่วน (รวม 5.2 ที่ผู้ร้องขอเลือกมาแล้ว) เหลือทำงานได้เฉพาะ 5.3
+         ยกเว้นเอกสารที่ถูกส่งกลับ: แก้ไขเนื้อหาแล้วส่งต่อได้ */
+      (fixMode ? ['step-6', 'step-9'] : ['step-1', 'step-2', 'step-3', 'step-4', 'step-5', 'step-6', 'step-7', 'step-9']).forEach(function (id) {
         const sec = document.getElementById(id);
         if (!sec) return;
         sec.querySelectorAll('input, select, textarea').forEach(function (el) {
@@ -2376,6 +2386,7 @@
 
       /* 5.2 — แสดงรายชื่อที่ผู้ร้องขอเลือกไว้แบบอ่านอย่างเดียว */
       function lockRelated() {
+        if (fixMode) return;                       /* โหมดแก้ไข: เพิ่ม/ลบผู้เกี่ยวข้องได้ */
         const s7 = document.getElementById('step-7');
         s7.querySelectorAll('#related-chips button').forEach(function (x) { x.style.display = 'none'; });
         s7.querySelectorAll('input, select, textarea').forEach(function (el) {
@@ -2405,8 +2416,9 @@
 
       const bar = document.getElementById('draft-btn').parentNode;
       bar.innerHTML =
+        (fixMode ? '' :
         '<button id="rv-return" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-amber-200 bg-amber-50 px-5 py-2.5 text-sm font-semibold text-amber-700 hover:bg-amber-100 transition-colors">' + esc(T('act.return')) + '</button>' +
-        '<button id="rv-reject" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 transition-colors">' + esc(T('act.reject')) + '</button>' +
+        '<button id="rv-reject" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 transition-colors">' + esc(T('act.reject')) + '</button>') +
         '<button id="rv-approve" class="inline-flex items-center gap-1.5 whitespace-nowrap rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-colors" style="background:#16a34a;box-shadow:0 4px 10px rgba(22,163,74,.25)">' + esc(T('act.approve')) + '</button>';
 
       function jumpTo(id) {
@@ -2436,6 +2448,7 @@
         const r = await App.confirmDialog({ title: T('act.approve'), sub: T('dv.confirmApprove'), tone: 'green', needNote: true });
         if (!r) return;
 
+        if (fixMode) persist();                    /* เก็บเนื้อหาที่แก้ไขไว้ก่อนส่งต่อ */
         /* ใช้รายชื่อผู้เกี่ยวข้องเดิมที่ผู้ร้องขอเลือกไว้ แล้วเปลี่ยนสถานะตาม flow */
         Store.approve(doc.id, user, r.note);
 
@@ -2452,7 +2465,8 @@
         setTimeout(function () { location.href = 'role-approver.html'; }, 700);
       });
 
-      document.getElementById('rv-return').addEventListener('click', async function () {
+      const rvReturn = document.getElementById('rv-return');
+      if (rvReturn) rvReturn.addEventListener('click', async function () {
         const r = await App.confirmDialog({ title: T('act.return'), sub: T('dv.confirmReturn'), tone: 'amber', needNote: true, noteRequired: true });
         if (!r) return;
         Store.returnForEdit(doc.id, user, r.note);
@@ -2460,7 +2474,8 @@
         setTimeout(function () { location.href = 'role-approver.html'; }, 700);
       });
 
-      document.getElementById('rv-reject').addEventListener('click', async function () {
+      const rvReject = document.getElementById('rv-reject');
+      if (rvReject) rvReject.addEventListener('click', async function () {
         const r = await App.confirmDialog({ title: T('act.reject'), sub: T('dv.confirmReject'), tone: 'red', needNote: true, noteRequired: true });
         if (!r) return;
         Store.reject(doc.id, user, r.note);
@@ -2511,11 +2526,13 @@
             (actor ? ' · <span class="font-semibold">' + esc(I18N.getLang() === 'en' ? actor.nameEn : actor.name) + '</span>' : '') +
           '</p>' +
           '<p class="mt-0.5 text-[12.5px] text-amber-700 leading-relaxed whitespace-pre-wrap">' + esc(editing.lastRemark) + '</p>' +
+          '<p class="mt-1 text-[11.5px] text-amber-600" data-resign-note></p>' +
         '</div>';
       zone.insertBefore(box, tabs);
 
       const paintTitle = function () {
         box.querySelector('[data-remark-title]').textContent = T('tk.remark');
+        box.querySelector('[data-resign-note]').textContent = T('tk.resign');
       };
       paintTitle();
       document.addEventListener('langchange', paintTitle);
