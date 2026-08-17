@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>E2E — Riverpark Document System</title>
+  <style>
+    body { font-family: 'IBM Plex Sans Thai', system-ui, sans-serif; margin: 0; background: #0f172a; color: #e2e8f0; }
+    header { padding: 16px 20px; border-bottom: 1px solid #1e293b; }
+    h1 { font-size: 15px; margin: 0; }
+    #summary { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+    #list { padding: 12px 20px; font-size: 13px; line-height: 1.9; }
+    .pass::before { content: '✓ '; color: #34d399; }
+    .fail::before { content: '✗ '; color: #f87171; }
+    .fail { color: #fca5a5; }
+    .why { color: #fca5a5; padding-left: 18px; font-size: 12px; }
+    /* หน้าที่กำลังทดสอบ — ต้องมีขนาดจริงเพื่อให้วัดตำแหน่ง/ขนาดได้ */
+    #stage { position: fixed; left: -9999px; top: 0; }
+    #stage iframe { width: 1440px; height: 900px; border: 0; }
+    #out { white-space: pre-wrap; word-break: break-all; padding: 0 20px 20px; font-size: 11px; color: #475569; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>E2E — Riverpark Document System</h1>
+    <p id="summary">กำลังทดสอบ…</p>
+  </header>
+  <div id="list"></div>
+  <div id="stage"></div>
+  <pre id="out"></pre>
+
+  <script src="../../js/i18n.js"></script>
+  <script src="../../js/store.js"></script>
+  <script src="harness.js"></script>
+
+  <script src="specs/01-flow.spec.js"></script>
+  <script src="specs/02-return.spec.js"></script>
+  <script src="specs/03-stakeholder.spec.js"></script>
+  <script src="specs/04-workspace.spec.js"></script>
+  <script src="specs/05-form.spec.js"></script>
+  <script src="specs/06-document.spec.js"></script>
+
+  <script>
+  (async function () {
+    const list = document.getElementById('list');
+    const results = [];
+
+    for (const t of getTests()) {
+      const started = performance.now();
+      let error = null;
+      try {
+        await t.fn();
+      } catch (e) {
+        error = (e && e.message) || String(e);
+      }
+      const ms = Math.round(performance.now() - started);
+      results.push({ name: t.name, ok: !error, ms: ms, error: error });
+
+      const row = document.createElement('div');
+      row.className = error ? 'fail' : 'pass';
+      row.textContent = t.name + ' (' + ms + ' ms)';
+      list.appendChild(row);
+      if (error) {
+        const why = document.createElement('div');
+        why.className = 'why';
+        why.textContent = error;
+        list.appendChild(why);
+      }
+      /* เก็บกวาดหน้าที่เปิดค้างไว้ ก่อนเริ่ม test ถัดไป */
+      document.getElementById('stage').innerHTML = '';
+    }
+
+    const failed = results.filter(r => !r.ok).length;
+    document.getElementById('summary').textContent =
+      'ผ่าน ' + (results.length - failed) + ' / ' + results.length + ' · ไม่ผ่าน ' + failed;
+    document.title = failed ? 'E2E FAILED' : 'E2E PASSED';
+    document.getElementById('out').textContent =
+      'E2E-RESULT::' + JSON.stringify({ total: results.length, failed: failed, results: results });
+  })();
+  </script>
+</body>
+</html>
