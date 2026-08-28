@@ -71,3 +71,32 @@ test('document: ไทม์ไลน์บันทึกครบทุกข�
   noPageError(ctx, 'หน้าเอกสาร');
   ctx.close();
 });
+
+test('document: พรีวิวเอกสารต่อท้ายด้วยไฟล์แนบทั้งหมด', async () => {
+  resetData();
+  const doc = newRequest({ docNo: 'RVP-E2E-ATT' });
+  Store.updateDraft(doc.id, {
+    files: [
+      { name: 'ใบรับรองผลทดสอบ.pdf', size: 120000, kind: 'change' },
+      { name: 'ผังกระบวนการ.png', size: 84000, kind: 'change' }
+    ]
+  });
+
+  const ctx = await openApp('document.html?id=' + doc.id, 'A');
+  eq(ctx.$$('.paper').length, 4, 'ต้องมีกระดาษ 2 หน้า + ไฟล์แนบ 2 ไฟล์ต่อท้าย');
+
+  const names = ctx.$$('.paper').map(p => p.textContent);
+  contains(names[2], 'ใบรับรองผลทดสอบ.pdf', 'ไฟล์แนบที่ 1 ต้องต่อจากหน้าเอกสาร');
+  contains(names[3], 'ผังกระบวนการ.png', 'ไฟล์แนบที่ 2 ต้องต่อกันมา');
+  ok(ctx.$('.attach-divider'), 'ต้องมีเส้นคั่นบอกว่าเริ่มไฟล์แนบ');
+
+  /* เอกสารที่ไม่มีไฟล์แนบ ต้องไม่มีหน้าเปล่าต่อท้าย */
+  const plain = newRequest({ docNo: 'RVP-E2E-NOATT' });
+  const ctx2 = await openApp('document.html?id=' + plain.id, 'A');
+  eq(ctx2.$$('.paper').length, 2, 'ไม่มีไฟล์แนบต้องมีแค่ 2 หน้า');
+  notOk(ctx2.$('.attach-divider'), 'ไม่มีไฟล์แนบก็ไม่ต้องมีเส้นคั่น');
+
+  noPageError(ctx, 'หน้าเอกสาร');
+  noPageError(ctx2, 'หน้าเอกสาร (ไม่มีไฟล์แนบ)');
+  ctx.close(); ctx2.close();
+});

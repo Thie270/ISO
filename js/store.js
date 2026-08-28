@@ -9,7 +9,7 @@
 
   const DB_KEY = 'rvp_mock_db';
   const SESSION_KEY = 'rvp_session';
-  const DB_VERSION = 10;
+  const DB_VERSION = 11;
 
   /* เพดานพื้นที่ไฟล์แนบที่ยอมให้เก็บลง localStorage (base64) */
   const FILE_QUOTA = 3.5 * 1024 * 1024;
@@ -180,6 +180,20 @@
      ใช้ชุดเดียวกันทั้งช่อง "แผนก/ส่วน/ฝ่าย" ในฟอร์ม
      และรายชื่อผู้มีส่วนเกี่ยวข้อง
      ══════════════════════════════════════════ */
+  /* ══════════════════════════════════════════
+     มาตรฐาน ISO ที่เอกสารอ้างอิง (เลือกรุ่นปีได้)
+     ══════════════════════════════════════════ */
+  const ISO_STANDARDS = [
+    'ISO 9001:2015',
+    'ISO 14001:2015',
+    'ISO 45001:2018',
+    'ISO/IEC 27001:2022',
+    'ISO 22000:2018',
+    'ISO 13485:2016',
+    'ISO 50001:2018',
+    'IATF 16949:2016'
+  ];
+
   const ORG_UNITS = [
     /* ── ฝ่าย ── */
     { id: 'PROD', level: 'ฝ่าย',  name: 'ฝ่ายผลิต',                    nameEn: 'Production Division',            userId: null },
@@ -275,6 +289,7 @@
       revision: 0,
       description: '',
       relatedDept: 'ฝ่ายผลิต',
+      isoStandard: 'ISO 9001:2015',
       effectiveDate: '',
       requesterId: 'A',
       requesterName: A.name,
@@ -699,6 +714,13 @@
     };
     docs.forEach(d => { if (RELATED_UNIT[d.id]) d.relatedDept = RELATED_UNIT[d.id]; });
 
+    /* มาตรฐานที่เอกสารอ้างอิง — ให้เห็นหลายรุ่นในข้อมูลตัวอย่าง */
+    const ISO_OF = {
+      DAR006: 'ISO 14001:2015', DAR009: 'ISO 45001:2018', DAR012: 'ISO/IEC 27001:2022',
+      DAR015: 'ISO 22000:2018', DAR017: 'ISO 45001:2018', DAR020: 'ISO 14001:2015'
+    };
+    docs.forEach(d => { d.isoStandard = ISO_OF[d.id] || 'ISO 9001:2015'; });
+
     docs.forEach(d => {
       if (OWNER_QUEUE.indexOf(d.id) !== -1 && d.status === STATUS.PENDING_APPROVAL) d.status = STATUS.PENDING_OWNER;
       if (QC_MGR_QUEUE.indexOf(d.id) !== -1 && d.status === STATUS.SENT_TO_QC) d.status = STATUS.PENDING_QC_MANAGER;
@@ -1110,6 +1132,7 @@
       revision: data.revision || 0,
       description: data.description || '',
       relatedDept: data.relatedDept || '',
+      isoStandard: data.isoStandard || '',
       effectiveDate: data.effectiveDate || '',
       requesterId: user ? user.id : 'A',
       requesterName: data.requesterName || (user ? user.name : USERS[0].name),
@@ -1137,7 +1160,7 @@
     const doc = getDoc(id);
     if (!doc) return null;
     ['docNo', 'title', 'titleEn', 'type', 'purpose', 'purposeDetail', 'revision',
-     'description', 'relatedDept', 'effectiveDate', 'requestDate'].forEach(k => {
+     'description', 'relatedDept', 'isoStandard', 'effectiveDate', 'requestDate'].forEach(k => {
       if (data[k] !== undefined && data[k] !== '') doc[k] = data[k];
     });
     if (data.dept) doc.requesterDept = data.dept;
@@ -1474,7 +1497,8 @@
      export
      ══════════════════════════════════════════ */
   global.Store = {
-    STATUS, STATUS_STYLE, DOC_TYPES, PURPOSES, USERS, STAKEHOLDER_POOL, ORG_UNITS, unitName, FILE_QUOTA,
+    STATUS, STATUS_STYLE, DOC_TYPES, PURPOSES, USERS, STAKEHOLDER_POOL, ORG_UNITS, unitName,
+    ISO_STANDARDS, FILE_QUOTA,
     load, save, reset,
     fileURL, fileKind, usedBytes, quotaLeft, register,
     login, loginAs, logout, currentUser,

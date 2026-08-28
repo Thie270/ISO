@@ -30,6 +30,26 @@
       background:#f1f5f9; border:1px solid #cbd5e1; font-weight:700;
       padding:5px 9px; font-size:12.5px; margin-top:14px;
     }
+    /* คั่นระหว่างเอกสารในระบบกับไฟล์แนบที่ต่อท้าย */
+    .attach-divider {
+      width: 210mm;
+      margin: 0 auto 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #cbd5e1;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .04em;
+    }
+    .attach-divider::before, .attach-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,.28);
+    }
+    @media print { .attach-divider { display: none !important; } }
+
     .chk { display:inline-flex; width:13px; height:13px; border:1.4px solid #475569; margin-right:6px; align-items:center; justify-content:center; font-size:11px; line-height:1; flex-shrink:0; }
     .chk.on::after { content:'\2713'; font-weight:700; }
 
@@ -289,6 +309,8 @@
           '</tr><tr>' +
             '<td style="padding-top:7px">' + esc(T('cr.revision')) + ' : ' + fld(String(doc.revision), 50) + '</td>' +
             '<td style="padding-top:7px">' + esc(T('cr.relatedDept')) + ' : ' + fld(doc.relatedDept, 110) + '</td>' +
+          '</tr><tr>' +
+            '<td style="padding-top:7px" colspan="2">' + esc(T('cr.isoStd')) + ' : ' + fld(doc.isoStandard, 140) + '</td>' +
           '</tr></table>' +
           '<div style="margin-top:9px">' + esc(T('cr.desc')) + ' :</div>' +
           '<div class="bx" style="margin-top:5px;min-height:74px;padding:8px 10px;font-size:12px;white-space:pre-wrap">' + esc(doc.description) + '</div>' +
@@ -351,15 +373,24 @@
       return p1 + p2;
     }
 
-    /* ── ไฟล์แนบ: เปิดไฟล์จริงที่ผู้ใช้อัปโหลด ── */
-    function renderFiles() {
+    /* ── ไฟล์แนบ: เปิดไฟล์จริงที่ผู้ใช้อัปโหลด ──
+       appended = ต่อท้ายเอกสารในระบบ (ไม่ใช่แท็บไฟล์แนบเดี่ยว ๆ) */
+    function renderFiles(appended) {
       const files = doc.files || [];
       if (!files.length) {
-        return '<div class="paper" style="min-height:120mm;display:flex;align-items:center;justify-content:center;color:#94a3b8">' +
-               esc(T('common.empty')) + '</div>';
+        /* ต่อท้ายแล้วไม่มีไฟล์ ก็ไม่ต้องมีหน้าเปล่าคั่น */
+        return appended ? '' :
+          '<div class="paper" style="min-height:120mm;display:flex;align-items:center;justify-content:center;color:#94a3b8">' +
+          esc(T('common.empty')) + '</div>';
       }
 
-      return files.map((f, i) => {
+      const divider = appended
+        ? '<div class="attach-divider">' +
+            '<span>' + esc(T('dv.attachStart')) + ' · ' + files.length + ' ' + esc(T('common.items')) + '</span>' +
+          '</div>'
+        : '';
+
+      return divider + files.map((f, i) => {
         const url = Store.fileURL(f);
         const kind = Store.fileKind(f);
         let body;
@@ -407,7 +438,9 @@
 
     function paintStage() {
       const stage = document.getElementById('pdf-stage');
-      stage.innerHTML = '<div id="pdf-pages">' + (tab === 'dar' ? renderPaper() : renderFiles()) + '</div>';
+      /* แท็บเอกสาร = หน้ากระดาษของระบบ แล้วต่อด้วยไฟล์แนบทั้งหมด */
+      stage.innerHTML = '<div id="pdf-pages">' +
+        (tab === 'dar' ? renderPaper() + renderFiles(true) : renderFiles()) + '</div>';
       applyZoom();
     }
 
@@ -534,6 +567,7 @@
         [T('cr.docNo'), doc.docNo],
         [T('cr.revision'), String(doc.revision)],
         [T('cr.relatedDept'), doc.relatedDept],
+        [T('cr.isoStd'), doc.isoStandard],
         [T('cr.effective'), doc.effectiveDate],
         [T('th.files'), String((doc.files || []).length)],
         [T('th.currentStep'), T('holder.' + doc.status)]

@@ -242,7 +242,7 @@
 
           <!-- Step 4 -->
           <div id="step-4" class="step-content hidden flex flex-col gap-4 w-full h-full">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
               <div class="flex flex-col gap-1.5">
                 <label for="f-docname" class="f-label" data-i18n="cr.docName"></label>
                 <input id="f-docname" type="text" data-i18n-ph="common.fill" class="f-input" />
@@ -250,6 +250,10 @@
               <div class="flex flex-col gap-1.5">
                 <label for="f-docno" class="f-label" data-i18n="cr.docNo"></label>
                 <input id="f-docno" type="text" data-i18n-ph="common.fill" class="f-input" />
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <label for="f-iso" class="f-label" data-i18n="cr.isoStd"></label>
+                <input id="f-iso" type="text" autocomplete="off" data-i18n-ph="common.select" class="f-input" />
               </div>
             </div>
 
@@ -861,6 +865,12 @@
       });
     });
 
+    /* ซ่อนแถบปุ่มเลื่อนส่วนท้ายการ์ด (ใช้กับโหมดที่เปิดเอกสารยาวอย่างเดียว) */
+    function hideStepNav() {
+      const nav = document.getElementById('doc-stepnav');
+      if (nav) nav.style.display = 'none';
+    }
+
     /* ── ดูทั้งหมด ── */
     document.getElementById('view-all-btn').addEventListener('click', function () {
       isViewAll = !isViewAll;
@@ -1092,6 +1102,13 @@
     }
     ['f-dept', 'f-relateddept'].forEach(function (id) {
       attachCombo(document.getElementById(id), { options: orgOptions });
+    });
+
+    /* มาตรฐาน ISO — เลือกรุ่นจากรายการ (พิมพ์รุ่นอื่นเองก็ได้) */
+    attachCombo(document.getElementById('f-iso'), {
+      options: function () {
+        return Store.ISO_STANDARDS.map(function (v) { return { id: v, label: v }; });
+      }
     });
 
     /* ─────────── ผู้มีส่วนเกี่ยวข้อง (ส่วนที่ 5.2) ─────────── */
@@ -1454,6 +1471,7 @@
         revision: Number(document.getElementById('f-revision').value || 0),
         description: descArea.value.trim(),
         relatedDept: document.getElementById('f-relateddept').value,
+        isoStandard: document.getElementById('f-iso').value.trim(),
         effectiveDate: document.getElementById('f-effective').value.trim(),
         dept: document.getElementById('f-dept').value,
         files: files,
@@ -1498,6 +1516,7 @@
         document.getElementById('f-docno').value = editing.docNo;
         document.getElementById('f-revision').value = editing.revision;
         document.getElementById('f-relateddept').value = editing.relatedDept || '';
+        document.getElementById('f-iso').value = editing.isoStandard || '';
         document.getElementById('f-effective').value = editing.effectiveDate || '';
         document.getElementById('purpose-detail').value = editing.purposeDetail || '';
         descArea.value = editing.description || '';
@@ -1575,6 +1594,7 @@
       { step: 4, id: 'f-docname',    key: 'cr.docName',    ok: function () { return !!fval('f-docname'); } },
       { step: 4, id: 'f-docno',      key: 'cr.docNo',      ok: function () { return !!fval('f-docno'); } },
       { step: 4, id: 'f-relateddept', key: 'cr.relatedDept', ok: function () { return !!fval('f-relateddept'); } },
+      { step: 4, id: 'f-iso',        key: 'cr.isoStd',     ok: function () { return !!fval('f-iso'); } },
       { step: 4, id: 'desc-step4',   key: 'cr.desc',       ok: function () { return !!fval('desc-step4'); } },
       { step: 4, id: 'f-effective',  key: 'cr.effective',  ok: function () { return !!fval('f-effective'); } },
       /* ส่วนแบบเอกสารต่าง (ไฟล์แนบ) ไม่บังคับ — แนบหรือไม่แนบก็ส่งตรวจสอบได้ */
@@ -1851,6 +1871,8 @@
       const viewAllBtn = document.getElementById('view-all-btn');
       viewAllBtn.click();
       viewAllBtn.style.display = 'none';
+      /* โหมดนี้ไม่มีปุ่มเลื่อนส่วน — ซ่อนแถบล่างของการ์ดไปเลย จะได้ไม่เหลือแถบว่าง */
+      hideStepNav();
 
       /* อ่านอย่างเดียวทุกส่วน ยกเว้นช่องของตัวเองในส่วนที่ 6 */
       ['step-1', 'step-2', 'step-3', 'step-4', 'step-5', 'step-6', 'step-7', 'step-8', 'step-9'].forEach(function (id) {
@@ -2042,6 +2064,8 @@
       const viewAllBtn = document.getElementById('view-all-btn');
       viewAllBtn.click();
       viewAllBtn.style.display = 'none';
+      /* โหมดนี้ไม่มีปุ่มเลื่อนส่วน — ซ่อนแถบล่างของการ์ดไปเลย จะได้ไม่เหลือแถบว่าง */
+      hideStepNav();
 
       /* อ่านอย่างเดียวทั้งฉบับ */
       function lockAll() {
@@ -2139,6 +2163,8 @@
       const viewAllBtn = document.getElementById('view-all-btn');
       viewAllBtn.click();
       viewAllBtn.style.display = 'none';
+      /* โหมดนี้ไม่มีปุ่มเลื่อนส่วน — ซ่อนแถบล่างของการ์ดไปเลย จะได้ไม่เหลือแถบว่าง */
+      hideStepNav();
 
       /* อ่านอย่างเดียวทุกส่วน ยกเว้นกล่องเซ็นของตัวเองใน 5.2 */
       ['step-1', 'step-2', 'step-3', 'step-4', 'step-5', 'step-6', 'step-8', 'step-9'].forEach(function (id) {
@@ -2250,6 +2276,8 @@
       const viewAllBtn = document.getElementById('view-all-btn');
       viewAllBtn.click();
       viewAllBtn.style.display = 'none';
+      /* โหมดนี้ไม่มีปุ่มเลื่อนส่วน — ซ่อนแถบล่างของการ์ดไปเลย จะได้ไม่เหลือแถบว่าง */
+      hideStepNav();
 
       /* อ่านอย่างเดียวทุกส่วน — ส่วนที่ 5 จะเปิดเฉพาะช่องของตัวเองทีหลัง
          ยกเว้นเอกสารที่ถูกส่งกลับ: เนื้อหา (ส่วนที่ 1–4, 5.2) แก้ไขได้ */
@@ -2367,6 +2395,8 @@
       const viewAllBtn = document.getElementById('view-all-btn');
       viewAllBtn.click();
       viewAllBtn.style.display = 'none';
+      /* โหมดนี้ไม่มีปุ่มเลื่อนส่วน — ซ่อนแถบล่างของการ์ดไปเลย จะได้ไม่เหลือแถบว่าง */
+      hideStepNav();
 
       /* อ่านอย่างเดียวทุกส่วน (รวม 5.2 ที่ผู้ร้องขอเลือกมาแล้ว) เหลือทำงานได้เฉพาะ 5.3
          ยกเว้นเอกสารที่ถูกส่งกลับ: แก้ไขเนื้อหาแล้วส่งต่อได้ */

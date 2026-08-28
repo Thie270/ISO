@@ -126,6 +126,7 @@ test('form: กรอกครบแล้วจึงส่งตรวจส�
   click(ctx, 'input[name="doctype"][value="wi"]');
   fill(ctx, 'f-docname', 'เอกสารทดสอบ E2E');
   fill(ctx, 'f-docno', 'RVP-E2E-FORM');
+  await pickFromCombo(ctx, 'f-iso', 'ISO 45001:2018');
   fill(ctx, 'f-relateddept', 'ส่วนวิศวกรรม');
   fill(ctx, 'desc-step4', 'รายละเอียดสำหรับทดสอบ');
   fill(ctx, 'f-effective', '15/04/2027');
@@ -145,6 +146,49 @@ test('form: กรอกครบแล้วจึงส่งตรวจส�
   ok(saved, 'ต้องบันทึกเอกสารไว้');
   eq(saved.status, 'PENDING_OWNER', 'ส่งแล้วต้องถึงหน่วยงานเจ้าของเอกสาร');
   eq(saved.relatedDept, 'ส่วนวิศวกรรม', 'ต้องเก็บหน่วยงานที่พิมพ์เอง');
+  eq(saved.isoStandard, 'ISO 45001:2018', 'ต้องเก็บมาตรฐาน ISO ที่เลือก');
   noPageError(ctx, 'ฟอร์มสร้างเอกสาร');
+  ctx.close();
+});
+
+test('form: เลือกมาตรฐาน ISO จาก dropdown ได้', async () => {
+  resetData();
+  const ctx = await openApp('create.html', 'A');
+  click(ctx, '[data-step="4"]');
+
+  const input = ctx.doc.getElementById('f-iso');
+  ok(input, 'ส่วนที่ 4 ต้องมีช่องมาตรฐาน ISO');
+  const wrap = input.closest('.combo');
+  ok(wrap, 'ต้องเป็น dropdown ที่กดลูกศรเลือกได้');
+
+  /* ต้องอยู่ต่อจากช่องชื่อเอกสาร */
+  const fields = ctx.$$('#step-4 .f-label').map(l => l.getAttribute('data-i18n'));
+  eq(fields.slice(0, 3).join(','), 'cr.docName,cr.docNo,cr.isoStd', 'ลำดับช่องต้องอยู่หลังหมายเลขเอกสาร');
+
+  wrap.querySelector('.combo-btn').click();
+  await sleep(150);
+  const items = Array.prototype.slice.call(wrap.querySelectorAll('.combo-item')).map(b => b.textContent.trim());
+  eq(items.length, Store.ISO_STANDARDS.length, 'ต้องเห็นมาตรฐานครบทุกรุ่น');
+  contains(items.join('|'), 'ISO 9001:2015', 'ต้องมี ISO 9001:2015 ให้เลือก');
+
+  await pickFromCombo(ctx, 'f-iso', 'ISO 14001:2015');
+  eq(input.value, 'ISO 14001:2015', 'เลือกแล้วค่าต้องเปลี่ยน');
+  await pickFromCombo(ctx, 'f-iso', 'ISO/IEC 27001:2022');
+  eq(input.value, 'ISO/IEC 27001:2022', 'ต้องเลือกทับค่าเดิมได้');
+
+  noPageError(ctx, 'ฟอร์มสร้างเอกสาร');
+  ctx.close();
+});
+
+test('form: มาตรฐาน ISO ที่บันทึกไว้ต้องขึ้นในหน้าเอกสาร', async () => {
+  resetData();
+  const doc = newRequest({ docNo: 'RVP-E2E-ISO' });
+  Store.updateDraft(doc.id, { isoStandard: 'ISO 22000:2018' });
+
+  const ctx = await openApp('document.html?id=' + doc.id, 'A');
+  contains(ctx.text('#info-scroll'), 'ISO 22000:2018', 'แผงข้อมูลต้องแสดงมาตรฐาน');
+  const paper = ctx.$$('.paper').map(p => p.textContent).join(' ').replace(/\s+/g, ' ');
+  contains(paper, 'ISO 22000:2018', 'หน้ากระดาษต้องแสดงมาตรฐาน');
+  noPageError(ctx, 'หน้าเอกสาร');
   ctx.close();
 });
