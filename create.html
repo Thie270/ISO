@@ -251,10 +251,6 @@
                 <label for="f-docno" class="f-label" data-i18n="cr.docNo"></label>
                 <input id="f-docno" type="text" data-i18n-ph="common.fill" class="f-input" />
               </div>
-              <div class="flex flex-col gap-1.5">
-                <label for="f-iso" class="f-label" data-i18n="cr.isoStd"></label>
-                <input id="f-iso" type="text" autocomplete="off" data-i18n-ph="common.select" class="f-input" />
-              </div>
             </div>
 
             <div class="flex flex-col sm:flex-row sm:items-end gap-4 w-full">
@@ -1104,13 +1100,6 @@
       attachCombo(document.getElementById(id), { options: orgOptions });
     });
 
-    /* มาตรฐาน ISO — เลือกรุ่นจากรายการ (พิมพ์รุ่นอื่นเองก็ได้) */
-    attachCombo(document.getElementById('f-iso'), {
-      options: function () {
-        return Store.ISO_STANDARDS.map(function (v) { return { id: v, label: v }; });
-      }
-    });
-
     /* ─────────── ผู้มีส่วนเกี่ยวข้อง (ส่วนที่ 5.2) ─────────── */
     const sel = document.getElementById('related-select');
     const chipsEl = document.getElementById('related-chips');
@@ -1471,7 +1460,7 @@
         revision: Number(document.getElementById('f-revision').value || 0),
         description: descArea.value.trim(),
         relatedDept: document.getElementById('f-relateddept').value,
-        isoStandard: document.getElementById('f-iso').value.trim(),
+        isoStandard: editing ? (editing.isoStandard || '') : '',
         effectiveDate: document.getElementById('f-effective').value.trim(),
         dept: document.getElementById('f-dept').value,
         files: files,
@@ -1516,7 +1505,6 @@
         document.getElementById('f-docno').value = editing.docNo;
         document.getElementById('f-revision').value = editing.revision;
         document.getElementById('f-relateddept').value = editing.relatedDept || '';
-        document.getElementById('f-iso').value = editing.isoStandard || '';
         document.getElementById('f-effective').value = editing.effectiveDate || '';
         document.getElementById('purpose-detail').value = editing.purposeDetail || '';
         descArea.value = editing.description || '';
@@ -1594,7 +1582,6 @@
       { step: 4, id: 'f-docname',    key: 'cr.docName',    ok: function () { return !!fval('f-docname'); } },
       { step: 4, id: 'f-docno',      key: 'cr.docNo',      ok: function () { return !!fval('f-docno'); } },
       { step: 4, id: 'f-relateddept', key: 'cr.relatedDept', ok: function () { return !!fval('f-relateddept'); } },
-      { step: 4, id: 'f-iso',        key: 'cr.isoStd',     ok: function () { return !!fval('f-iso'); } },
       { step: 4, id: 'desc-step4',   key: 'cr.desc',       ok: function () { return !!fval('desc-step4'); } },
       { step: 4, id: 'f-effective',  key: 'cr.effective',  ok: function () { return !!fval('f-effective'); } },
       /* ส่วนแบบเอกสารต่าง (ไฟล์แนบ) ไม่บังคับ — แนบหรือไม่แนบก็ส่งตรวจสอบได้ */
